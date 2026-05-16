@@ -18,7 +18,6 @@
   --accent:   #00e5a0;
   --accent2:  #00b57d;
   --danger:   #ff5a5a;
-  --warn:     #f0a500;
   --mono:     'IBM Plex Mono', monospace;
   --sans:     'IBM Plex Sans', sans-serif;
   --radius:   6px;
@@ -32,9 +31,10 @@ body {
   color: var(--text);
   font-family: var(--sans);
   font-size: 14px;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* ── TOPBAR ── */
@@ -66,13 +66,8 @@ body {
   flex-shrink: 0;
 }
 .brand-dot.disconnected { background: var(--muted); box-shadow: none; }
-
 .conn-area { display: flex; align-items: center; gap: 10px; }
-.conn-status {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--muted);
-}
+.conn-status { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 .conn-status.connected { color: var(--accent); }
 
 button {
@@ -90,23 +85,14 @@ button {
 }
 button:hover { background: var(--border); border-color: var(--border2); }
 button:active { transform: scale(0.98); }
-button.primary {
-  background: var(--accent);
-  color: #000;
-  border-color: var(--accent);
-  font-weight: 500;
-}
+button.primary { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 500; }
 button.primary:hover { background: var(--accent2); border-color: var(--accent2); }
 button.danger { color: var(--danger); border-color: #3d1a1a; background: #1f1010; }
 button.danger:hover { background: #2a1111; }
 button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
-/* ── MAIN LAYOUT ── */
-.layout {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
+/* ── LAYOUT ── */
+.layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
 
 /* ── SIDEBAR ── */
 .sidebar {
@@ -146,11 +132,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .mode-btn:hover { background: var(--surface2); color: var(--text); border-radius: 0; }
 .mode-btn.active { color: var(--text); background: var(--surface2); border-left-color: var(--accent); }
 .mode-btn.readonly.active { border-left-color: var(--muted); }
-.mode-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
+.mode-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .mode-badge {
   margin-left: auto;
   font-family: var(--mono);
@@ -161,10 +143,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   color: var(--muted);
   border: 1px solid var(--border);
 }
-.mode-badge.ro { color: var(--muted); }
-
 .sidebar-divider { height: 1px; background: var(--border); margin: 8px 14px; }
-
 .add-layer-btn {
   margin: 8px 14px 16px;
   width: calc(100% - 28px);
@@ -176,14 +155,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .add-layer-btn:hover { color: var(--text); border-color: var(--accent); background: transparent; }
 
-/* ── MAIN PANEL ── */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--bg);
-}
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
 /* ── TOOLBAR ── */
 .toolbar {
@@ -196,13 +169,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   flex-shrink: 0;
   flex-wrap: wrap;
 }
-.toolbar-title {
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 500;
-  flex: 1;
-  min-width: 120px;
-}
+.toolbar-title { font-family: var(--mono); font-size: 13px; font-weight: 500; flex: 1; min-width: 120px; }
 .toolbar-title input {
   background: transparent;
   border: none;
@@ -218,7 +185,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .toolbar-title input:focus { border-bottom-color: var(--accent); }
 .toolbar-title input[readonly] { cursor: default; }
-
 .ro-banner {
   display: flex;
   align-items: center;
@@ -232,7 +198,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .ro-banner svg { flex-shrink: 0; }
 
-/* ── KEYBOARD AREA ── */
+/* ── KB-CONTENT ── */
+.kb-content { flex: 1; display: flex; overflow: hidden; min-height: 0; }
+
+/* ── KB-AREA ── */
 .kb-area {
   flex: 1;
   display: flex;
@@ -240,25 +209,23 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   align-items: center;
   justify-content: center;
   padding: 24px 20px;
-  overflow: auto;
+  overflow: hidden;
+  min-width: 0;
 }
-
 .kb-wrap {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 16px;
   display: inline-block;
-  margin-bottom: 20px;
+  flex-shrink: 0;
 }
-
 .key-grid {
   display: grid;
   grid-template-columns: repeat(7, 72px);
   grid-template-rows: repeat(4, 64px);
   gap: 6px;
 }
-
 .key {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -267,10 +234,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 2px;
   cursor: pointer;
   transition: all 0.1s;
-  padding: 6px 4px;
+  padding: 4px 3px;
   position: relative;
   overflow: hidden;
 }
@@ -287,67 +254,96 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .key.selected { border-color: var(--accent) !important; }
 .key.selected::before { background: var(--accent) !important; }
 .key.ro { cursor: default; }
-.key.active-press { border-color: var(--accent); }
-
-.key-led {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  transition: background 0.15s;
-}
-.key-note {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text);
-  line-height: 1;
-}
-.key-sub {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  line-height: 1;
-}
-.key-label {
-  font-size: 9px;
-  color: var(--muted);
-  font-style: italic;
-}
+.key-led { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; transition: background 0.15s; }
+.key-note { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); line-height: 1; }
+.key-sub { font-family: var(--mono); font-size: 10px; color: var(--muted); line-height: 1; }
+.key-label { font-size: 9px; color: var(--muted); font-style: italic; line-height: 1; }
 .key.mod .key-note { color: var(--muted); font-size: 10px; }
 
 /* ── EDITOR PANEL ── */
 .editor-panel {
-  width: 280px;
+  width: 0;
   flex-shrink: 0;
-  border-left: 1px solid var(--border);
-  background: var(--surface);
+  overflow: hidden;
+  display: flex;
+  transition: width 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.editor-panel.open { width: 264px; }
+
+.ep-inner {
+  min-width: 264px;
+  width: 264px;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
+  flex: 1;
+  overflow: hidden;
+  border-left: 1px solid var(--border);
+  background: var(--surface);
 }
+
 .ep-header {
-  padding: 14px 16px 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 10px 0 16px;
+  height: 40px;
   border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  gap: 8px;
+}
+.ep-title {
   font-family: var(--mono);
   font-size: 10px;
   color: var(--muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-}
-.ep-hint {
   flex: 1;
+}
+.ep-close {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  padding: 0;
+  border-radius: var(--radius);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  color: var(--muted);
-  font-size: 12px;
-  padding: 20px;
-  text-align: center;
+  flex-shrink: 0;
 }
-.ep-hint svg { opacity: 0.3; }
-.ep-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+.ep-close:hover { color: var(--text); background: var(--surface2); transform: none; }
+.ep-close:active { transform: scale(0.9); }
+
+/* ── TABS ── */
+.ep-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.ep-tab {
+  flex: 1;
+  padding: 9px 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--muted);
+  border: none;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  transition: color 0.1s, border-color 0.1s;
+}
+.ep-tab:hover { color: var(--text); background: var(--surface2); border-radius: 0; transform: none; }
+.ep-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ── TAB BODIES ── */
+.ep-tab-bodies { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; }
+.tab-body { display: none; padding: 14px 16px; flex-direction: column; gap: 14px; }
+.tab-body.active { display: flex; }
 
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field label {
@@ -374,14 +370,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .field-hint { font-family: var(--mono); font-size: 10px; color: var(--muted); }
 .field-hint.ok { color: var(--accent); }
 .field-hint.err { color: var(--danger); }
-
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-.chord-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 5px;
-}
+/* ── CHORD PRESETS ── */
+.chord-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
 .chord-btn {
   padding: 6px 4px;
   font-family: var(--mono);
@@ -392,17 +384,58 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   color: var(--muted);
   border-radius: var(--radius);
 }
-.chord-btn:hover { color: var(--text); border-color: var(--border2); }
+.chord-btn:hover { color: var(--text); border-color: var(--border2); transform: none; }
 .chord-btn.active { background: #0a2a1e; border-color: var(--accent2); color: var(--accent); }
 
-.color-swatches {
+/* ── INTERVAL GRID ── */
+.interval-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+.iv-btn {
   display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
+  flex-direction: column;
   align-items: center;
+  padding: 5px 2px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  cursor: pointer;
+  gap: 1px;
+  transition: all 0.1s;
+  font-family: var(--mono);
 }
+.iv-name { font-size: 10px; color: var(--muted); line-height: 1; }
+.iv-num  { font-size: 8px;  color: var(--muted); line-height: 1; }
+.iv-btn:hover { border-color: var(--border2); transform: none; }
+.iv-btn:hover .iv-name, .iv-btn:hover .iv-num { color: var(--text); }
+.iv-btn.active { background: #0a2a1e; border-color: var(--accent2); }
+.iv-btn.active .iv-name { color: var(--accent); }
+.iv-btn.active .iv-num  { color: var(--accent2); }
+
+/* ── NOTES FIRED ── */
+.notes-fired-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.notes-fired {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--accent);
+  word-break: break-word;
+  line-height: 1.6;
+  min-height: 34px;
+}
+
+/* ── COLOR TAB ── */
+.color-swatches { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; }
 .swatch {
-  width: 22px; height: 22px;
+  width: 24px; height: 24px;
   border-radius: 50%;
   cursor: pointer;
   border: 2px solid transparent;
@@ -412,7 +445,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .swatch:hover { transform: scale(1.15); }
 .swatch.active { border-color: var(--text); }
 .swatch-custom {
-  width: 22px; height: 22px;
+  width: 24px; height: 24px;
   border-radius: 50%;
   border: 1px solid var(--border2);
   overflow: hidden;
@@ -421,17 +454,29 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   display: flex; align-items: center; justify-content: center;
 }
 .swatch-custom input[type=color] {
-  width: 32px; height: 32px;
-  border: none; padding: 0; margin: -5px 0 0 -5px; cursor: pointer;
-  background: transparent;
+  width: 34px; height: 34px;
+  border: none; padding: 0; margin: -5px 0 0 -5px;
+  cursor: pointer; background: transparent;
+}
+.color-preview {
+  height: 64px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  display: flex;
+  align-items: flex-end;
+  padding: 7px 10px;
+  font-family: var(--mono);
+  font-size: 11px;
+  transition: background 0.15s;
 }
 
+/* ── EP FOOTER ── */
 .ep-footer {
   padding: 12px 16px;
   border-top: 1px solid var(--border);
   display: flex;
   gap: 8px;
-  margin-top: auto;
+  flex-shrink: 0;
 }
 .ep-footer button { flex: 1; font-size: 12px; padding: 6px; }
 
@@ -463,14 +508,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .connect-card h1 { font-family: var(--mono); font-size: 18px; font-weight: 500; }
 .connect-card p { color: var(--muted); font-size: 13px; line-height: 1.6; }
 .connect-card .warn-note {
-  font-size: 11px;
-  color: var(--muted);
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 8px 12px;
-  width: 100%;
-  text-align: left;
+  font-size: 11px; color: var(--muted);
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 8px 12px;
+  width: 100%; text-align: left;
 }
 .connect-logo {
   width: 48px; height: 48px;
@@ -499,7 +540,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .log-ok { color: var(--accent); }
 .log-err { color: var(--danger); }
 
-/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
@@ -534,17 +574,13 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 </div>
 
 <div class="layout">
-  <!-- SIDEBAR -->
+
   <div class="sidebar">
     <div class="sidebar-section">Layers</div>
-
     <div id="customModes"></div>
-
-    <button class="add-layer-btn" id="addLayerBtn" onclick="addCustomLayer()">+ Add layer</button>
-
+    <button class="add-layer-btn" onclick="addCustomLayer()">+ Add layer</button>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">Built-in</div>
-
     <button class="mode-btn readonly" onclick="setMode('manual',this)">
       <span class="mode-dot" style="background:#378ADD;"></span>
       Manual
@@ -562,74 +598,98 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     </button>
   </div>
 
-  <!-- MAIN -->
   <div class="main">
-    <div class="toolbar" id="toolbar">
+    <div class="toolbar">
       <div class="toolbar-title">
         <input type="text" id="layerNameInput" value="Select a layer" readonly>
       </div>
       <div id="toolbarActions"></div>
     </div>
 
-    <div class="kb-area">
-      <div class="kb-wrap">
-        <div class="key-grid" id="keyGrid"></div>
-      </div>
-      <div id="roBanner" class="ro-banner" style="display:none;">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-        Read-only — reflects current keyboard state
-      </div>
-    </div>
-  </div>
+    <div class="kb-content">
 
-  <!-- EDITOR PANEL -->
-  <div class="editor-panel" id="editorPanel">
-    <div class="ep-header">Key editor</div>
-    <div class="ep-hint" id="epHint">
-      <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24">
-        <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
-      </svg>
-      Select a key to edit
-    </div>
-    <div id="epBody" style="display:none;" class="ep-body">
-      <div class="field">
-        <label>Note</label>
-        <input type="text" id="fNote" placeholder="C4, F#3, Bb2" autocomplete="off" oninput="onNoteInput(this)">
-        <span class="field-hint" id="noteHint"></span>
-      </div>
-      <div class="field-row">
-        <div class="field">
-          <label>Channel</label>
-          <input type="number" id="fChannel" min="1" max="16" onchange="saveKeyField('channel', +this.value)">
+      <div class="kb-area" id="kbArea">
+        <div class="kb-wrap" id="kbWrap">
+          <div class="key-grid" id="keyGrid"></div>
         </div>
-        <div class="field">
-          <label>Velocity</label>
-          <select id="fVelocity" onchange="saveKeyField('velocity', this.value)">
-            <option value="global">Global</option>
-            <option value="64">64 — mp</option>
-            <option value="80">80 — mf</option>
-            <option value="100">100 — f</option>
-            <option value="110">110 — ff</option>
-            <option value="127">127 — fff</option>
-          </select>
+        <div id="roBanner" class="ro-banner" style="display:none;margin-top:16px;">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Read-only — reflects current keyboard state
         </div>
       </div>
-      <div class="field">
-        <label>Chord</label>
-        <div class="chord-grid" id="chordGrid"></div>
+
+      <div class="editor-panel" id="editorPanel">
+        <div class="ep-inner">
+          <div class="ep-header">
+            <span class="ep-title" id="epTitle">Key editor</span>
+            <button class="ep-close" onclick="closeEditor()" title="Close">&#x2715;</button>
+          </div>
+          <div class="ep-tabs">
+            <button class="ep-tab active" id="tabNote"  onclick="switchTab('note')">Note</button>
+            <button class="ep-tab"        id="tabChord" onclick="switchTab('chord')">Chord</button>
+            <button class="ep-tab"        id="tabColor" onclick="switchTab('color')">Color</button>
+          </div>
+          <div class="ep-tab-bodies">
+
+            <div class="tab-body active" id="bodyNote">
+              <div class="field">
+                <label>Note</label>
+                <input type="text" id="fNote" placeholder="C4, F#3, Bb2" autocomplete="off" oninput="onNoteInput(this)">
+                <span class="field-hint" id="noteHint"></span>
+              </div>
+              <div class="field-row">
+                <div class="field">
+                  <label>Channel</label>
+                  <input type="number" id="fChannel" min="1" max="16" onchange="saveKeyField('channel', Math.max(1,Math.min(16,+this.value)))">
+                </div>
+                <div class="field">
+                  <label>Velocity</label>
+                  <select id="fVelocity" onchange="saveKeyField('velocity', this.value)">
+                    <option value="global">Global</option>
+                    <option value="64">64 — mp</option>
+                    <option value="80">80 — mf</option>
+                    <option value="100">100 — f</option>
+                    <option value="127">127 — fff</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field">
+                <label>Label <span style="font-size:9px;color:var(--muted);text-transform:none;font-family:var(--sans);">(3 chars max)</span></label>
+                <input type="text" id="fLabel" maxlength="3" placeholder="e.g. KCK" oninput="saveKeyField('label',this.value.slice(0,3))">
+              </div>
+            </div>
+
+            <div class="tab-body" id="bodyChord">
+              <div class="field">
+                <label>Preset</label>
+                <div class="chord-presets" id="chordPresets"></div>
+              </div>
+              <div class="field">
+                <label>Intervals</label>
+                <div class="interval-grid" id="intervalGrid"></div>
+              </div>
+              <div>
+                <div class="notes-fired-label">Notes fired</div>
+                <div class="notes-fired" id="notesFired">—</div>
+              </div>
+            </div>
+
+            <div class="tab-body" id="bodyColor">
+              <div class="field">
+                <label>Preset</label>
+                <div class="color-swatches" id="swatchRow"></div>
+              </div>
+              <div class="color-preview" id="colorPreview"></div>
+            </div>
+
+          </div>
+          <div class="ep-footer">
+            <button onclick="clearKey()">Reset</button>
+            <button class="primary" id="pushBtn" onclick="pushCurrentLayer()" disabled>Push to keyboard</button>
+          </div>
+        </div>
       </div>
-      <div class="field">
-        <label>LED color</label>
-        <div class="color-swatches" id="swatchRow"></div>
-      </div>
-      <div class="field">
-        <label>Label <span style="font-size:9px;color:var(--muted);text-transform:none;font-family:var(--sans);">(3 chars, shows on key)</span></label>
-        <input type="text" id="fLabel" maxlength="3" placeholder="e.g. KCK" onchange="saveKeyField('label', this.value)">
-      </div>
-    </div>
-    <div class="ep-footer" id="epFooter" style="display:none;">
-      <button onclick="clearKey()">Reset</button>
-      <button class="primary" id="pushBtn" onclick="pushCurrentLayer()" disabled>Push to keyboard</button>
+
     </div>
   </div>
 </div>
@@ -639,16 +699,40 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 </div>
 
 <script>
-const CHORDS   = ['None','Maj','Min','7th','Maj7','Sus2','Sus4','Add9'];
-const SWATCHES = ['#534AB7','#1D9E75','#D85A30','#D4537E','#378ADD','#BA7517','#E24B4A','#888780','#ffffff'];
+// ── CONSTANTS ──
+const CHORD_PRESETS = [
+  {name:'Maj',  intervals:[4,7]},
+  {name:'Min',  intervals:[3,7]},
+  {name:'7th',  intervals:[4,7,10]},
+  {name:'Maj7', intervals:[4,7,11]},
+  {name:'Min7', intervals:[3,7,10]},
+  {name:'Sus2', intervals:[2,7]},
+  {name:'Sus4', intervals:[5,7]},
+  {name:'Add9', intervals:[4,7,14]},
+  {name:'Dim',  intervals:[3,6]},
+  {name:'Aug',  intervals:[4,8]},
+  {name:'9th',  intervals:[4,7,10,14]},
+  {name:'None', intervals:[]},
+];
 
-const NOTE_MAP = {C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
-const FLAT_MAP = {Db:'C#',Eb:'D#',Fb:'E',Gb:'F#',Ab:'G#',Bb:'A#',Cb:'B'};
+const INTERVALS = [
+  {name:'b2', semi:1},  {name:'2',   semi:2},  {name:'b3',  semi:3},
+  {name:'3',  semi:4},  {name:'4',   semi:5},  {name:'b5',  semi:6},
+  {name:'5',  semi:7},  {name:'b6',  semi:8},  {name:'6',   semi:9},
+  {name:'b7', semi:10}, {name:'7',   semi:11}, {name:'8va', semi:12},
+  {name:'b9', semi:13}, {name:'9',   semi:14}, {name:'#9',  semi:15},
+  {name:'11', semi:17}, {name:'#11', semi:18}, {name:'13',  semi:21},
+];
+
+const SWATCHES = ['#534AB7','#1D9E75','#D85A30','#D4537E','#378ADD','#BA7517','#E24B4A','#888780'];
+
+const NOTE_MAP   = {C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
+const FLAT_MAP   = {Db:'C#',Eb:'D#',Fb:'E',Gb:'F#',Ab:'G#',Bb:'A#',Cb:'B'};
 const MIDI_NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
 
 function parseNote(str) {
   str = str.trim();
-  const m = str.match(/^([A-Ga-g])(#|b)?(\-?\d)$/);
+  const m = str.match(/^([A-Ga-g])(#|b)?(-?\d)$/);
   if (!m) return null;
   let name = m[1].toUpperCase();
   const acc = m[2] || '';
@@ -657,40 +741,46 @@ function parseNote(str) {
     const flat = FLAT_MAP[name + 'b'];
     if (flat) name = flat; else return null;
   } else if (acc === '#') {
-    name = name + '#';
+    name += '#';
   }
   if (!(name in NOTE_MAP)) return null;
   return name + oct;
 }
 
 function noteToMidi(name) {
-  const m = name.match(/^([A-G]#?)(\-?\d)$/);
+  const m = name.match(/^([A-G]#?)(-?\d)$/);
   if (!m) return 60;
   return (parseInt(m[2]) + 1) * 12 + (NOTE_MAP[m[1]] || 0);
 }
 
-function hexToRgbNorm(hex) {
-  hex = hex.replace('#','');
-  return [parseInt(hex.slice(0,2),16)/255, parseInt(hex.slice(2,4),16)/255, parseInt(hex.slice(4,6),16)/255];
+function intervalsToNoteNames(rootNote, intervals) {
+  const rootMidi = noteToMidi(rootNote);
+  const result = [rootNote];
+  intervals.forEach(iv => {
+    const midi = rootMidi + iv;
+    const name = MIDI_NOTES[((midi % 12) + 12) % 12];
+    const oct  = Math.floor(midi / 12) - 1;
+    result.push(name + oct);
+  });
+  return result;
+}
+
+function detectPreset(intervals) {
+  const key = [...intervals].sort((a,b)=>a-b).join(',');
+  return CHORD_PRESETS.find(p => [...p.intervals].sort((a,b)=>a-b).join(',') === key) || null;
 }
 
 // ── STATE ──
-let port = null;
-let writer = null;
-let reader = null;
-let readBuf = '';
+let port = null, writer = null, reader = null, readBuf = '';
 let connected = false;
-let currentMode = null;   // 'manual' | 'smart' | 'drum' | number (custom idx)
+let currentMode = null;
 let customLayers = [];
 let selectedKey = null;
 let activeModeBtn = null;
 
 // ── SERIAL ──
 async function connectSerial() {
-  if (!navigator.serial) {
-    log('WebSerial not supported — use Chrome or Edge', 'err');
-    return;
-  }
+  if (!navigator.serial) { log('WebSerial not supported — use Chrome or Edge', 'err'); return; }
   try {
     log('Waiting for port selection…');
     port = await navigator.serial.requestPort({});
@@ -724,7 +814,7 @@ async function disconnectSerial() {
   connected = false;
   try { if (reader) { await reader.cancel(); reader = null; } } catch {}
   try { if (writer) { await writer.close(); writer = null; } } catch {}
-  try { if (port) { await port.close(); port = null; } } catch {}
+  try { if (port)   { await port.close();   port = null;   } } catch {}
   document.getElementById('brandDot').classList.add('disconnected');
   document.getElementById('connStatus').textContent = 'Not connected';
   document.getElementById('connStatus').classList.remove('connected');
@@ -771,31 +861,22 @@ async function startReader() {
 function handleIncoming(line) {
   let msg;
   try { msg = JSON.parse(line); } catch { return; }
-
   if (msg.type === 'state') {
-    // Sync layers from keyboard
     const names = msg.custom_layer_names || [];
-    // Merge — keep existing key data, update names
-    while (customLayers.length < names.length) {
-      customLayers.push(mkDefaultLayer(`Layer ${customLayers.length + 1}`));
-    }
+    while (customLayers.length < names.length) customLayers.push(mkDefaultLayer(`Layer ${customLayers.length + 1}`));
     names.forEach((n, i) => { customLayers[i].name = n; });
     renderSidebar();
     log(`Synced — ${names.length} custom layer(s), mode ${msg.mode}`, 'ok');
   } else if (msg.type === 'ack') {
-    if (msg.cmd === 'push_layer') {
-      log(`Layer ${msg.idx} pushed ${msg.saved ? '& saved' : '(not saved)'}`, 'ok');
-    } else if (msg.cmd === 'set_mode') {
-      log(`Keyboard switched to mode ${msg.mode}`, 'ok');
-    } else if (msg.cmd === 'delete_layer') {
-      log(`Layer ${msg.idx} deleted`, 'ok');
-    }
+    if      (msg.cmd === 'push_layer')    log(`Layer ${msg.idx} pushed ${msg.saved ? '& saved' : '(not saved)'}`, 'ok');
+    else if (msg.cmd === 'set_mode')      log(`Keyboard switched to mode ${msg.mode}`, 'ok');
+    else if (msg.cmd === 'delete_layer')  log(`Layer ${msg.idx} deleted`, 'ok');
   } else if (msg.type === 'err') {
     log('Keyboard: ' + msg.msg, 'err');
   }
 }
 
-// ── LAYER MANAGEMENT ──
+// ── LAYERS ──
 function mkDefaultLayer(name) {
   const notes = ['C2','D2','E2','F2','G2','A2','B2',
                  'C3','D3','E3','F3','G3','A3','B3',
@@ -805,11 +886,11 @@ function mkDefaultLayer(name) {
     name,
     keys: Array.from({length:28}, (_,i) => ({
       note: notes[i] || 'C4',
-      chord: 'None',
+      intervals: [],
       channel: 1,
       velocity: 'global',
       label: '',
-      color: SWATCHES[i % (SWATCHES.length - 1)]
+      color: SWATCHES[i % SWATCHES.length]
     }))
   };
 }
@@ -828,14 +909,14 @@ async function deleteLayer(idx) {
   renderSidebar();
   currentMode = null;
   selectedKey = null;
+  closeEditor();
   renderGrid();
-  showHint();
 }
 
 async function pushCurrentLayer() {
   if (typeof currentMode !== 'number') { log('Select a custom layer first', 'err'); return; }
-  const layer = customLayers[currentMode];
   if (!connected) { log('Not connected', 'err'); return; }
+  const layer = customLayers[currentMode];
   await serialSend({cmd: 'push_layer', idx: currentMode, layer: {name: layer.name, keys: layer.keys}});
   log(`Pushing layer ${currentMode} to keyboard…`);
 }
@@ -847,9 +928,8 @@ function renderSidebar() {
   customLayers.forEach((layer, idx) => {
     const btn = document.createElement('button');
     btn.className = 'mode-btn' + (currentMode === idx ? ' active' : '');
-    btn.innerHTML = `<span class="mode-dot" style="background:${layer.keys[0]?.color || '#888'};"></span>
-      ${escHtml(layer.name)}
-      <span class="mode-badge">${idx + 1}</span>`;
+    btn.innerHTML = `<span class="mode-dot" style="background:${layer.keys[0]?.color||'#888'};"></span>
+      ${escHtml(layer.name)}<span class="mode-badge">${idx+1}</span>`;
     btn.onclick = () => { activeModeBtn = btn; selectCustomLayer(idx); };
     container.appendChild(btn);
   });
@@ -866,19 +946,16 @@ function setMode(mode, btn) {
   activeModeBtn = btn;
   currentMode = mode;
   selectedKey = null;
+  closeEditor();
   renderGrid();
-  showHint();
-
   const nameInput = document.getElementById('layerNameInput');
   nameInput.value = mode === 'manual' ? 'Manual' : mode === 'smart' ? 'Smart' : 'Drum';
   nameInput.readOnly = true;
-
   document.getElementById('toolbarActions').innerHTML = `
     <div class="ro-banner">
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
       Read-only mode
     </div>`;
-
   if (connected) serialSend({cmd:'set_mode', mode: customLayers.length + (['manual','smart','drum'].indexOf(mode))});
 }
 
@@ -886,12 +963,10 @@ function selectCustomLayer(idx) {
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
   const btns = document.querySelectorAll('#customModes .mode-btn');
   if (btns[idx]) btns[idx].classList.add('active');
-
   currentMode = idx;
   selectedKey = null;
+  closeEditor();
   renderGrid();
-  showHint();
-
   const layer = customLayers[idx];
   const nameInput = document.getElementById('layerNameInput');
   nameInput.value = layer.name;
@@ -901,7 +976,6 @@ function selectCustomLayer(idx) {
     renderSidebar();
     document.querySelectorAll('#customModes .mode-btn')[idx]?.classList.add('active');
   };
-
   document.getElementById('toolbarActions').innerHTML = `
     <button onclick="pushCurrentLayer()" ${connected?'':'disabled'}>Push to keyboard</button>
     <button class="danger" onclick="deleteLayer(${idx})">Delete</button>`;
@@ -953,10 +1027,8 @@ const READONLY_DATA = {
 function renderGrid() {
   const grid = document.getElementById('keyGrid');
   grid.innerHTML = '';
-
   const isCustom = typeof currentMode === 'number';
-  const roEl = document.getElementById('roBanner');
-  roEl.style.display = isCustom ? 'none' : 'flex';
+  document.getElementById('roBanner').style.display = isCustom ? 'none' : 'flex';
 
   if (!isCustom && currentMode) {
     const d = READONLY_DATA[currentMode];
@@ -968,7 +1040,7 @@ function renderGrid() {
         const el = document.createElement('div');
         el.className = 'key ro' + (isMod ? ' mod' : '');
         const color = d.colors[idx] || '#888';
-        const sub = d.subs?.[idx] || '';
+        const sub   = d.subs?.[idx] || '';
         el.innerHTML = `<div class="key-led" style="background:${color}"></div>
           <div class="key-note">${escHtml(note)}</div>
           ${sub ? `<div class="key-sub">${escHtml(sub)}</div>` : ''}`;
@@ -983,9 +1055,10 @@ function renderGrid() {
     layer.keys.forEach((k, i) => {
       const el = document.createElement('div');
       el.className = 'key' + (i === selectedKey ? ' selected' : '');
+      const ivCount = k.intervals?.length || 0;
       el.innerHTML = `<div class="key-led" style="background:${k.color}"></div>
         <div class="key-note">${escHtml(k.note)}</div>
-        <div class="key-sub">${k.chord !== 'None' ? escHtml(k.chord) : ''}</div>
+        ${ivCount > 0 ? `<div class="key-sub">+${ivCount}iv</div>` : ''}
         ${k.label ? `<div class="key-label">${escHtml(k.label)}</div>` : ''}`;
       el.onclick = () => selectKey(i);
       grid.appendChild(el);
@@ -993,7 +1066,6 @@ function renderGrid() {
     return;
   }
 
-  // No mode selected — empty grid
   for (let i = 0; i < 28; i++) {
     const el = document.createElement('div');
     el.className = 'key ro';
@@ -1002,81 +1074,154 @@ function renderGrid() {
   }
 }
 
+// ── KEYBOARD SCALING ──
+function scaleKeyboard() {
+  const area = document.getElementById('kbArea');
+  if (!area) return;
+  const aw = area.clientWidth  - 40;
+  const ah = area.clientHeight - 80;
+  if (aw <= 0 || ah <= 0) return;
+  const COLS=7, ROWS=4, GAP=6, PAD=16;
+  const maxCellW = (aw - PAD*2 - GAP*(COLS-1)) / COLS;
+  const maxCellH = (ah - PAD*2 - GAP*(ROWS-1)) / ROWS;
+  const cellW = Math.max(36, Math.min(maxCellW, maxCellH * (72/64), 120));
+  const cellH = Math.round(cellW * (64/72));
+  const grid  = document.getElementById('keyGrid');
+  grid.style.gridTemplateColumns = `repeat(${COLS}, ${Math.floor(cellW)}px)`;
+  grid.style.gridTemplateRows    = `repeat(${ROWS}, ${cellH}px)`;
+}
+
+new ResizeObserver(scaleKeyboard).observe(document.getElementById('kbArea'));
+
 // ── KEY EDITOR ──
 function selectKey(idx) {
   if (typeof currentMode !== 'number') return;
   selectedKey = idx;
   renderGrid();
+  populateEditor(idx);
+  document.getElementById('editorPanel').classList.add('open');
+}
 
+function closeEditor() {
+  document.getElementById('editorPanel').classList.remove('open');
+  selectedKey = null;
+  renderGrid();
+}
+
+function populateEditor(idx) {
   const k = customLayers[currentMode].keys[idx];
-  document.getElementById('epHint').style.display = 'none';
-  document.getElementById('epBody').style.display = 'flex';
-  document.getElementById('epFooter').style.display = 'flex';
-  document.getElementById('epHeader') && (document.getElementById('epHeader').textContent = `Key ${idx + 1}`);
+  document.getElementById('epTitle').textContent = `Key ${idx + 1}`;
 
   document.getElementById('fNote').value = k.note;
   document.getElementById('fNote').classList.remove('err');
   document.getElementById('noteHint').textContent = '';
   document.getElementById('noteHint').className = 'field-hint';
   document.getElementById('fChannel').value = k.channel;
-
-  const velSel = document.getElementById('fVelocity');
-  velSel.value = k.velocity || 'global';
-  if (!velSel.value) velSel.value = 'global';
-
+  const vel = document.getElementById('fVelocity');
+  vel.value = k.velocity || 'global';
+  if (!vel.value) vel.value = 'global';
   document.getElementById('fLabel').value = k.label || '';
 
-  // Chord grid
-  buildChordGrid(k.chord);
-
-  // Swatches
+  buildChordPresets(k.intervals || []);
+  buildIntervalGrid(k.intervals || []);
+  updateNotesFired(k);
   buildSwatches(k.color);
 }
 
-function buildChordGrid(active) {
-  const grid = document.getElementById('chordGrid');
-  grid.innerHTML = '';
-  CHORDS.forEach(c => {
-    const btn = document.createElement('button');
-    btn.className = 'chord-btn' + (c === active ? ' active' : '');
-    btn.textContent = c;
-    btn.onclick = () => {
-      document.querySelectorAll('.chord-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      saveKeyField('chord', c);
-    };
-    grid.appendChild(btn);
+function switchTab(tab) {
+  ['note','chord','color'].forEach(t => {
+    const id = t.charAt(0).toUpperCase() + t.slice(1);
+    document.getElementById('tab'  + id).classList.toggle('active', t === tab);
+    document.getElementById('body' + id).classList.toggle('active', t === tab);
   });
 }
 
-function buildSwatches(active) {
+function buildChordPresets(activeIntervals) {
+  const container = document.getElementById('chordPresets');
+  container.innerHTML = '';
+  const activePreset = detectPreset(activeIntervals);
+  CHORD_PRESETS.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'chord-btn' + (activePreset?.name === p.name ? ' active' : '');
+    btn.textContent = p.name;
+    btn.onclick = () => {
+      const ivs = [...p.intervals];
+      saveKeyField('intervals', ivs);
+      buildChordPresets(ivs);
+      buildIntervalGrid(ivs);
+      if (selectedKey !== null) updateNotesFired(customLayers[currentMode].keys[selectedKey]);
+    };
+    container.appendChild(btn);
+  });
+}
+
+function buildIntervalGrid(activeIntervals) {
+  const container = document.getElementById('intervalGrid');
+  container.innerHTML = '';
+  INTERVALS.forEach(iv => {
+    const btn = document.createElement('button');
+    btn.className = 'iv-btn' + (activeIntervals.includes(iv.semi) ? ' active' : '');
+    btn.innerHTML = `<span class="iv-name">${iv.name}</span><span class="iv-num">${iv.semi}</span>`;
+    btn.onclick = () => {
+      if (selectedKey === null || typeof currentMode !== 'number') return;
+      const k = customLayers[currentMode].keys[selectedKey];
+      const ivs = [...(k.intervals || [])];
+      const pos = ivs.indexOf(iv.semi);
+      if (pos >= 0) ivs.splice(pos, 1); else ivs.push(iv.semi);
+      ivs.sort((a,b)=>a-b);
+      saveKeyField('intervals', ivs);
+      buildChordPresets(ivs);
+      buildIntervalGrid(ivs);
+      updateNotesFired(customLayers[currentMode].keys[selectedKey]);
+    };
+    container.appendChild(btn);
+  });
+}
+
+function updateNotesFired(k) {
+  const ivs = k.intervals || [];
+  const notes = ivs.length ? intervalsToNoteNames(k.note || 'C4', ivs) : [k.note || 'C4'];
+  document.getElementById('notesFired').textContent = notes.join('  ');
+}
+
+function buildSwatches(activeColor) {
   const row = document.getElementById('swatchRow');
   row.innerHTML = '';
-  SWATCHES.slice(0,-1).forEach(s => {
+  SWATCHES.forEach(s => {
     const el = document.createElement('div');
-    el.className = 'swatch' + (s.toLowerCase() === active?.toLowerCase() ? ' active' : '');
+    el.className = 'swatch' + (s.toLowerCase() === activeColor?.toLowerCase() ? ' active' : '');
     el.style.background = s;
     el.onclick = () => {
       document.querySelectorAll('.swatch').forEach(sw => sw.classList.remove('active'));
       el.classList.add('active');
       saveKeyField('color', s);
+      updateColorPreview(s);
     };
     row.appendChild(el);
   });
-  // custom color picker
   const wrap = document.createElement('div');
   wrap.className = 'swatch-custom';
   wrap.title = 'Custom color';
   const inp = document.createElement('input');
   inp.type = 'color';
-  inp.value = active || '#ffffff';
+  inp.value = /^#[0-9a-f]{6}$/i.test(activeColor) ? activeColor : '#ffffff';
   inp.oninput = () => {
     document.querySelectorAll('.swatch').forEach(sw => sw.classList.remove('active'));
     saveKeyField('color', inp.value);
-    renderGrid();
+    updateColorPreview(inp.value);
   };
   wrap.appendChild(inp);
   row.appendChild(wrap);
+  updateColorPreview(activeColor);
+}
+
+function updateColorPreview(color) {
+  const el = document.getElementById('colorPreview');
+  el.style.background = color;
+  el.textContent = color;
+  const hex = color.replace('#','');
+  const r = parseInt(hex.slice(0,2),16), g = parseInt(hex.slice(2,4),16), b = parseInt(hex.slice(4,6),16);
+  el.style.color = (r*0.299 + g*0.587 + b*0.114) > 128 ? 'rgba(0,0,0,0.55)' : 'rgba(255,255,255,0.7)';
 }
 
 function onNoteInput(el) {
@@ -1087,6 +1232,7 @@ function onNoteInput(el) {
     hint.textContent = '→ ' + parsed + ' (MIDI ' + noteToMidi(parsed) + ')';
     hint.className = 'field-hint ok';
     saveKeyField('note', parsed);
+    if (selectedKey !== null) updateNotesFired(customLayers[currentMode].keys[selectedKey]);
   } else if (el.value.length > 1) {
     el.classList.add('err');
     hint.textContent = 'e.g. C4, F#3, Bb2';
@@ -1102,24 +1248,17 @@ function saveKeyField(field, value) {
   if (selectedKey === null || typeof currentMode !== 'number') return;
   customLayers[currentMode].keys[selectedKey][field] = value;
   renderGrid();
-  // Re-select to keep editor open
-  const keys = document.querySelectorAll('.key');
-  if (keys[selectedKey]) keys[selectedKey].classList.add('selected');
+  document.querySelectorAll('.key')[selectedKey]?.classList.add('selected');
 }
 
 function clearKey() {
   if (selectedKey === null || typeof currentMode !== 'number') return;
   customLayers[currentMode].keys[selectedKey] = {
-    note:'C4', chord:'None', channel:1, velocity:'global', label:'', color:'#888780'
+    note:'C4', intervals:[], channel:1, velocity:'global', label:'', color:'#888780'
   };
-  selectKey(selectedKey);
-}
-
-function showHint() {
-  document.getElementById('epHint').style.display = 'flex';
-  document.getElementById('epBody').style.display = 'none';
-  document.getElementById('epFooter').style.display = 'none';
-  selectedKey = null;
+  populateEditor(selectedKey);
+  renderGrid();
+  document.querySelectorAll('.key')[selectedKey]?.classList.add('selected');
 }
 
 // ── LOG ──
@@ -1131,8 +1270,8 @@ function log(msg, type) {
 
 // ── INIT ──
 renderGrid();
+scaleKeyboard();
 
-// Check if WebSerial is available
 if (!navigator.serial) {
   document.getElementById('connectBtn').disabled = true;
   document.querySelector('.connect-card p').textContent = 'WebSerial is not available in this browser. Please open this page in Chrome or Edge.';
