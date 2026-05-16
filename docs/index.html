@@ -502,18 +502,17 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   text-transform: uppercase;
   margin-bottom: 1px;
 }
-.enc-action { display: flex; align-items: center; gap: 5px; }
+.enc-action { display: flex; flex-direction: column; gap: 3px; }
 .enc-action-lbl {
   font-family: var(--mono);
   font-size: 9px;
   color: var(--muted);
-  width: 52px;
-  flex-shrink: 0;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   line-height: 1.2;
 }
 .enc-action select {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
   background: var(--surface2);
   border: 1px solid var(--border2);
   border-radius: var(--radius);
@@ -525,8 +524,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   transition: border 0.1s;
 }
 .enc-action select:focus { border-color: var(--accent); }
-.enc-fixed { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-.enc-cc { display: flex; gap: 4px; margin-top: 3px; padding-left: 57px; }
+.enc-fixed { font-family: var(--mono); font-size: 11px; color: var(--muted); padding: 2px 0; }
+.enc-cc { display: flex; gap: 4px; margin-top: 2px; }
 .enc-cc input {
   flex: 1;
   min-width: 0;
@@ -1428,11 +1427,6 @@ const ENC_OPTS = [
   {v:'tempo',      l:'Tempo'},
   {v:'none',       l:'Do nothing'},
 ];
-const ENC_OPTS_CYCLE = [
-  ...ENC_OPTS.slice(0, 6),
-  {v:'mode_cycle', l:'Mode cycle'},
-  ENC_OPTS[6],
-];
 const ENC_HAS_CH = new Set(['cc','pitch_bend','volume','mod_wheel','expression']);
 
 function renderEncoders(layerIdx) {
@@ -1451,9 +1445,9 @@ function renderEncoders(layerIdx) {
     makeFixedEncRow('Click', 'Mode cycle'),
   ]);
   fill('enc2Actions', [
-    makeEncActionRow('Turn',  layer.enc2.turn,      ENC_OPTS,       layerIdx, 'enc2', 'turn'),
-    makeEncActionRow('Hold',  layer.enc2.turn_hold, ENC_OPTS,       layerIdx, 'enc2', 'turn_hold'),
-    makeEncActionRow('Click', layer.enc2.click,     ENC_OPTS_CYCLE, layerIdx, 'enc2', 'click'),
+    makeEncActionRow('Turn',  layer.enc2.turn,      ENC_OPTS, layerIdx, 'enc2', 'turn'),
+    makeEncActionRow('Hold',  layer.enc2.turn_hold, ENC_OPTS, layerIdx, 'enc2', 'turn_hold'),
+    makeFixedEncRow('Click', 'Mode cycle'),
   ]);
   scaleKeyboard();
 }
