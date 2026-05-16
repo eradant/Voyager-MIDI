@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:opsz,wght@9..40,400;9..40,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 <style>
 :root {
   --bg:       #0e0e10;
@@ -215,9 +216,18 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   min-width: 0;
 }
 .kb-wrap {
-  background: var(--surface);
+  background:
+    linear-gradient(var(--border2), var(--border2)) 0 0 / 14px 1px no-repeat,
+    linear-gradient(var(--border2), var(--border2)) 0 0 / 1px 14px no-repeat,
+    linear-gradient(var(--border2), var(--border2)) 100% 0 / 14px 1px no-repeat,
+    linear-gradient(var(--border2), var(--border2)) 100% 0 / 1px 14px no-repeat,
+    linear-gradient(var(--border2), var(--border2)) 0 100% / 14px 1px no-repeat,
+    linear-gradient(var(--border2), var(--border2)) 0 100% / 1px 14px no-repeat,
+    linear-gradient(var(--border2), var(--border2)) 100% 100% / 14px 1px no-repeat,
+    linear-gradient(var(--border2), var(--border2)) 100% 100% / 1px 14px no-repeat,
+    var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: 3px;
   padding: 16px;
   display: inline-block;
   flex-shrink: 0;
@@ -229,35 +239,75 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   gap: 6px;
 }
 .key {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--kc, #888780) 62%, #0a0a0a) 0%,
+    color-mix(in srgb, var(--kc, #888780) 44%, #000) 100%
+  );
+  border: none;
+  border-radius: 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 2px;
   cursor: pointer;
-  transition: filter 0.06s ease-out, transform 0.1s, border-color 0.1s, box-shadow 0.1s;
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
   padding: 4px 3px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 2px 14px -2px color-mix(in srgb, var(--kc, transparent) 55%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.16),
+    inset 0 -1px 0 rgba(0,0,0,0.28),
+    0 0 0 1px rgba(0,0,0,0.55),
+    0 3px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
+    0 4px 10px rgba(0,0,0,0.35);
 }
 .key::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
-  height: 2px;
-  background: transparent;
+  height: 1px;
+  background: rgba(255,255,255,0.12);
+  border-radius: 4px 4px 0 0;
   transition: background 0.1s;
 }
-.key:hover:not(.ro) { border-color: rgba(255,255,255,0.25); transform: translateY(-1px); }
-.key:hover:not(.ro)::before { background: rgba(255,255,255,0.3); }
-.key.pressed { filter: brightness(1.45); }
-.key.selected { border-color: var(--accent) !important; box-shadow: 0 0 0 1px var(--accent); }
+.key:hover:not(.ro) {
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.22),
+    inset 0 -1px 0 rgba(0,0,0,0.22),
+    0 0 0 1px rgba(0,0,0,0.5),
+    0 4px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
+    0 6px 14px rgba(0,0,0,0.4);
+}
+.key:hover:not(.ro)::before { background: rgba(255,255,255,0.22); }
+.key.pressed {
+  transform: translateY(2px) !important;
+  box-shadow:
+    inset 0 2px 4px rgba(0,0,0,0.28),
+    0 0 0 1px rgba(0,0,0,0.6),
+    0 1px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
+    0 2px 6px rgba(0,0,0,0.28);
+}
+.key.selected {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.16),
+    inset 0 -1px 0 rgba(0,0,0,0.28),
+    0 0 0 1.5px var(--accent),
+    0 3px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
+    0 4px 10px rgba(0,0,0,0.35),
+    0 0 10px color-mix(in srgb, var(--accent) 25%, transparent);
+}
 .key.selected::before { background: var(--accent) !important; }
 .key.ro { cursor: default; }
+.key-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: rgba(255,255,255,0);
+}
 .key-note { font-family: var(--mono); font-size: 12px; font-weight: 500; color: inherit; line-height: 1; }
 .key-sub { font-family: var(--mono); font-size: 10px; color: inherit; opacity: 0.72; line-height: 1; }
 .key-label { font-size: 9px; color: inherit; opacity: 0.65; font-style: italic; line-height: 1; }
@@ -686,10 +736,15 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
             <div class="enc-widget">
               <div class="enc-knob">
                 <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-                  <circle cx="26" cy="26" r="22" fill="var(--surface2)" stroke="var(--border2)" stroke-width="1.5"/>
-                  <circle cx="26" cy="26" r="18" fill="none" stroke="var(--accent)" stroke-width="2.5"
-                    stroke-dasharray="28.3 84.8" stroke-linecap="round" transform="rotate(-90 26 26)"/>
-                  <line x1="26" y1="6" x2="26" y2="14" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                  <circle cx="26" cy="26" r="24.5" fill="none" stroke="var(--border2)" stroke-width="1.2"
+                    stroke-dasharray="2 10.5"/>
+                  <circle cx="26" cy="26" r="22" fill="var(--surface)"/>
+                  <circle cx="26" cy="26" r="20" fill="var(--surface2)" stroke="var(--border2)" stroke-width="1.5"/>
+                  <circle cx="26" cy="26" r="16.5" fill="none" stroke="var(--border)" stroke-width="0.5" opacity="0.5"/>
+                  <circle cx="26" cy="26" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"
+                    stroke-dasharray="22 66" stroke-linecap="round" transform="rotate(-90 26 26)"/>
+                  <line x1="26" y1="8" x2="26" y2="15" stroke="var(--text)" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/>
+                  <circle cx="26" cy="26" r="1.5" fill="var(--muted)"/>
                 </svg>
               </div>
               <div class="enc-body">
@@ -700,10 +755,15 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
             <div class="enc-widget">
               <div class="enc-knob">
                 <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-                  <circle cx="26" cy="26" r="22" fill="var(--surface2)" stroke="var(--border2)" stroke-width="1.5"/>
-                  <circle cx="26" cy="26" r="18" fill="none" stroke="var(--accent)" stroke-width="2.5"
-                    stroke-dasharray="28.3 84.8" stroke-linecap="round" transform="rotate(-90 26 26)"/>
-                  <line x1="26" y1="6" x2="26" y2="14" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                  <circle cx="26" cy="26" r="24.5" fill="none" stroke="var(--border2)" stroke-width="1.2"
+                    stroke-dasharray="2 10.5"/>
+                  <circle cx="26" cy="26" r="22" fill="var(--surface)"/>
+                  <circle cx="26" cy="26" r="20" fill="var(--surface2)" stroke="var(--border2)" stroke-width="1.5"/>
+                  <circle cx="26" cy="26" r="16.5" fill="none" stroke="var(--border)" stroke-width="0.5" opacity="0.5"/>
+                  <circle cx="26" cy="26" r="14" fill="none" stroke="var(--accent)" stroke-width="2.5"
+                    stroke-dasharray="22 66" stroke-linecap="round" transform="rotate(-90 26 26)"/>
+                  <line x1="26" y1="8" x2="26" y2="15" stroke="var(--text)" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/>
+                  <circle cx="26" cy="26" r="1.5" fill="var(--muted)"/>
                 </svg>
               </div>
               <div class="enc-body">
@@ -1182,7 +1242,6 @@ function renderGrid() {
         const color = d.colors[idx] || '#888';
         const sub   = d.subs?.[idx] || '';
         el.style.setProperty('--kc', color);
-        el.style.background = dimColor(color);
         el.style.color = keyTextColor(color);
         el.innerHTML = `<div class="key-note">${escHtml(note)}</div>
           ${sub ? `<div class="key-sub">${escHtml(sub)}</div>` : ''}`;
@@ -1198,19 +1257,30 @@ function renderGrid() {
       const el = document.createElement('div');
       el.className = 'key' + (i === selectedKey ? ' selected' : '');
       el.style.setProperty('--kc', k.color);
-      el.style.background = dimColor(k.color);
       el.style.color = keyTextColor(k.color);
       const ivCount = k.intervals?.length || 0;
       el.innerHTML = `<div class="key-note">${escHtml(k.note)}</div>
         ${ivCount > 0 ? `<div class="key-sub">+${ivCount}iv</div>` : ''}
-        ${k.label ? `<div class="key-label">${escHtml(k.label)}</div>` : ''}`;
+        ${k.label ? `<div class="key-label">${escHtml(k.label)}</div>` : ''}
+        <div class="key-ripple"></div>`;
       el.addEventListener('mousedown', () => {
         el.classList.add('pressed');
+        if (typeof anime !== 'undefined') {
+          anime({ targets: el.querySelector('.key-ripple'),
+            backgroundColor: ['rgba(255,255,255,0.28)', 'rgba(255,255,255,0)'],
+            duration: 380, easing: 'easeOutQuad' });
+        }
         document.addEventListener('mouseup', () => el.classList.remove('pressed'), {once: true});
       });
       el.onclick = () => selectKey(i);
       grid.appendChild(el);
     });
+    if (typeof anime !== 'undefined') {
+      anime({ targets: '#keyGrid .key',
+        opacity: [0, 1], translateY: [7, 0], scale: [0.93, 1],
+        delay: anime.stagger(16, {grid: [7, 4], from: 'last'}),
+        duration: 300, easing: 'spring(1, 85, 12, 0)' });
+    }
     return;
   }
 
