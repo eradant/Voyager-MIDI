@@ -30,7 +30,10 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: var(--bg);
+  background: radial-gradient(ellipse at 50% 35%,
+    color-mix(in srgb, var(--bg) 88%, #fff) 0%,
+    var(--bg) 50%,
+    color-mix(in srgb, var(--bg) 90%, #000) 100%);
   color: var(--text);
   font-family: var(--sans);
   font-size: 14px;
@@ -39,6 +42,17 @@ body {
   flex-direction: column;
   overflow: hidden;
 }
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99;
+  opacity: 0.022;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+[data-theme="light"] body::after { opacity: 0.016; }
 
 /* ── TOPBAR ── */
 .topbar {
@@ -50,6 +64,9 @@ body {
   border-bottom: 1px solid var(--border);
   background: var(--surface);
   flex-shrink: 0;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.22);
+  position: relative;
+  z-index: 3;
 }
 .brand {
   font-family: var(--mono);
@@ -106,6 +123,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  box-shadow: 2px 0 20px rgba(0,0,0,0.22);
+  position: relative;
+  z-index: 2;
 }
 .sidebar-section {
   padding: 16px 14px 8px;
@@ -171,6 +191,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   background: var(--surface);
   flex-shrink: 0;
   flex-wrap: wrap;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.16);
+  position: relative;
+  z-index: 1;
 }
 .toolbar-title { font-family: var(--mono); font-size: 13px; font-weight: 500; flex: 1; min-width: 120px; }
 .toolbar-title input {
@@ -231,6 +254,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   padding: 16px;
   display: inline-block;
   flex-shrink: 0;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.45), 0 2px 8px rgba(0,0,0,0.25);
 }
 .key-grid {
   display: grid;
@@ -332,6 +356,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   overflow: hidden;
   border-left: 1px solid var(--border);
   background: var(--surface);
+  box-shadow: -6px 0 28px rgba(0,0,0,0.25);
 }
 
 .ep-header {
@@ -541,6 +566,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   gap: 14px;
   align-items: center;
   min-width: 0;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.28);
 }
 .enc-knob { flex-shrink: 0; }
 .enc-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
@@ -626,6 +652,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
 }
 .connect-card h1 { font-family: var(--mono); font-size: 18px; font-weight: 500; }
 .connect-card p { color: var(--muted); font-size: 13px; line-height: 1.6; }
@@ -657,6 +684,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   flex-shrink: 0;
   height: 32px;
   overflow: hidden;
+  box-shadow: 0 -2px 14px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 1;
 }
 .log-strip span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .log-ok { color: var(--accent); }
@@ -665,6 +695,40 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--muted);
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.1s;
+}
+.theme-toggle:hover { color: var(--text); background: var(--surface2); transform: none; }
+
+/* ── LIGHT MODE ── */
+[data-theme="light"] {
+  --bg:       #EDE8DF;
+  --surface:  #F5F1EA;
+  --surface2: #E8E2D7;
+  --border:   #CCC5B7;
+  --border2:  #B8B0A2;
+  --text:     #1E1B17;
+  --muted:    #8A8070;
+  --accent:   #E85D00;
+  --accent2:  #C04A00;
+  --danger:   #CC2020;
+}
 </style>
 </head>
 <body>
@@ -690,6 +754,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     Voyager
   </div>
   <div class="conn-area">
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">◑</button>
     <span class="conn-status" id="connStatus">Not connected</span>
     <button id="topConnBtn" onclick="connectSerial()">Connect</button>
   </div>
@@ -1485,6 +1550,19 @@ function clearKey() {
   document.querySelectorAll('.key')[selectedKey]?.classList.add('selected');
 }
 
+// ── THEME ──
+function toggleTheme() {
+  const root = document.documentElement;
+  const isLight = root.dataset.theme === 'light';
+  anime({ targets: document.body, opacity: [1, 0], duration: 140, easing: 'easeInSine',
+    complete: () => {
+      root.dataset.theme = isLight ? '' : 'light';
+      localStorage.setItem('theme', isLight ? 'dark' : 'light');
+      anime({ targets: document.body, opacity: [0, 1], duration: 220, easing: 'easeOutSine' });
+    }
+  });
+}
+
 // ── LOG ──
 function log(msg, type) {
   const el = document.getElementById('logMsg');
@@ -1820,6 +1898,7 @@ function exitVisualizer() {
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && vizActive) exitVisualizer(); });
 
 // ── INIT ──
+if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light';
 renderGrid();
 scaleKeyboard();
 
