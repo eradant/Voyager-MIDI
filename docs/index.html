@@ -477,9 +477,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .enc-row {
   display: flex;
   gap: 16px;
-  max-width: 760px;
   width: 100%;
-  padding: 0 24px 16px;
+  padding: 0 0 16px;
 }
 .enc-widget {
   flex: 1;
@@ -502,30 +501,31 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   text-transform: uppercase;
   margin-bottom: 1px;
 }
-.enc-action { display: flex; flex-direction: column; gap: 3px; }
+.enc-action { display: flex; align-items: center; gap: 8px; }
 .enc-action-lbl {
   font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   color: var(--muted);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  line-height: 1.2;
+  width: 48px;
+  flex-shrink: 0;
+  line-height: 1;
 }
 .enc-action select {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   background: var(--surface2);
   border: 1px solid var(--border2);
   border-radius: var(--radius);
   color: var(--text);
   font-family: var(--mono);
   font-size: 11px;
-  padding: 3px 6px;
+  padding: 4px 8px;
   outline: none;
   transition: border 0.1s;
 }
 .enc-action select:focus { border-color: var(--accent); }
-.enc-fixed { font-family: var(--mono); font-size: 11px; color: var(--muted); padding: 2px 0; }
-.enc-cc { display: flex; gap: 4px; margin-top: 2px; }
+.enc-fixed { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.enc-cc { display: flex; gap: 4px; margin-top: 4px; padding-left: 56px; }
 .enc-cc input {
   flex: 1;
   min-width: 0;
