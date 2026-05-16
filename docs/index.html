@@ -236,10 +236,11 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   justify-content: center;
   gap: 2px;
   cursor: pointer;
-  transition: all 0.1s;
+  transition: filter 0.07s, transform 0.1s, border-color 0.1s, box-shadow 0.1s;
   padding: 4px 3px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 2px 14px -2px color-mix(in srgb, var(--kc, transparent) 55%, transparent);
 }
 .key::before {
   content: '';
@@ -251,6 +252,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .key:hover:not(.ro) { border-color: rgba(255,255,255,0.25); transform: translateY(-1px); }
 .key:hover:not(.ro)::before { background: rgba(255,255,255,0.3); }
+.key:active:not(.ro) { filter: brightness(1.4); transform: translateY(1px); }
 .key.selected { border-color: var(--accent) !important; box-shadow: 0 0 0 1px var(--accent); }
 .key.selected::before { background: var(--accent) !important; }
 .key.ro { cursor: default; }
@@ -989,6 +991,14 @@ function keyTextColor(hex) {
   return (r*0.299 + g*0.587 + b*0.114) > 128 ? 'rgba(0,0,0,0.82)' : 'rgba(255,255,255,0.92)';
 }
 
+function dimColor(hex, f = 0.72) {
+  const h = (hex || '#888888').replace('#', '');
+  const r = Math.round((parseInt(h.slice(0,2), 16) || 0) * f);
+  const g = Math.round((parseInt(h.slice(2,4), 16) || 0) * f);
+  const b = Math.round((parseInt(h.slice(4,6), 16) || 0) * f);
+  return `rgb(${r},${g},${b})`;
+}
+
 const READONLY_DATA = {
   manual: {
     rows: [
@@ -1048,7 +1058,8 @@ function renderGrid() {
         el.className = 'key ro' + (isMod ? ' mod' : '');
         const color = d.colors[idx] || '#888';
         const sub   = d.subs?.[idx] || '';
-        el.style.background = color;
+        el.style.setProperty('--kc', color);
+        el.style.background = dimColor(color);
         el.style.color = keyTextColor(color);
         el.innerHTML = `<div class="key-note">${escHtml(note)}</div>
           ${sub ? `<div class="key-sub">${escHtml(sub)}</div>` : ''}`;
@@ -1063,7 +1074,8 @@ function renderGrid() {
     layer.keys.forEach((k, i) => {
       const el = document.createElement('div');
       el.className = 'key' + (i === selectedKey ? ' selected' : '');
-      el.style.background = k.color;
+      el.style.setProperty('--kc', k.color);
+      el.style.background = dimColor(k.color);
       el.style.color = keyTextColor(k.color);
       const ivCount = k.intervals?.length || 0;
       el.innerHTML = `<div class="key-note">${escHtml(k.note)}</div>
