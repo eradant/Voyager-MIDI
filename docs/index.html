@@ -236,7 +236,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   justify-content: center;
   gap: 2px;
   cursor: pointer;
-  transition: filter 0.07s, transform 0.1s, border-color 0.1s, box-shadow 0.1s;
+  transition: filter 0.06s ease-out, transform 0.1s, border-color 0.1s, box-shadow 0.1s;
   padding: 4px 3px;
   position: relative;
   overflow: hidden;
@@ -252,7 +252,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .key:hover:not(.ro) { border-color: rgba(255,255,255,0.25); transform: translateY(-1px); }
 .key:hover:not(.ro)::before { background: rgba(255,255,255,0.3); }
-.key:active:not(.ro) { filter: brightness(1.4); transform: translateY(0); }
+.key.pressed { filter: brightness(1.45); }
 .key.selected { border-color: var(--accent) !important; box-shadow: 0 0 0 1px var(--accent); }
 .key.selected::before { background: var(--accent) !important; }
 .key.ro { cursor: default; }
@@ -1081,6 +1081,10 @@ function renderGrid() {
       el.innerHTML = `<div class="key-note">${escHtml(k.note)}</div>
         ${ivCount > 0 ? `<div class="key-sub">+${ivCount}iv</div>` : ''}
         ${k.label ? `<div class="key-label">${escHtml(k.label)}</div>` : ''}`;
+      el.addEventListener('mousedown', () => {
+        el.classList.add('pressed');
+        document.addEventListener('mouseup', () => el.classList.remove('pressed'), {once: true});
+      });
       el.onclick = () => selectKey(i);
       grid.appendChild(el);
     });
