@@ -472,6 +472,76 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   transition: background 0.15s;
 }
 
+/* ── ENCODER ROW ── */
+#encRow { width: 100%; display: flex; justify-content: center; flex-shrink: 0; }
+.enc-row {
+  display: flex;
+  gap: 14px;
+  max-width: 480px;
+  width: 100%;
+  padding: 0 20px 14px;
+}
+.enc-widget {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 10px 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+}
+.enc-knob { flex-shrink: 0; }
+.enc-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+.enc-title {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1px;
+}
+.enc-action { display: flex; align-items: center; gap: 5px; }
+.enc-action-lbl {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  width: 52px;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+.enc-action select {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 6px;
+  outline: none;
+  transition: border 0.1s;
+}
+.enc-action select:focus { border-color: var(--accent); }
+.enc-fixed { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.enc-cc { display: flex; gap: 4px; margin-top: 3px; padding-left: 57px; }
+.enc-cc input {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 3px 6px;
+  outline: none;
+  transition: border 0.1s;
+}
+.enc-cc input:focus { border-color: var(--accent); }
+
 /* ── EP FOOTER ── */
 .ep-footer {
   padding: 12px 16px;
@@ -611,6 +681,38 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     <div class="kb-content">
 
       <div class="kb-area" id="kbArea">
+        <div id="encRow" style="display:none;">
+          <div class="enc-row">
+            <div class="enc-widget">
+              <div class="enc-knob">
+                <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+                  <circle cx="26" cy="26" r="22" fill="var(--surface2)" stroke="var(--border2)" stroke-width="1.5"/>
+                  <circle cx="26" cy="26" r="18" fill="none" stroke="var(--accent)" stroke-width="2.5"
+                    stroke-dasharray="28.3 84.8" stroke-linecap="round" transform="rotate(-90 26 26)"/>
+                  <line x1="26" y1="6" x2="26" y2="14" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                </svg>
+              </div>
+              <div class="enc-body">
+                <div class="enc-title">Enc 1</div>
+                <div id="enc1Actions"></div>
+              </div>
+            </div>
+            <div class="enc-widget">
+              <div class="enc-knob">
+                <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
+                  <circle cx="26" cy="26" r="22" fill="var(--surface2)" stroke="var(--border2)" stroke-width="1.5"/>
+                  <circle cx="26" cy="26" r="18" fill="none" stroke="var(--accent)" stroke-width="2.5"
+                    stroke-dasharray="28.3 84.8" stroke-linecap="round" transform="rotate(-90 26 26)"/>
+                  <line x1="26" y1="6" x2="26" y2="14" stroke="var(--text)" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+                </svg>
+              </div>
+              <div class="enc-body">
+                <div class="enc-title">Enc 2</div>
+                <div id="enc2Actions"></div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="kb-wrap" id="kbWrap">
           <div class="key-grid" id="keyGrid"></div>
         </div>
@@ -900,7 +1002,16 @@ function mkDefaultLayer(name) {
       velocity: 'global',
       label: '',
       color: SWATCHES[i % SWATCHES.length]
-    }))
+    })),
+    enc1: {
+      turn:      {type:'cc', cc:1,  ch:1},
+      turn_hold: {type:'cc', cc:7,  ch:1},
+    },
+    enc2: {
+      turn:      {type:'cc',         cc:74, ch:1},
+      turn_hold: {type:'pitch_bend', ch:1},
+      click:     {type:'mode_cycle'},
+    },
   };
 }
 
@@ -919,6 +1030,7 @@ async function deleteLayer(idx) {
   currentMode = null;
   selectedKey = null;
   closeEditor();
+  document.getElementById('encRow').style.display = 'none';
   renderGrid();
 }
 
@@ -926,7 +1038,7 @@ async function pushCurrentLayer() {
   if (typeof currentMode !== 'number') { log('Select a custom layer first', 'err'); return; }
   if (!connected) { log('Not connected', 'err'); return; }
   const layer = customLayers[currentMode];
-  await serialSend({cmd: 'push_layer', idx: currentMode, layer: {name: layer.name, keys: layer.keys}});
+  await serialSend({cmd: 'push_layer', idx: currentMode, layer: {name: layer.name, keys: layer.keys, enc1: layer.enc1, enc2: layer.enc2}});
   log(`Pushing layer ${currentMode} to keyboard…`);
 }
 
@@ -956,6 +1068,7 @@ function setMode(mode, btn) {
   currentMode = mode;
   selectedKey = null;
   closeEditor();
+  document.getElementById('encRow').style.display = 'none';
   renderGrid();
   const nameInput = document.getElementById('layerNameInput');
   nameInput.value = mode === 'manual' ? 'Manual' : mode === 'smart' ? 'Smart' : 'Drum';
@@ -989,6 +1102,7 @@ function selectCustomLayer(idx) {
     <button onclick="pushCurrentLayer()" ${connected?'':'disabled'}>Push to keyboard</button>
     <button id="vizBtn" onclick="enterVisualizer()">Visualizer</button>
     <button class="danger" onclick="deleteLayer(${idx})">Delete</button>`;
+  renderEncoders(idx);
 }
 
 // ── GRID ──
@@ -1113,7 +1227,9 @@ function scaleKeyboard() {
   const area = document.getElementById('kbArea');
   if (!area) return;
   const aw = area.clientWidth  - 40;
-  const ah = area.clientHeight - 80;
+  const encRowEl = document.getElementById('encRow');
+  const encRowH  = encRowEl ? encRowEl.clientHeight : 0;
+  const ah = area.clientHeight - 80 - encRowH;
   if (aw <= 0 || ah <= 0) return;
   const COLS=7, ROWS=4, GAP=6, PAD=16;
   const maxCellW = (aw - PAD*2 - GAP*(COLS-1)) / COLS;
@@ -1300,6 +1416,116 @@ function log(msg, type) {
   const el = document.getElementById('logMsg');
   el.textContent = msg;
   el.className = type === 'ok' ? 'log-ok' : type === 'err' ? 'log-err' : '';
+}
+
+// ── ENCODER CONFIG ──
+const ENC_OPTS = [
+  {v:'cc',         l:'MIDI CC'},
+  {v:'pitch_bend', l:'Pitch bend'},
+  {v:'volume',     l:'Volume (CC7)'},
+  {v:'mod_wheel',  l:'Mod wheel (CC1)'},
+  {v:'expression', l:'Expression (CC11)'},
+  {v:'tempo',      l:'Tempo'},
+  {v:'none',       l:'Do nothing'},
+];
+const ENC_OPTS_CYCLE = [
+  ...ENC_OPTS.slice(0, 6),
+  {v:'mode_cycle', l:'Mode cycle'},
+  ENC_OPTS[6],
+];
+const ENC_HAS_CH = new Set(['cc','pitch_bend','volume','mod_wheel','expression']);
+
+function renderEncoders(layerIdx) {
+  document.getElementById('encRow').style.display = '';
+  const layer = customLayers[layerIdx];
+
+  function fill(containerId, rows) {
+    const el = document.getElementById(containerId);
+    el.innerHTML = '';
+    rows.forEach(r => el.appendChild(r));
+  }
+
+  fill('enc1Actions', [
+    makeEncActionRow('Turn',  layer.enc1.turn,      ENC_OPTS,       layerIdx, 'enc1', 'turn'),
+    makeEncActionRow('Hold',  layer.enc1.turn_hold, ENC_OPTS,       layerIdx, 'enc1', 'turn_hold'),
+    makeFixedEncRow('Click', 'Mode cycle'),
+  ]);
+  fill('enc2Actions', [
+    makeEncActionRow('Turn',  layer.enc2.turn,      ENC_OPTS,       layerIdx, 'enc2', 'turn'),
+    makeEncActionRow('Hold',  layer.enc2.turn_hold, ENC_OPTS,       layerIdx, 'enc2', 'turn_hold'),
+    makeEncActionRow('Click', layer.enc2.click,     ENC_OPTS_CYCLE, layerIdx, 'enc2', 'click'),
+  ]);
+  scaleKeyboard();
+}
+
+function makeFixedEncRow(label, text) {
+  const row = document.createElement('div');
+  row.className = 'enc-action';
+  row.innerHTML = `<span class="enc-action-lbl">${label}</span><span class="enc-fixed">${text}</span>`;
+  return row;
+}
+
+function makeEncActionRow(label, action, opts, layerIdx, encKey, actionKey) {
+  const wrap = document.createElement('div');
+
+  const row = document.createElement('div');
+  row.className = 'enc-action';
+
+  const lbl = document.createElement('span');
+  lbl.className = 'enc-action-lbl';
+  lbl.textContent = label;
+  row.appendChild(lbl);
+
+  const sel = document.createElement('select');
+  opts.forEach(o => {
+    const opt = new Option(o.l, o.v);
+    if ((action?.type ?? 'none') === o.v) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  row.appendChild(sel);
+  wrap.appendChild(row);
+
+  const ccWrap = document.createElement('div');
+  ccWrap.className = 'enc-cc';
+
+  const ccNumIn = document.createElement('input');
+  ccNumIn.type = 'number'; ccNumIn.min = '0'; ccNumIn.max = '127';
+  ccNumIn.value = action?.cc ?? 1;
+  ccNumIn.placeholder = 'CC#';
+  ccNumIn.title = 'CC number (0–127)';
+
+  const chIn = document.createElement('input');
+  chIn.type = 'number'; chIn.min = '1'; chIn.max = '16';
+  chIn.value = action?.ch ?? 1;
+  chIn.placeholder = 'Ch';
+  chIn.title = 'Channel (1–16)';
+
+  ccWrap.appendChild(ccNumIn);
+  ccWrap.appendChild(chIn);
+  wrap.appendChild(ccWrap);
+
+  function applyVis() {
+    const t = sel.value;
+    ccWrap.style.display  = ENC_HAS_CH.has(t) ? 'flex' : 'none';
+    ccNumIn.style.display = t === 'cc' ? '' : 'none';
+  }
+  applyVis();
+
+  function commit() {
+    const t  = sel.value;
+    const cc = Math.max(0,  Math.min(127, parseInt(ccNumIn.value) || 1));
+    const ch = Math.max(1,  Math.min(16,  parseInt(chIn.value)   || 1));
+    let act;
+    if (t === 'cc')            act = {type:t, cc, ch};
+    else if (ENC_HAS_CH.has(t)) act = {type:t, ch};
+    else                        act = {type:t};
+    customLayers[layerIdx][encKey][actionKey] = act;
+  }
+
+  sel.onchange = () => { applyVis(); commit(); };
+  ccNumIn.onchange = chIn.onchange = commit;
+
+  return wrap;
 }
 
 // ── VISUALIZER ──
