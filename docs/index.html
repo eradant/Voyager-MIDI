@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pog configurator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #0e0e10;
+  --surface:  #17171a;
+  --surface2: #1f1f24;
+  --border:   #2a2a30;
+  --border2:  #38383f;
+  --text:     #e8e8ec;
+  --muted:    #6b6b78;
+  --accent:   #00e5a0;
+  --accent2:  #00b57d;
+  --danger:   #ff5a5a;
+  --warn:     #f0a500;
+  --mono:     'IBM Plex Mono', monospace;
+  --sans:     'IBM Plex Sans', sans-serif;
+  --radius:   6px;
+  --radius-lg:10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 14px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOPBAR ── */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 52px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+}
+.brand {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  flex-shrink: 0;
+}
+.brand-dot.disconnected { background: var(--muted); box-shadow: none; }
+
+.conn-area { display: flex; align-items: center; gap: 10px; }
+.conn-status {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+.conn-status.connected { color: var(--accent); }
+
+button {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--text);
+  padding: 6px 14px;
+  transition: all 0.12s;
+  white-space: nowrap;
+}
+button:hover { background: var(--border); border-color: var(--border2); }
+button:active { transform: scale(0.98); }
+button.primary {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+  font-weight: 500;
+}
+button.primary:hover { background: var(--accent2); border-color: var(--accent2); }
+button.danger { color: var(--danger); border-color: #3d1a1a; background: #1f1010; }
+button.danger:hover { background: #2a1111; }
+button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+/* ── MAIN LAYOUT ── */
+.layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.sidebar-section {
+  padding: 16px 14px 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 14px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  text-align: left;
+  color: var(--muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.1s;
+  border-left: 2px solid transparent;
+}
+.mode-btn:hover { background: var(--surface2); color: var(--text); border-radius: 0; }
+.mode-btn.active { color: var(--text); background: var(--surface2); border-left-color: var(--accent); }
+.mode-btn.readonly.active { border-left-color: var(--muted); }
+.mode-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.mode-badge {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid var(--border);
+}
+.mode-badge.ro { color: var(--muted); }
+
+.sidebar-divider { height: 1px; background: var(--border); margin: 8px 14px; }
+
+.add-layer-btn {
+  margin: 8px 14px 16px;
+  width: calc(100% - 28px);
+  background: transparent;
+  border: 1px dashed var(--border2);
+  color: var(--muted);
+  font-size: 12px;
+  padding: 7px;
+}
+.add-layer-btn:hover { color: var(--text); border-color: var(--accent); background: transparent; }
+
+/* ── MAIN PANEL ── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+/* ── TOOLBAR ── */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.toolbar-title {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  flex: 1;
+  min-width: 120px;
+}
+.toolbar-title input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid transparent;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  width: 100%;
+  padding: 2px 0;
+  outline: none;
+  cursor: text;
+}
+.toolbar-title input:focus { border-bottom-color: var(--accent); }
+.toolbar-title input[readonly] { cursor: default; }
+
+.ro-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #1a1a1f;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 12px;
+  color: var(--muted);
+}
+.ro-banner svg { flex-shrink: 0; }
+
+/* ── KEYBOARD AREA ── */
+.kb-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px;
+  overflow: auto;
+}
+
+.kb-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.key-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 72px);
+  grid-template-rows: repeat(4, 64px);
+  gap: 6px;
+}
+
+.key {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: all 0.1s;
+  padding: 6px 4px;
+  position: relative;
+  overflow: hidden;
+}
+.key::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: transparent;
+  transition: background 0.1s;
+}
+.key:hover:not(.ro) { border-color: var(--border2); transform: translateY(-1px); }
+.key:hover:not(.ro)::before { background: var(--border2); }
+.key.selected { border-color: var(--accent) !important; }
+.key.selected::before { background: var(--accent) !important; }
+.key.ro { cursor: default; }
+.key.active-press { border-color: var(--accent); }
+
+.key-led {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.key-note {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1;
+}
+.key-sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1;
+}
+.key-label {
+  font-size: 9px;
+  color: var(--muted);
+  font-style: italic;
+}
+.key.mod .key-note { color: var(--muted); font-size: 10px; }
+
+/* ── EDITOR PANEL ── */
+.editor-panel {
+  width: 280px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+.ep-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.ep-hint {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  padding: 20px;
+  text-align: center;
+}
+.ep-hint svg { opacity: 0.3; }
+.ep-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.field input, .field select {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 7px 10px;
+  outline: none;
+  width: 100%;
+  transition: border 0.1s;
+}
+.field input:focus, .field select:focus { border-color: var(--accent); }
+.field input.err { border-color: var(--danger); }
+.field-hint { font-family: var(--mono); font-size: 10px; color: var(--muted); }
+.field-hint.ok { color: var(--accent); }
+.field-hint.err { color: var(--danger); }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.chord-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+}
+.chord-btn {
+  padding: 6px 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  text-align: center;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: var(--radius);
+}
+.chord-btn:hover { color: var(--text); border-color: var(--border2); }
+.chord-btn.active { background: #0a2a1e; border-color: var(--accent2); color: var(--accent); }
+
+.color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: center;
+}
+.swatch {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+  transition: transform 0.1s, border 0.1s;
+}
+.swatch:hover { transform: scale(1.15); }
+.swatch.active { border-color: var(--text); }
+.swatch-custom {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--border2);
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.swatch-custom input[type=color] {
+  width: 32px; height: 32px;
+  border: none; padding: 0; margin: -5px 0 0 -5px; cursor: pointer;
+  background: transparent;
+}
+
+.ep-footer {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+.ep-footer button { flex: 1; font-size: 12px; padding: 6px; }
+
+/* ── CONNECT OVERLAY ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+.overlay.hidden { display: none; }
+.connect-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 36px 40px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.connect-card h1 { font-family: var(--mono); font-size: 18px; font-weight: 500; }
+.connect-card p { color: var(--muted); font-size: 13px; line-height: 1.6; }
+.connect-card .warn-note {
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  width: 100%;
+  text-align: left;
+}
+.connect-logo {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ── LOG ── */
+.log-strip {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding: 6px 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  height: 32px;
+  overflow: hidden;
+}
+.log-strip span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.log-ok { color: var(--accent); }
+.log-err { color: var(--danger); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay">
+  <div class="connect-card">
+    <div class="connect-logo">
+      <svg width="24" height="24" fill="none" stroke="#00e5a0" stroke-width="1.5" viewBox="0 0 24 24">
+        <rect x="2" y="7" width="20" height="10" rx="2"/>
+        <path d="M6 11h.01M9 11h.01M12 11h.01M15 11h.01M18 11h.01M6 14h.01M9 14h.01M12 14h.01M15 14h.01M18 14h.01"/>
+      </svg>
+    </div>
+    <h1>Pog configurator</h1>
+    <p>Connect your Pog keyboard via USB, then click connect to start editing your custom layers.</p>
+    <div class="warn-note">⚠ Requires Chrome or Edge — WebSerial is not supported in Firefox or Safari.</div>
+    <button class="primary" id="connectBtn" style="width:100%;padding:10px;" onclick="connectSerial()">Connect keyboard</button>
+  </div>
+</div>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-dot disconnected" id="brandDot"></div>
+    pog configurator
+  </div>
+  <div class="conn-area">
+    <span class="conn-status" id="connStatus">Not connected</span>
+    <button id="topConnBtn" onclick="connectSerial()">Connect</button>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">Layers</div>
+
+    <div id="customModes"></div>
+
+    <button class="add-layer-btn" id="addLayerBtn" onclick="addCustomLayer()">+ Add layer</button>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">Built-in</div>
+
+    <button class="mode-btn readonly" onclick="setMode('manual',this)">
+      <span class="mode-dot" style="background:#378ADD;"></span>
+      Manual
+      <span class="mode-badge ro">RO</span>
+    </button>
+    <button class="mode-btn readonly" onclick="setMode('smart',this)">
+      <span class="mode-dot" style="background:#1D9E75;"></span>
+      Smart
+      <span class="mode-badge ro">RO</span>
+    </button>
+    <button class="mode-btn readonly" onclick="setMode('drum',this)">
+      <span class="mode-dot" style="background:#D85A30;"></span>
+      Drum
+      <span class="mode-badge ro">RO</span>
+    </button>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="toolbar" id="toolbar">
+      <div class="toolbar-title">
+        <input type="text" id="layerNameInput" value="Select a layer" readonly>
+      </div>
+      <div id="toolbarActions"></div>
+    </div>
+
+    <div class="kb-area">
+      <div class="kb-wrap">
+        <div class="key-grid" id="keyGrid"></div>
+      </div>
+      <div id="roBanner" class="ro-banner" style="display:none;">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Read-only — reflects current keyboard state
+      </div>
+    </div>
+  </div>
+
+  <!-- EDITOR PANEL -->
+  <div class="editor-panel" id="editorPanel">
+    <div class="ep-header">Key editor</div>
+    <div class="ep-hint" id="epHint">
+      <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.2" viewBox="0 0 24 24">
+        <path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/>
+      </svg>
+      Select a key to edit
+    </div>
+    <div id="epBody" style="display:none;" class="ep-body">
+      <div class="field">
+        <label>Note</label>
+        <input type="text" id="fNote" placeholder="C4, F#3, Bb2" autocomplete="off" oninput="onNoteInput(this)">
+        <span class="field-hint" id="noteHint"></span>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Channel</label>
+          <input type="number" id="fChannel" min="1" max="16" onchange="saveKeyField('channel', +this.value)">
+        </div>
+        <div class="field">
+          <label>Velocity</label>
+          <select id="fVelocity" onchange="saveKeyField('velocity', this.value)">
+            <option value="global">Global</option>
+            <option value="64">64 — mp</option>
+            <option value="80">80 — mf</option>
+            <option value="100">100 — f</option>
+            <option value="110">110 — ff</option>
+            <option value="127">127 — fff</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Chord</label>
+        <div class="chord-grid" id="chordGrid"></div>
+      </div>
+      <div class="field">
+        <label>LED color</label>
+        <div class="color-swatches" id="swatchRow"></div>
+      </div>
+      <div class="field">
+        <label>Label <span style="font-size:9px;color:var(--muted);text-transform:none;font-family:var(--sans);">(3 chars, shows on key)</span></label>
+        <input type="text" id="fLabel" maxlength="3" placeholder="e.g. KCK" onchange="saveKeyField('label', this.value)">
+      </div>
+    </div>
+    <div class="ep-footer" id="epFooter" style="display:none;">
+      <button onclick="clearKey()">Reset</button>
+      <button class="primary" id="pushBtn" onclick="pushCurrentLayer()" disabled>Push to keyboard</button>
+    </div>
+  </div>
+</div>
+
+<div class="log-strip">
+  <span id="logMsg">Ready — connect your keyboard to begin</span>
+</div>
+
+<script>
+const CHORDS   = ['None','Maj','Min','7th','Maj7','Sus2','Sus4','Add9'];
+const SWATCHES = ['#534AB7','#1D9E75','#D85A30','#D4537E','#378ADD','#BA7517','#E24B4A','#888780','#ffffff'];
+
+const NOTE_MAP = {C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
+const FLAT_MAP = {Db:'C#',Eb:'D#',Fb:'E',Gb:'F#',Ab:'G#',Bb:'A#',Cb:'B'};
+const MIDI_NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+function parseNote(str) {
+  str = str.trim();
+  const m = str.match(/^([A-Ga-g])(#|b)?(\-?\d)$/);
+  if (!m) return null;
+  let name = m[1].toUpperCase();
+  const acc = m[2] || '';
+  const oct = parseInt(m[3]);
+  if (acc === 'b') {
+    const flat = FLAT_MAP[name + 'b'];
+    if (flat) name = flat; else return null;
+  } else if (acc === '#') {
+    name = name + '#';
+  }
+  if (!(name in NOTE_MAP)) return null;
+  return name + oct;
+}
+
+function noteToMidi(name) {
+  const m = name.match(/^([A-G]#?)(\-?\d)$/);
+  if (!m) return 60;
+  return (parseInt(m[2]) + 1) * 12 + (NOTE_MAP[m[1]] || 0);
+}
+
+function hexToRgbNorm(hex) {
+  hex = hex.replace('#','');
+  return [parseInt(hex.slice(0,2),16)/255, parseInt(hex.slice(2,4),16)/255, parseInt(hex.slice(4,6),16)/255];
+}
+
+// ── STATE ──
+let port = null;
+let writer = null;
+let reader = null;
+let readBuf = '';
+let connected = false;
+let currentMode = null;   // 'manual' | 'smart' | 'drum' | number (custom idx)
+let customLayers = [];
+let selectedKey = null;
+let activeModeBtn = null;
+
+// ── SERIAL ──
+async function connectSerial() {
+  if (!navigator.serial) {
+    log('WebSerial not supported — use Chrome or Edge', 'err');
+    return;
+  }
+  try {
+    log('Waiting for port selection…');
+    port = await navigator.serial.requestPort({});
+    const info = port.getInfo();
+    log('Port selected (VID:' + (info.usbVendorId?.toString(16) ?? '?') + ' PID:' + (info.usbProductId?.toString(16) ?? '?') + ') — opening…');
+    await port.open({ baudRate: 115200 });
+    connected = true;
+    document.getElementById('overlay').classList.add('hidden');
+    document.getElementById('brandDot').classList.remove('disconnected');
+    document.getElementById('connStatus').textContent = 'Connected';
+    document.getElementById('connStatus').classList.add('connected');
+    document.getElementById('topConnBtn').textContent = 'Disconnect';
+    document.getElementById('topConnBtn').onclick = disconnectSerial;
+    document.getElementById('pushBtn').disabled = false;
+    log('Connected — syncing state…', 'ok');
+    startReader();
+    await serialSend({cmd: 'ping'});
+  } catch (e) {
+    if (e.name === 'NotFoundError') {
+      log('No port selected');
+    } else if (e.name === 'InvalidStateError') {
+      log('Port already open — try disconnecting first', 'err');
+    } else {
+      log('Connection failed: ' + e.name + ' — ' + e.message, 'err');
+      console.error(e);
+    }
+  }
+}
+
+async function disconnectSerial() {
+  connected = false;
+  try { if (reader) { await reader.cancel(); reader = null; } } catch {}
+  try { if (writer) { await writer.close(); writer = null; } } catch {}
+  try { if (port) { await port.close(); port = null; } } catch {}
+  document.getElementById('brandDot').classList.add('disconnected');
+  document.getElementById('connStatus').textContent = 'Not connected';
+  document.getElementById('connStatus').classList.remove('connected');
+  document.getElementById('topConnBtn').textContent = 'Connect';
+  document.getElementById('topConnBtn').onclick = connectSerial;
+  document.getElementById('pushBtn').disabled = true;
+  log('Disconnected');
+}
+
+async function serialSend(obj) {
+  if (!port || !connected) return;
+  try {
+    const enc = new TextEncoder();
+    const w = port.writable.getWriter();
+    await w.write(enc.encode(JSON.stringify(obj) + '\n'));
+    w.releaseLock();
+  } catch (e) {
+    log('Send error: ' + e.message, 'err');
+  }
+}
+
+async function startReader() {
+  const dec = new TextDecoder();
+  try {
+    reader = port.readable.getReader();
+    while (connected) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      readBuf += dec.decode(value);
+      let nl;
+      while ((nl = readBuf.indexOf('\n')) !== -1) {
+        const line = readBuf.slice(0, nl).trim();
+        readBuf = readBuf.slice(nl + 1);
+        if (line) handleIncoming(line);
+      }
+    }
+  } catch (e) {
+    if (connected) log('Read error: ' + e.message, 'err');
+  } finally {
+    try { reader.releaseLock(); } catch {}
+  }
+}
+
+function handleIncoming(line) {
+  let msg;
+  try { msg = JSON.parse(line); } catch { return; }
+
+  if (msg.type === 'state') {
+    // Sync layers from keyboard
+    const names = msg.custom_layer_names || [];
+    // Merge — keep existing key data, update names
+    while (customLayers.length < names.length) {
+      customLayers.push(mkDefaultLayer(`Layer ${customLayers.length + 1}`));
+    }
+    names.forEach((n, i) => { customLayers[i].name = n; });
+    renderSidebar();
+    log(`Synced — ${names.length} custom layer(s), mode ${msg.mode}`, 'ok');
+  } else if (msg.type === 'ack') {
+    if (msg.cmd === 'push_layer') {
+      log(`Layer ${msg.idx} pushed ${msg.saved ? '& saved' : '(not saved)'}`, 'ok');
+    } else if (msg.cmd === 'set_mode') {
+      log(`Keyboard switched to mode ${msg.mode}`, 'ok');
+    } else if (msg.cmd === 'delete_layer') {
+      log(`Layer ${msg.idx} deleted`, 'ok');
+    }
+  } else if (msg.type === 'err') {
+    log('Keyboard: ' + msg.msg, 'err');
+  }
+}
+
+// ── LAYER MANAGEMENT ──
+function mkDefaultLayer(name) {
+  const notes = ['C2','D2','E2','F2','G2','A2','B2',
+                 'C3','D3','E3','F3','G3','A3','B3',
+                 'C4','D4','E4','F4','G4','A4','B4',
+                 'C5','D5','E5','F5','G5','A5','B5'];
+  return {
+    name,
+    keys: Array.from({length:28}, (_,i) => ({
+      note: notes[i] || 'C4',
+      chord: 'None',
+      channel: 1,
+      velocity: 'global',
+      label: '',
+      color: SWATCHES[i % (SWATCHES.length - 1)]
+    }))
+  };
+}
+
+function addCustomLayer() {
+  const idx = customLayers.length;
+  customLayers.push(mkDefaultLayer(`Layer ${idx + 1}`));
+  renderSidebar();
+  selectCustomLayer(idx);
+}
+
+async function deleteLayer(idx) {
+  if (!confirm(`Delete "${customLayers[idx].name}"? This cannot be undone.`)) return;
+  customLayers.splice(idx, 1);
+  if (connected) await serialSend({cmd: 'delete_layer', idx});
+  renderSidebar();
+  currentMode = null;
+  selectedKey = null;
+  renderGrid();
+  showHint();
+}
+
+async function pushCurrentLayer() {
+  if (typeof currentMode !== 'number') { log('Select a custom layer first', 'err'); return; }
+  const layer = customLayers[currentMode];
+  if (!connected) { log('Not connected', 'err'); return; }
+  await serialSend({cmd: 'push_layer', idx: currentMode, layer: {name: layer.name, keys: layer.keys}});
+  log(`Pushing layer ${currentMode} to keyboard…`);
+}
+
+// ── SIDEBAR ──
+function renderSidebar() {
+  const container = document.getElementById('customModes');
+  container.innerHTML = '';
+  customLayers.forEach((layer, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'mode-btn' + (currentMode === idx ? ' active' : '');
+    btn.innerHTML = `<span class="mode-dot" style="background:${layer.keys[0]?.color || '#888'};"></span>
+      ${escHtml(layer.name)}
+      <span class="mode-badge">${idx + 1}</span>`;
+    btn.onclick = () => { activeModeBtn = btn; selectCustomLayer(idx); };
+    container.appendChild(btn);
+  });
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── MODE SELECTION ──
+function setMode(mode, btn) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  activeModeBtn = btn;
+  currentMode = mode;
+  selectedKey = null;
+  renderGrid();
+  showHint();
+
+  const nameInput = document.getElementById('layerNameInput');
+  nameInput.value = mode === 'manual' ? 'Manual' : mode === 'smart' ? 'Smart' : 'Drum';
+  nameInput.readOnly = true;
+
+  document.getElementById('toolbarActions').innerHTML = `
+    <div class="ro-banner">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Read-only mode
+    </div>`;
+
+  if (connected) serialSend({cmd:'set_mode', mode: customLayers.length + (['manual','smart','drum'].indexOf(mode))});
+}
+
+function selectCustomLayer(idx) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  const btns = document.querySelectorAll('#customModes .mode-btn');
+  if (btns[idx]) btns[idx].classList.add('active');
+
+  currentMode = idx;
+  selectedKey = null;
+  renderGrid();
+  showHint();
+
+  const layer = customLayers[idx];
+  const nameInput = document.getElementById('layerNameInput');
+  nameInput.value = layer.name;
+  nameInput.readOnly = false;
+  nameInput.oninput = () => {
+    customLayers[idx].name = nameInput.value;
+    renderSidebar();
+    document.querySelectorAll('#customModes .mode-btn')[idx]?.classList.add('active');
+  };
+
+  document.getElementById('toolbarActions').innerHTML = `
+    <button onclick="pushCurrentLayer()" ${connected?'':'disabled'}>Push to keyboard</button>
+    <button class="danger" onclick="deleteLayer(${idx})">Delete</button>`;
+}
+
+// ── GRID ──
+const READONLY_DATA = {
+  manual: {
+    rows: [
+      ['C5','D5','E5','F5','G5','A5','B5'],
+      ['C4','D4','E4','F4','G4','A4','B4'],
+      ['C3','D3','E3','F3','G3','A3','B3'],
+      ['Maj','Min','7th','Add9','Sus4','Int2','Int3'],
+    ],
+    colors: ['#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
+             '#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11',
+             '#854F0B','#854F0B','#854F0B','#854F0B','#854F0B','#854F0B','#854F0B',
+             '#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7'],
+    subs: ['','','','','','','','','','','','','','','','','','','','','','Mod','Mod','Mod','Mod','Mod','Mod','Mod'],
+  },
+  smart: {
+    rows: [
+      ['C5','D5','E5','F5','G5','A5','B5'],
+      ['C4','D4','E4','F4','G4','A4','B4'],
+      ['C Maj','D Min','E Min','F Maj','G Maj','A Min','B Dim'],
+      ['+7th','+9th','Sus4','Sus2','1Inv','2Inv','Sub'],
+    ],
+    colors: ['#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
+             '#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
+             '#0F6E56','#993C1D','#993C1D','#0F6E56','#0F6E56','#993C1D','#5F5E5A',
+             '#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7'],
+    subs: [],
+  },
+  drum: {
+    rows: [
+      ['CCH','CRS','RID','RDB','SPL','CHN','COW'],
+      ['TH1','TH2','TM1','TM2','TL1','TFL','TF2'],
+      ['SNR','SN2','RIM','CLP','HHC','HHP','HHO'],
+      ['KK1','KK2','KK3','KKS','KKM','KKL','KKX'],
+    ],
+    colors: ['#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#888780',
+             '#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11',
+             '#854F0B','#854F0B','#854F0B','#854F0B','#185FA5','#185FA5','#185FA5',
+             '#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D'],
+    subs: [],
+  }
+};
+
+function renderGrid() {
+  const grid = document.getElementById('keyGrid');
+  grid.innerHTML = '';
+
+  const isCustom = typeof currentMode === 'number';
+  const roEl = document.getElementById('roBanner');
+  roEl.style.display = isCustom ? 'none' : 'flex';
+
+  if (!isCustom && currentMode) {
+    const d = READONLY_DATA[currentMode];
+    if (!d) return;
+    d.rows.forEach((row, r) => {
+      row.forEach((note, c) => {
+        const idx = r * 7 + c;
+        const isMod = r === 3 && (currentMode === 'manual' || currentMode === 'smart');
+        const el = document.createElement('div');
+        el.className = 'key ro' + (isMod ? ' mod' : '');
+        const color = d.colors[idx] || '#888';
+        const sub = d.subs?.[idx] || '';
+        el.innerHTML = `<div class="key-led" style="background:${color}"></div>
+          <div class="key-note">${escHtml(note)}</div>
+          ${sub ? `<div class="key-sub">${escHtml(sub)}</div>` : ''}`;
+        grid.appendChild(el);
+      });
+    });
+    return;
+  }
+
+  if (isCustom) {
+    const layer = customLayers[currentMode];
+    layer.keys.forEach((k, i) => {
+      const el = document.createElement('div');
+      el.className = 'key' + (i === selectedKey ? ' selected' : '');
+      el.innerHTML = `<div class="key-led" style="background:${k.color}"></div>
+        <div class="key-note">${escHtml(k.note)}</div>
+        <div class="key-sub">${k.chord !== 'None' ? escHtml(k.chord) : ''}</div>
+        ${k.label ? `<div class="key-label">${escHtml(k.label)}</div>` : ''}`;
+      el.onclick = () => selectKey(i);
+      grid.appendChild(el);
+    });
+    return;
+  }
+
+  // No mode selected — empty grid
+  for (let i = 0; i < 28; i++) {
+    const el = document.createElement('div');
+    el.className = 'key ro';
+    el.innerHTML = `<div class="key-led" style="background:#2a2a30"></div><div class="key-note" style="color:var(--muted)">—</div>`;
+    grid.appendChild(el);
+  }
+}
+
+// ── KEY EDITOR ──
+function selectKey(idx) {
+  if (typeof currentMode !== 'number') return;
+  selectedKey = idx;
+  renderGrid();
+
+  const k = customLayers[currentMode].keys[idx];
+  document.getElementById('epHint').style.display = 'none';
+  document.getElementById('epBody').style.display = 'flex';
+  document.getElementById('epFooter').style.display = 'flex';
+  document.getElementById('epHeader') && (document.getElementById('epHeader').textContent = `Key ${idx + 1}`);
+
+  document.getElementById('fNote').value = k.note;
+  document.getElementById('fNote').classList.remove('err');
+  document.getElementById('noteHint').textContent = '';
+  document.getElementById('noteHint').className = 'field-hint';
+  document.getElementById('fChannel').value = k.channel;
+
+  const velSel = document.getElementById('fVelocity');
+  velSel.value = k.velocity || 'global';
+  if (!velSel.value) velSel.value = 'global';
+
+  document.getElementById('fLabel').value = k.label || '';
+
+  // Chord grid
+  buildChordGrid(k.chord);
+
+  // Swatches
+  buildSwatches(k.color);
+}
+
+function buildChordGrid(active) {
+  const grid = document.getElementById('chordGrid');
+  grid.innerHTML = '';
+  CHORDS.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'chord-btn' + (c === active ? ' active' : '');
+    btn.textContent = c;
+    btn.onclick = () => {
+      document.querySelectorAll('.chord-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      saveKeyField('chord', c);
+    };
+    grid.appendChild(btn);
+  });
+}
+
+function buildSwatches(active) {
+  const row = document.getElementById('swatchRow');
+  row.innerHTML = '';
+  SWATCHES.slice(0,-1).forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'swatch' + (s.toLowerCase() === active?.toLowerCase() ? ' active' : '');
+    el.style.background = s;
+    el.onclick = () => {
+      document.querySelectorAll('.swatch').forEach(sw => sw.classList.remove('active'));
+      el.classList.add('active');
+      saveKeyField('color', s);
+    };
+    row.appendChild(el);
+  });
+  // custom color picker
+  const wrap = document.createElement('div');
+  wrap.className = 'swatch-custom';
+  wrap.title = 'Custom color';
+  const inp = document.createElement('input');
+  inp.type = 'color';
+  inp.value = active || '#ffffff';
+  inp.oninput = () => {
+    document.querySelectorAll('.swatch').forEach(sw => sw.classList.remove('active'));
+    saveKeyField('color', inp.value);
+    renderGrid();
+  };
+  wrap.appendChild(inp);
+  row.appendChild(wrap);
+}
+
+function onNoteInput(el) {
+  const hint = document.getElementById('noteHint');
+  const parsed = parseNote(el.value);
+  if (parsed) {
+    el.classList.remove('err');
+    hint.textContent = '→ ' + parsed + ' (MIDI ' + noteToMidi(parsed) + ')';
+    hint.className = 'field-hint ok';
+    saveKeyField('note', parsed);
+  } else if (el.value.length > 1) {
+    el.classList.add('err');
+    hint.textContent = 'e.g. C4, F#3, Bb2';
+    hint.className = 'field-hint err';
+  } else {
+    el.classList.remove('err');
+    hint.textContent = '';
+    hint.className = 'field-hint';
+  }
+}
+
+function saveKeyField(field, value) {
+  if (selectedKey === null || typeof currentMode !== 'number') return;
+  customLayers[currentMode].keys[selectedKey][field] = value;
+  renderGrid();
+  // Re-select to keep editor open
+  const keys = document.querySelectorAll('.key');
+  if (keys[selectedKey]) keys[selectedKey].classList.add('selected');
+}
+
+function clearKey() {
+  if (selectedKey === null || typeof currentMode !== 'number') return;
+  customLayers[currentMode].keys[selectedKey] = {
+    note:'C4', chord:'None', channel:1, velocity:'global', label:'', color:'#888780'
+  };
+  selectKey(selectedKey);
+}
+
+function showHint() {
+  document.getElementById('epHint').style.display = 'flex';
+  document.getElementById('epBody').style.display = 'none';
+  document.getElementById('epFooter').style.display = 'none';
+  selectedKey = null;
+}
+
+// ── LOG ──
+function log(msg, type) {
+  const el = document.getElementById('logMsg');
+  el.textContent = msg;
+  el.className = type === 'ok' ? 'log-ok' : type === 'err' ? 'log-err' : '';
+}
+
+// ── INIT ──
+renderGrid();
+
+// Check if WebSerial is available
+if (!navigator.serial) {
+  document.getElementById('connectBtn').disabled = true;
+  document.querySelector('.connect-card p').textContent = 'WebSerial is not available in this browser. Please open this page in Chrome or Edge.';
+  document.querySelector('.warn-note').textContent = '✗ WebSerial not supported in this browser.';
+}
+</script>
+</body>
+</html>
