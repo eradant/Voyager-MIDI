@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pog configurator</title>
+<title>Voyager Configurator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -249,16 +249,15 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   background: transparent;
   transition: background 0.1s;
 }
-.key:hover:not(.ro) { border-color: var(--border2); transform: translateY(-1px); }
-.key:hover:not(.ro)::before { background: var(--border2); }
-.key.selected { border-color: var(--accent) !important; }
+.key:hover:not(.ro) { border-color: rgba(255,255,255,0.25); transform: translateY(-1px); }
+.key:hover:not(.ro)::before { background: rgba(255,255,255,0.3); }
+.key.selected { border-color: var(--accent) !important; box-shadow: 0 0 0 1px var(--accent); }
 .key.selected::before { background: var(--accent) !important; }
 .key.ro { cursor: default; }
-.key-led { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; transition: background 0.15s; }
-.key-note { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); line-height: 1; }
-.key-sub { font-family: var(--mono); font-size: 10px; color: var(--muted); line-height: 1; }
-.key-label { font-size: 9px; color: var(--muted); font-style: italic; line-height: 1; }
-.key.mod .key-note { color: var(--muted); font-size: 10px; }
+.key-note { font-family: var(--mono); font-size: 12px; font-weight: 500; color: inherit; line-height: 1; }
+.key-sub { font-family: var(--mono); font-size: 10px; color: inherit; opacity: 0.72; line-height: 1; }
+.key-label { font-size: 9px; color: inherit; opacity: 0.65; font-style: italic; line-height: 1; }
+.key.mod .key-note { font-size: 10px; opacity: 0.8; }
 
 /* ── EDITOR PANEL ── */
 .editor-panel {
@@ -982,6 +981,14 @@ function selectCustomLayer(idx) {
 }
 
 // ── GRID ──
+function keyTextColor(hex) {
+  const h = (hex || '#888888').replace('#', '');
+  const r = parseInt(h.slice(0,2), 16) || 0;
+  const g = parseInt(h.slice(2,4), 16) || 0;
+  const b = parseInt(h.slice(4,6), 16) || 0;
+  return (r*0.299 + g*0.587 + b*0.114) > 128 ? 'rgba(0,0,0,0.82)' : 'rgba(255,255,255,0.92)';
+}
+
 const READONLY_DATA = {
   manual: {
     rows: [
@@ -1041,8 +1048,9 @@ function renderGrid() {
         el.className = 'key ro' + (isMod ? ' mod' : '');
         const color = d.colors[idx] || '#888';
         const sub   = d.subs?.[idx] || '';
-        el.innerHTML = `<div class="key-led" style="background:${color}"></div>
-          <div class="key-note">${escHtml(note)}</div>
+        el.style.background = color;
+        el.style.color = keyTextColor(color);
+        el.innerHTML = `<div class="key-note">${escHtml(note)}</div>
           ${sub ? `<div class="key-sub">${escHtml(sub)}</div>` : ''}`;
         grid.appendChild(el);
       });
@@ -1055,9 +1063,10 @@ function renderGrid() {
     layer.keys.forEach((k, i) => {
       const el = document.createElement('div');
       el.className = 'key' + (i === selectedKey ? ' selected' : '');
+      el.style.background = k.color;
+      el.style.color = keyTextColor(k.color);
       const ivCount = k.intervals?.length || 0;
-      el.innerHTML = `<div class="key-led" style="background:${k.color}"></div>
-        <div class="key-note">${escHtml(k.note)}</div>
+      el.innerHTML = `<div class="key-note">${escHtml(k.note)}</div>
         ${ivCount > 0 ? `<div class="key-sub">+${ivCount}iv</div>` : ''}
         ${k.label ? `<div class="key-label">${escHtml(k.label)}</div>` : ''}`;
       el.onclick = () => selectKey(i);
@@ -1069,7 +1078,7 @@ function renderGrid() {
   for (let i = 0; i < 28; i++) {
     const el = document.createElement('div');
     el.className = 'key ro';
-    el.innerHTML = `<div class="key-led" style="background:#2a2a30"></div><div class="key-note" style="color:var(--muted)">—</div>`;
+    el.innerHTML = `<div class="key-note" style="color:var(--muted)">—</div>`;
     grid.appendChild(el);
   }
 }
