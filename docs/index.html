@@ -1343,11 +1343,11 @@ function spawnParticles(keyIdx, colorHex) {
     pPos[i*3] = wx; pPos[i*3+1] = wy; pPos[i*3+2] = 0;
     const angle  = Math.random() * Math.PI * 2;
     const isBloom = Math.random() < 0.45;
-    const speed  = isBloom ? (0.2 + Math.random() * 1.8) : (2.5 + Math.random() * 9.0);
+    const speed  = isBloom ? (4.0 + Math.random() * 10.0) : (3.0 + Math.random() * 13.0);
     pVel[i*2]   = Math.cos(angle) * speed;
     pVel[i*2+1] = Math.sin(angle) * speed;
     pAlpha[i]   = 1.0;
-    pLife[i]    = isBloom ? (2.5 + Math.random() * 2.0) : (0.6 + Math.random() * 1.0);
+    pLife[i]    = isBloom ? (3.0 + Math.random() * 2.5) : (0.6 + Math.random() * 1.0);
     pColor[i*3] = rgb[0]; pColor[i*3+1] = rgb[1]; pColor[i*3+2] = rgb[2];
     pSize[i]    = isBloom ? (80 + Math.random() * 120) : (5 + Math.random() * 14);
     spawned++;
@@ -1483,10 +1483,10 @@ function enterVisualizer() {
       if (!pAlive[i]) { alpA.array[i] = 0; continue; }
       pAlpha[i] -= dt / pLife[i];
       if (pAlpha[i] <= 0) { pAlive[i] = 0; alpA.array[i] = 0; continue; }
-      const damp = pSize[i] > 50 ? 0.988 : 0.91;
+      const damp = pSize[i] > 50 ? 0.9985 : 0.93;
       pVel[i*2]   *= damp;
       pVel[i*2+1] *= damp;
-      pVel[i*2+1] -= (pSize[i] > 50 ? 0.03 : 0.10) * dt * 60;
+      pVel[i*2+1] -= (pSize[i] > 50 ? 0.008 : 0.08) * dt * 60;
       pPos[i*3]   += pVel[i*2]   * dt * 60;
       pPos[i*3+1] += pVel[i*2+1] * dt * 60;
       posA.array[i*3]   = pPos[i*3];
