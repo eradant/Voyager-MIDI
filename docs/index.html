@@ -1335,20 +1335,20 @@ function spawnParticles(keyIdx, colorHex) {
   const wx = sp.x - W / 2, wy = H / 2 - sp.y;
   const h = (colorHex || '#ffffff').replace('#', '');
   const rgb = [parseInt(h.slice(0,2),16)/255, parseInt(h.slice(2,4),16)/255, parseInt(h.slice(4,6),16)/255];
-  const count = 60 + Math.floor(Math.random() * 21);
+  const count = 160 + Math.floor(Math.random() * 60);
   let spawned = 0;
   for (let i = 0; i < VIZ_POOL && spawned < count; i++) {
     if (pAlive[i]) continue;
     pAlive[i] = 1;
     pPos[i*3] = wx; pPos[i*3+1] = wy; pPos[i*3+2] = 0;
     const angle = Math.random() * Math.PI * 2;
-    const speed = 0.05 + Math.random() * 0.75;
+    const speed = 1.5 + Math.random() * 6.0;
     pVel[i*2]   = Math.cos(angle) * speed;
     pVel[i*2+1] = Math.sin(angle) * speed;
     pAlpha[i]   = 1.0;
-    pLife[i]    = 2.5;
+    pLife[i]    = 1.0 + Math.random() * 1.0;
     pColor[i*3] = rgb[0]; pColor[i*3+1] = rgb[1]; pColor[i*3+2] = rgb[2];
-    pSize[i]    = 3 + Math.random() * 2;
+    pSize[i]    = 8 + Math.random() * 10;
     spawned++;
   }
 }
@@ -1482,6 +1482,9 @@ function enterVisualizer() {
       if (!pAlive[i]) { alpA.array[i] = 0; continue; }
       pAlpha[i] -= dt / pLife[i];
       if (pAlpha[i] <= 0) { pAlive[i] = 0; alpA.array[i] = 0; continue; }
+      pVel[i*2]   *= 0.92;
+      pVel[i*2+1] *= 0.92;
+      pVel[i*2+1] -= 0.12 * dt * 60;
       pPos[i*3]   += pVel[i*2]   * dt * 60;
       pPos[i*3+1] += pVel[i*2+1] * dt * 60;
       posA.array[i*3]   = pPos[i*3];
