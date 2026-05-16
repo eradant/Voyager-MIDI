@@ -1238,6 +1238,10 @@ function scaleKeyboard() {
   const grid  = document.getElementById('keyGrid');
   grid.style.gridTemplateColumns = `repeat(${COLS}, ${Math.floor(cellW)}px)`;
   grid.style.gridTemplateRows    = `repeat(${ROWS}, ${cellH}px)`;
+
+  // Pin enc row to the same width as kb-wrap (grid + gaps + wrap padding + border)
+  const wrapW = COLS * Math.floor(cellW) + (COLS - 1) * GAP + PAD * 2 + 2;
+  if (encRowEl) encRowEl.style.width = wrapW + 'px';
 }
 
 new ResizeObserver(scaleKeyboard).observe(document.getElementById('kbArea'));
