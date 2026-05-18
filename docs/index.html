@@ -618,6 +618,43 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .enc-cc input:focus { border-color: var(--accent); }
 
+/* ── KEY CHIPS (HID combo builder) ── */
+.key-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 28px;
+  padding: 4px 0;
+}
+.key-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text);
+}
+.key-chip-x {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1;
+  transition: color 0.1s;
+}
+.key-chip-x:hover { color: var(--danger); }
+.hid-na {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+  padding: 8px 0;
+  text-align: center;
+}
+
 /* ── EP FOOTER ── */
 .ep-footer {
   padding: 12px 16px;
@@ -862,27 +899,68 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
             <div class="tab-body active" id="bodyNote">
               <div class="field">
-                <label>Note</label>
-                <input type="text" id="fNote" placeholder="C4, F#3, Bb2" autocomplete="off" oninput="onNoteInput(this)">
-                <span class="field-hint" id="noteHint"></span>
+                <label>Type</label>
+                <select id="fType" onchange="onTypeChange(this.value)">
+                  <option value="midi">MIDI</option>
+                  <option value="hid">HID</option>
+                  <option value="consumer">Consumer</option>
+                  <option value="midi+hid">MIDI + HID</option>
+                </select>
               </div>
-              <div class="field-row">
-                <div class="field">
-                  <label>Channel</label>
-                  <input type="number" id="fChannel" min="1" max="16" onchange="saveKeyField('channel', Math.max(1,Math.min(16,+this.value)))">
+
+              <div id="midiFields">
+                <div class="field" style="margin-top:10px;">
+                  <label>Note</label>
+                  <input type="text" id="fNote" placeholder="C4, F#3, Bb2" autocomplete="off" oninput="onNoteInput(this)">
+                  <span class="field-hint" id="noteHint"></span>
                 </div>
+                <div class="field-row" style="margin-top:10px;">
+                  <div class="field">
+                    <label>Channel</label>
+                    <input type="number" id="fChannel" min="1" max="16" onchange="saveKeyField('channel', Math.max(1,Math.min(16,+this.value)))">
+                  </div>
+                  <div class="field">
+                    <label>Velocity</label>
+                    <select id="fVelocity" onchange="saveKeyField('velocity', this.value)">
+                      <option value="global">Global</option>
+                      <option value="64">64 — mp</option>
+                      <option value="80">80 — mf</option>
+                      <option value="100">100 — f</option>
+                      <option value="127">127 — fff</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div id="hidFields" style="display:none;margin-top:10px;">
                 <div class="field">
-                  <label>Velocity</label>
-                  <select id="fVelocity" onchange="saveKeyField('velocity', this.value)">
-                    <option value="global">Global</option>
-                    <option value="64">64 — mp</option>
-                    <option value="80">80 — mf</option>
-                    <option value="100">100 — f</option>
-                    <option value="127">127 — fff</option>
+                  <label>Key combo</label>
+                  <div class="key-chips" id="keyChips"></div>
+                  <select id="keyAdder" onchange="addHidKey(this.value);this.value='';" style="margin-top:4px;">
+                    <option value="">+ Add key…</option>
                   </select>
                 </div>
               </div>
-              <div class="field">
+
+              <div id="consumerFields" style="display:none;margin-top:10px;">
+                <div class="field">
+                  <label>Control</label>
+                  <select id="fConsumer" onchange="saveKeyField('code', this.value)">
+                    <option value="VOLUME_INCREMENT">Volume Up</option>
+                    <option value="VOLUME_DECREMENT">Volume Down</option>
+                    <option value="MUTE">Mute</option>
+                    <option value="PLAY_PAUSE">Play / Pause</option>
+                    <option value="SCAN_NEXT_TRACK">Next Track</option>
+                    <option value="SCAN_PREVIOUS_TRACK">Previous Track</option>
+                    <option value="FAST_FORWARD">Fast Forward</option>
+                    <option value="REWIND">Rewind</option>
+                    <option value="STOP">Stop</option>
+                    <option value="EJECT">Eject</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field" style="margin-top:10px;">
                 <label>Label <span style="font-size:9px;color:var(--muted);text-transform:none;font-family:var(--sans);">(3 chars max)</span></label>
                 <input type="text" id="fLabel" maxlength="3" placeholder="e.g. KCK" oninput="saveKeyField('label',this.value.slice(0,3))">
               </div>
@@ -1121,10 +1199,13 @@ function mkDefaultLayer(name) {
   return {
     name,
     keys: Array.from({length:28}, (_,i) => ({
+      type: 'midi',
       note: notes[i] || 'C4',
       intervals: [],
       channel: 1,
       velocity: 'global',
+      keys: [],
+      code: '',
       label: '',
       color: SWATCHES[i % SWATCHES.length]
     })),
@@ -1323,11 +1404,26 @@ function renderGrid() {
       el.className = 'key' + (i === selectedKey ? ' selected' : '');
       el.style.setProperty('--kc', k.color);
       el.style.color = keyTextColor(k.color);
-      const ivCount = k.intervals?.length || 0;
-      el.innerHTML = `<div class="key-note">${escHtml(k.note)}</div>
-        ${ivCount > 0 ? `<div class="key-sub">+${ivCount}iv</div>` : ''}
-        ${k.label ? `<div class="key-label">${escHtml(k.label)}</div>` : ''}
-        <div class="key-ripple"></div>`;
+      const ktype = k.type || 'midi';
+      let keyInner = '';
+      if (ktype === 'hid') {
+        const combo = (k.keys || []).map(kk => {
+          const sym = {CMD:'⌘',SHIFT:'⇧',CTRL:'⌃',ALT:'⌥',SPACE:'␣',ENTER:'↵',ESCAPE:'⎋',BACKSPACE:'⌫',TAB:'⇥',UP:'↑',DOWN:'↓',LEFT:'←',RIGHT:'→'};
+          return sym[kk] || kk;
+        }).join('');
+        keyInner = `<div class="key-note" style="font-size:16px;">⌨</div><div class="key-sub">${escHtml(combo.slice(0,6)) || '—'}</div>`;
+      } else if (ktype === 'consumer') {
+        const codeLabels = {VOLUME_INCREMENT:'VOL+',VOLUME_DECREMENT:'VOL-',MUTE:'MUTE',PLAY_PAUSE:'▶⏸',SCAN_NEXT_TRACK:'⏭',SCAN_PREVIOUS_TRACK:'⏮',FAST_FORWARD:'⏩',REWIND:'⏪',STOP:'⏹',EJECT:'⏏'};
+        keyInner = `<div class="key-note" style="font-size:16px;">▶</div><div class="key-sub">${codeLabels[k.code] || k.code || '—'}</div>`;
+      } else {
+        const ivCount = k.intervals?.length || 0;
+        keyInner = `<div class="key-note">${escHtml(k.note)}</div>
+          ${ivCount > 0 ? `<div class="key-sub">+${ivCount}iv</div>` : ''}
+          ${ktype === 'midi+hid' ? `<div class="key-sub" style="font-size:9px;opacity:0.7;">+HID</div>` : ''}`;
+      }
+      if (k.label) keyInner += `<div class="key-label">${escHtml(k.label)}</div>`;
+      keyInner += `<div class="key-ripple"></div>`;
+      el.innerHTML = keyInner;
       el.addEventListener('mousedown', () => {
         el.classList.add('pressed');
         if (typeof anime !== 'undefined') {
@@ -1401,6 +1497,10 @@ function populateEditor(idx) {
   const k = customLayers[currentMode].keys[idx];
   document.getElementById('epTitle').textContent = `Key ${idx + 1}`;
 
+  const ktype = k.type || 'midi';
+  document.getElementById('fType').value = ktype;
+  updateTypeUI(ktype);
+
   document.getElementById('fNote').value = k.note;
   document.getElementById('fNote').classList.remove('err');
   document.getElementById('noteHint').textContent = '';
@@ -1411,6 +1511,10 @@ function populateEditor(idx) {
   if (!vel.value) vel.value = 'global';
   document.getElementById('fLabel').value = k.label || '';
 
+  renderKeyChips(k.keys || []);
+  const cons = document.getElementById('fConsumer');
+  if (cons) cons.value = k.code || 'VOLUME_INCREMENT';
+
   buildChordPresets(k.intervals || []);
   buildIntervalGrid(k.intervals || []);
   updateNotesFired(k);
@@ -1418,6 +1522,11 @@ function populateEditor(idx) {
 }
 
 function switchTab(tab) {
+  // Don't switch to chord if it's disabled for this key type
+  if (tab === 'chord') {
+    const ktype = selectedKey !== null ? (customLayers[currentMode]?.keys[selectedKey]?.type || 'midi') : 'midi';
+    if (ktype === 'hid' || ktype === 'consumer') return;
+  }
   ['note','chord','color'].forEach(t => {
     const id = t.charAt(0).toUpperCase() + t.slice(1);
     document.getElementById('tab'  + id).classList.toggle('active', t === tab);
@@ -1543,7 +1652,8 @@ function saveKeyField(field, value) {
 function clearKey() {
   if (selectedKey === null || typeof currentMode !== 'number') return;
   customLayers[currentMode].keys[selectedKey] = {
-    note:'C4', intervals:[], channel:1, velocity:'global', label:'', color:'#888780'
+    type:'midi', note:'C4', intervals:[], channel:1, velocity:'global',
+    keys:[], code:'', label:'', color:'#888780'
   };
   populateEditor(selectedKey);
   renderGrid();
@@ -1673,6 +1783,110 @@ function makeEncActionRow(label, action, opts, layerIdx, encKey, actionKey) {
   ccNumIn.onchange = chIn.onchange = commit;
 
   return wrap;
+}
+
+// ── HID KEY BUILDER ──
+const HID_GROUPS = [
+  { label: 'Modifiers', keys: ['CMD','SHIFT','CTRL','ALT'] },
+  { label: 'Letters',   keys: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('') },
+  { label: 'Numbers',   keys: ['0','1','2','3','4','5','6','7','8','9'] },
+  { label: 'Function',  keys: ['F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12'] },
+  { label: 'Navigation', keys: ['UP','DOWN','LEFT','RIGHT','HOME','END','PAGE_UP','PAGE_DOWN'] },
+  { label: 'Special',   keys: ['SPACE','ENTER','TAB','ESCAPE','BACKSPACE','DELETE'] },
+];
+
+const KEY_SYMBOLS = {
+  CMD:'⌘', SHIFT:'⇧', CTRL:'⌃', ALT:'⌥', SPACE:'␣', ENTER:'↵',
+  ESCAPE:'⎋', BACKSPACE:'⌫', TAB:'⇥', UP:'↑', DOWN:'↓', LEFT:'←', RIGHT:'→',
+  DELETE:'⌦', HOME:'↖', END:'↘', PAGE_UP:'⇞', PAGE_DOWN:'⇟',
+};
+
+function buildKeyAdderSelect() {
+  const sel = document.getElementById('keyAdder');
+  if (!sel || sel.children.length > 1) return; // already built
+  HID_GROUPS.forEach(group => {
+    const og = document.createElement('optgroup');
+    og.label = group.label;
+    group.keys.forEach(k => {
+      const o = new Option(KEY_SYMBOLS[k] ? KEY_SYMBOLS[k] + ' ' + k : k, k);
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
+}
+
+function onTypeChange(type) {
+  saveKeyField('type', type);
+  updateTypeUI(type);
+}
+
+function updateTypeUI(type) {
+  const hasMidi = type === 'midi' || type === 'midi+hid';
+  const hasHid  = type === 'hid'  || type === 'midi+hid';
+  const hasCons = type === 'consumer';
+  document.getElementById('midiFields').style.display     = hasMidi ? '' : 'none';
+  document.getElementById('hidFields').style.display      = hasHid  ? '' : 'none';
+  document.getElementById('consumerFields').style.display = hasCons ? '' : 'none';
+  // Chord tab
+  const chordTab = document.getElementById('tabChord');
+  const chordOk  = hasMidi;
+  chordTab.style.opacity    = chordOk ? '' : '0.4';
+  chordTab.style.cursor     = chordOk ? '' : 'not-allowed';
+  chordTab.style.pointerEvents = chordOk ? '' : 'none';
+  if (!chordOk) {
+    // If chord tab is active, switch back to note
+    if (document.getElementById('bodyChord').classList.contains('active')) {
+      switchTab('note');
+    }
+    // Show na message inside chord body
+    const body = document.getElementById('bodyChord');
+    if (!body.querySelector('.hid-na')) {
+      const na = document.createElement('div');
+      na.className = 'hid-na';
+      na.textContent = 'Chord intervals are only available for MIDI keys.';
+      body.prepend(na);
+    }
+  } else {
+    document.querySelector('#bodyChord .hid-na')?.remove();
+  }
+  if (hasHid) buildKeyAdderSelect();
+}
+
+function renderKeyChips(keys) {
+  const container = document.getElementById('keyChips');
+  if (!container) return;
+  container.innerHTML = '';
+  (keys || []).forEach(k => {
+    const chip = document.createElement('span');
+    chip.className = 'key-chip';
+    const label = document.createTextNode((KEY_SYMBOLS[k] ? KEY_SYMBOLS[k] + ' ' : '') + k);
+    const x = document.createElement('span');
+    x.className = 'key-chip-x';
+    x.textContent = '×';
+    x.onclick = () => removeHidKey(k);
+    chip.appendChild(label);
+    chip.appendChild(x);
+    container.appendChild(chip);
+  });
+}
+
+function addHidKey(key) {
+  if (!key || selectedKey === null || typeof currentMode !== 'number') return;
+  const k = customLayers[currentMode].keys[selectedKey];
+  if (!k.keys) k.keys = [];
+  if (!k.keys.includes(key)) {
+    k.keys = [...k.keys, key];
+    saveKeyField('keys', k.keys);
+    renderKeyChips(k.keys);
+  }
+}
+
+function removeHidKey(key) {
+  if (selectedKey === null || typeof currentMode !== 'number') return;
+  const k = customLayers[currentMode].keys[selectedKey];
+  k.keys = (k.keys || []).filter(kk => kk !== key);
+  saveKeyField('keys', k.keys);
+  renderKeyChips(k.keys);
 }
 
 // ── VISUALIZER ──
