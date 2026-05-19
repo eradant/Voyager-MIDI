@@ -20,6 +20,7 @@
   --muted:    #6b6b78;
   --accent:   #00e5a0;
   --accent2:  #00b57d;
+  --warning:  #f6b44b;
   --danger:   #ff5a5a;
   --mono:     'DM Mono', monospace;
   --sans:     'DM Sans', sans-serif;
@@ -87,8 +88,37 @@ body::after {
 }
 .brand-dot.disconnected { background: var(--muted); box-shadow: none; }
 .conn-area { display: flex; align-items: center; gap: 10px; }
-.conn-status { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-.conn-status.connected { color: var(--accent); }
+.status-stack {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.conn-status,
+.sync-status {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--surface2) 72%, transparent);
+  border-radius: 999px;
+  padding: 4px 8px;
+  line-height: 1;
+}
+.conn-status.connected {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+.sync-status.dirty {
+  color: var(--warning);
+  border-color: color-mix(in srgb, var(--warning) 42%, var(--border));
+  background: color-mix(in srgb, var(--warning) 12%, var(--surface));
+}
+.sync-status.syncing {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
+}
 
 button {
   font-family: var(--sans);
@@ -154,7 +184,23 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .mode-btn:hover { background: var(--surface2); color: var(--text); border-radius: 0; }
 .mode-btn.active { color: var(--text); background: var(--surface2); border-left-color: var(--accent); }
+.mode-btn.active::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent);
+}
 .mode-btn.readonly.active { border-left-color: var(--muted); }
+.mode-btn.readonly.active::after {
+  background: var(--muted);
+  box-shadow: none;
+}
+.mode-btn.dirty .mode-badge {
+  color: var(--warning);
+  border-color: color-mix(in srgb, var(--warning) 44%, var(--border));
+}
 .mode-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .mode-badge {
   margin-left: auto;
@@ -195,7 +241,16 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   position: relative;
   z-index: 1;
 }
-.toolbar-title { font-family: var(--mono); font-size: 13px; font-weight: 500; flex: 1; min-width: 120px; }
+.toolbar-title {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  flex: 1;
+  min-width: 160px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .toolbar-title input {
   background: transparent;
   border: none;
@@ -211,6 +266,48 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .toolbar-title input:focus { border-bottom-color: var(--accent); }
 .toolbar-title input[readonly] { cursor: default; }
+.dirty-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--warning);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--warning) 70%, transparent);
+  display: none;
+  flex-shrink: 0;
+}
+.toolbar-title.dirty .dirty-dot { display: block; }
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.action-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.action-group.danger-zone {
+  margin-left: 2px;
+  padding-left: 8px;
+  border-left: 1px solid var(--border);
+}
+.toolbar button[data-icon] {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.toolbar button[data-icon]::before {
+  content: attr(data-icon);
+  font-family: var(--mono);
+  font-size: 12px;
+  opacity: 0.82;
+}
+.toolbar button.dirty {
+  color: #151109;
+  background: var(--warning);
+  border-color: var(--warning);
+}
 .ro-banner {
   display: flex;
   align-items: center;
@@ -318,13 +415,25 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.16),
     inset 0 -1px 0 rgba(0,0,0,0.28),
-    0 0 0 1.5px var(--accent),
+    0 0 0 2px var(--accent),
+    0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent),
     0 3px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
     0 4px 10px rgba(0,0,0,0.35),
     0 0 10px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 .key.selected::before { background: var(--accent) !important; }
-.key.ro { cursor: default; }
+.key.ro {
+  cursor: default;
+  background:
+    repeating-linear-gradient(135deg,
+      color-mix(in srgb, var(--kc, #888780) 30%, var(--surface)) 0 6px,
+      color-mix(in srgb, var(--kc, #888780) 22%, var(--surface)) 6px 12px);
+  border: 1px solid color-mix(in srgb, var(--kc, #888780) 42%, var(--border));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 0 0 1px rgba(0,0,0,0.28);
+  opacity: 0.82;
+}
 .key-ripple {
   position: absolute;
   inset: 0;
@@ -362,19 +471,35 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .ep-header {
   display: flex;
   align-items: center;
-  padding: 0 10px 0 16px;
-  height: 40px;
+  padding: 10px 10px 10px 16px;
+  min-height: 52px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   gap: 8px;
 }
 .ep-title {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+.ep-title-main {
   font-family: var(--mono);
-  font-size: 10px;
+  font-size: 11px;
+  color: var(--text);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ep-title-sub {
+  font-family: var(--mono);
+  font-size: 9px;
   color: var(--muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  flex: 1;
 }
 .ep-close {
   background: transparent;
@@ -420,7 +545,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
 /* ── TAB BODIES ── */
 .ep-tab-bodies { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; }
-.tab-body { display: none; padding: 14px 16px; flex-direction: column; gap: 14px; }
+.tab-body { display: none; padding: 16px; flex-direction: column; gap: 16px; }
 .tab-body.active { display: flex; }
 
 .field { display: flex; flex-direction: column; gap: 5px; }
@@ -449,7 +574,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .field-hint.ok { color: var(--accent); }
 .field-hint.err { color: var(--danger); }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
 /* ── CHORD PRESETS ── */
 .chord-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
 .chord-btn {
@@ -538,7 +662,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .color-preview {
   height: 64px;
-  border-radius: var(--radius);
+  border-radius: 4px;
   border: 1px solid var(--border2);
   display: flex;
   align-items: flex-end;
@@ -546,6 +670,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   font-family: var(--mono);
   font-size: 11px;
   transition: background 0.15s;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.16),
+    inset 0 -2px 0 rgba(0,0,0,0.24),
+    0 8px 18px rgba(0,0,0,0.16);
 }
 
 /* ── ENCODER ROW ── */
@@ -560,7 +688,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   flex: 1;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius);
   padding: 12px 16px;
   display: flex;
   gap: 14px;
@@ -578,13 +706,16 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   text-transform: uppercase;
   margin-bottom: 1px;
 }
-.enc-action { display: flex; align-items: center; gap: 8px; }
+.enc-action {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
 .enc-action-lbl {
   font-family: var(--mono);
   font-size: 10px;
   color: var(--muted);
-  width: 48px;
-  flex-shrink: 0;
   line-height: 1;
 }
 .enc-action select {
@@ -764,6 +895,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   --muted:    #8A8070;
   --accent:   #E85D00;
   --accent2:  #C04A00;
+  --warning:  #9D640F;
   --danger:   #CC2020;
 }
 </style>
@@ -792,7 +924,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   </div>
   <div class="conn-area">
     <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">◑</button>
-    <span class="conn-status" id="connStatus">Not connected</span>
+    <div class="status-stack">
+      <span class="conn-status" id="connStatus">Not connected</span>
+      <span class="sync-status" id="syncStatus">Local draft</span>
+    </div>
     <button id="topConnBtn" onclick="connectSerial()">Connect</button>
   </div>
 </div>
@@ -825,9 +960,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   <div class="main">
     <div class="toolbar">
       <div class="toolbar-title">
+        <span class="dirty-dot" id="dirtyDot" title="Layer has local edits"></span>
         <input type="text" id="layerNameInput" value="Select a layer" readonly>
       </div>
-      <div id="toolbarActions"></div>
+      <div id="toolbarActions" class="toolbar-actions"></div>
     </div>
 
     <div class="kb-content">
@@ -992,7 +1128,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
           </div>
           <div class="ep-footer">
             <button onclick="clearKey()">Reset</button>
-            <button class="primary" id="pushBtn" onclick="pushCurrentLayer()" disabled>Push to keyboard</button>
+            <button class="primary" id="pushBtn" data-push-layer onclick="pushCurrentLayer()" disabled>Push to keyboard</button>
           </div>
         </div>
       </div>
@@ -1089,6 +1225,8 @@ let currentMode = null;
 let customLayers = [];
 let selectedKey = null;
 let activeModeBtn = null;
+let dirtyLayers = new Set();
+let syncState = 'local';
 
 // ── SERIAL ──
 async function connectSerial() {
@@ -1107,6 +1245,7 @@ async function connectSerial() {
     document.getElementById('topConnBtn').textContent = 'Disconnect';
     document.getElementById('topConnBtn').onclick = disconnectSerial;
     document.getElementById('pushBtn').disabled = false;
+    setSyncState(dirtyLayers.size ? 'dirty' : 'synced');
     log('Connected — syncing state…', 'ok');
     startReader();
     await serialSend({cmd: 'ping'});
@@ -1133,6 +1272,7 @@ async function disconnectSerial() {
   document.getElementById('topConnBtn').textContent = 'Connect';
   document.getElementById('topConnBtn').onclick = connectSerial;
   document.getElementById('pushBtn').disabled = true;
+  setSyncState(dirtyLayers.size ? 'dirty' : 'local');
   log('Disconnected');
 }
 
@@ -1180,7 +1320,13 @@ function handleIncoming(line) {
     renderSidebar();
     log(`Synced — ${names.length} custom layer(s), mode ${msg.mode}`, 'ok');
   } else if (msg.type === 'ack') {
-    if      (msg.cmd === 'push_layer')    log(`Layer ${msg.idx} pushed ${msg.saved ? '& saved' : '(not saved)'}`, 'ok');
+    if      (msg.cmd === 'push_layer')    {
+      dirtyLayers.delete(msg.idx);
+      setSyncState(dirtyLayers.size ? 'dirty' : 'synced');
+      renderSidebar();
+      updateLayerChrome();
+      log(`Layer ${msg.idx} pushed ${msg.saved ? '& saved' : '(not saved)'}`, 'ok');
+    }
     else if (msg.cmd === 'set_mode')      log(`Keyboard switched to mode ${msg.mode}`, 'ok');
     else if (msg.cmd === 'delete_layer')  log(`Layer ${msg.idx} deleted`, 'ok');
   } else if (msg.type === 'note_on') {
@@ -1224,6 +1370,8 @@ function mkDefaultLayer(name) {
 function addCustomLayer() {
   const idx = customLayers.length;
   customLayers.push(mkDefaultLayer(`Layer ${idx + 1}`));
+  dirtyLayers.add(idx);
+  setSyncState('dirty');
   renderSidebar();
   selectCustomLayer(idx);
 }
@@ -1231,6 +1379,7 @@ function addCustomLayer() {
 async function deleteLayer(idx) {
   if (!confirm(`Delete "${customLayers[idx].name}"? This cannot be undone.`)) return;
   customLayers.splice(idx, 1);
+  dirtyLayers = new Set([...dirtyLayers].filter(i => i !== idx).map(i => i > idx ? i - 1 : i));
   if (connected) await serialSend({cmd: 'delete_layer', idx});
   renderSidebar();
   currentMode = null;
@@ -1238,14 +1387,49 @@ async function deleteLayer(idx) {
   closeEditor();
   document.getElementById('encRow').style.display = 'none';
   renderGrid();
+  updateLayerChrome();
+  setSyncState(dirtyLayers.size ? 'dirty' : (connected ? 'synced' : 'local'));
 }
 
 async function pushCurrentLayer() {
   if (typeof currentMode !== 'number') { log('Select a custom layer first', 'err'); return; }
   if (!connected) { log('Not connected', 'err'); return; }
   const layer = customLayers[currentMode];
+  setSyncState('syncing');
   await serialSend({cmd: 'push_layer', idx: currentMode, layer: {name: layer.name, keys: layer.keys, enc1: layer.enc1, enc2: layer.enc2}});
   log(`Pushing layer ${currentMode} to keyboard…`);
+}
+
+function setSyncState(state) {
+  syncState = state;
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+  el.classList.toggle('dirty', state === 'dirty');
+  el.classList.toggle('syncing', state === 'syncing');
+  el.textContent =
+    state === 'dirty'   ? 'Unsynced edits' :
+    state === 'syncing' ? 'Pushing...' :
+    state === 'synced'  ? 'Synced' :
+    'Local draft';
+}
+
+function markLayerDirty(idx) {
+  if (typeof idx !== 'number') return;
+  const wasClean = !dirtyLayers.has(idx);
+  dirtyLayers.add(idx);
+  setSyncState('dirty');
+  if (wasClean) renderSidebar();
+  updateLayerChrome();
+}
+
+function updateLayerChrome() {
+  const title = document.querySelector('.toolbar-title');
+  const pushBtns = document.querySelectorAll('[data-push-layer]');
+  const isCustom = typeof currentMode === 'number';
+  const isDirty = isCustom && dirtyLayers.has(currentMode);
+  title?.classList.toggle('dirty', isDirty);
+  pushBtns.forEach(btn => btn.classList.toggle('dirty', isDirty));
+  if (!isDirty && syncState === 'dirty' && !dirtyLayers.size) setSyncState(connected ? 'synced' : 'local');
 }
 
 // ── SIDEBAR ──
@@ -1254,9 +1438,9 @@ function renderSidebar() {
   container.innerHTML = '';
   customLayers.forEach((layer, idx) => {
     const btn = document.createElement('button');
-    btn.className = 'mode-btn' + (currentMode === idx ? ' active' : '');
+    btn.className = 'mode-btn' + (currentMode === idx ? ' active' : '') + (dirtyLayers.has(idx) ? ' dirty' : '');
     btn.innerHTML = `<span class="mode-dot" style="background:${layer.keys[0]?.color||'#888'};"></span>
-      ${escHtml(layer.name)}<span class="mode-badge">${idx+1}</span>`;
+      ${escHtml(layer.name)}<span class="mode-badge">${dirtyLayers.has(idx) ? 'EDIT' : idx+1}</span>`;
     btn.onclick = () => { activeModeBtn = btn; selectCustomLayer(idx); };
     container.appendChild(btn);
   });
@@ -1284,6 +1468,7 @@ function setMode(mode, btn) {
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
       Read-only mode
     </div>`;
+  updateLayerChrome();
   if (connected) serialSend({cmd:'set_mode', mode: customLayers.length + (['manual','smart','drum'].indexOf(mode))});
 }
 
@@ -1301,14 +1486,20 @@ function selectCustomLayer(idx) {
   nameInput.readOnly = false;
   nameInput.oninput = () => {
     customLayers[idx].name = nameInput.value;
+    markLayerDirty(idx);
     renderSidebar();
     document.querySelectorAll('#customModes .mode-btn')[idx]?.classList.add('active');
   };
   document.getElementById('toolbarActions').innerHTML = `
-    <button onclick="pushCurrentLayer()" ${connected?'':'disabled'}>Push to keyboard</button>
-    <button id="vizBtn" onclick="enterVisualizer()">Visualizer</button>
-    <button class="danger" onclick="deleteLayer(${idx})">Delete</button>`;
+    <div class="action-group">
+      <button data-push-layer data-icon="⇧" onclick="pushCurrentLayer()" ${connected?'':'disabled'}>Push to keyboard</button>
+      <button id="vizBtn" data-icon="▦" onclick="enterVisualizer()">Visualizer</button>
+    </div>
+    <div class="action-group danger-zone">
+      <button class="danger" data-icon="×" onclick="deleteLayer(${idx})">Delete</button>
+    </div>`;
   renderEncoders(idx);
+  updateLayerChrome();
 }
 
 // ── GRID ──
@@ -1495,7 +1686,8 @@ function closeEditor() {
 
 function populateEditor(idx) {
   const k = customLayers[currentMode].keys[idx];
-  document.getElementById('epTitle').textContent = `Key ${idx + 1}`;
+  document.getElementById('epTitle').innerHTML =
+    `<span class="ep-title-main">${escHtml(customLayers[currentMode].name)}</span><span class="ep-title-sub">Key ${idx + 1}</span>`;
 
   const ktype = k.type || 'midi';
   document.getElementById('fType').value = ktype;
@@ -1645,6 +1837,7 @@ function onNoteInput(el) {
 function saveKeyField(field, value) {
   if (selectedKey === null || typeof currentMode !== 'number') return;
   customLayers[currentMode].keys[selectedKey][field] = value;
+  markLayerDirty(currentMode);
   renderGrid();
   document.querySelectorAll('.key')[selectedKey]?.classList.add('selected');
 }
@@ -1655,6 +1848,7 @@ function clearKey() {
     type:'midi', note:'C4', intervals:[], channel:1, velocity:'global',
     keys:[], code:'', label:'', color:'#888780'
   };
+  markLayerDirty(currentMode);
   populateEditor(selectedKey);
   renderGrid();
   document.querySelectorAll('.key')[selectedKey]?.classList.add('selected');
@@ -1777,6 +1971,7 @@ function makeEncActionRow(label, action, opts, layerIdx, encKey, actionKey) {
     else if (ENC_HAS_CH.has(t)) act = {type:t, ch};
     else                        act = {type:t};
     customLayers[layerIdx][encKey][actionKey] = act;
+    markLayerDirty(layerIdx);
   }
 
   sel.onchange = () => { applyVis(); commit(); };
@@ -2115,6 +2310,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && vizActive)
 if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light';
 renderGrid();
 scaleKeyboard();
+setSyncState('local');
+updateLayerChrome();
 
 if (!navigator.serial) {
   document.getElementById('connectBtn').disabled = true;
