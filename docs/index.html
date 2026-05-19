@@ -545,8 +545,50 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
 /* ── TAB BODIES ── */
 .ep-tab-bodies { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; }
-.tab-body { display: none; padding: 16px; flex-direction: column; gap: 16px; }
+.tab-body { display: none; padding: 14px; flex-direction: column; gap: 12px; }
 .tab-body.active { display: flex; }
+
+.control-card {
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--surface2) 42%, transparent),
+      color-mix(in srgb, var(--surface) 92%, transparent));
+  border-radius: var(--radius);
+  padding: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
+}
+.control-card.is-muted {
+  background: color-mix(in srgb, var(--surface2) 28%, transparent);
+}
+.control-card-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 14px;
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.control-card-head::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.75;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 42%, transparent);
+}
+.control-card-head.hid::before { background: #378ADD; }
+.control-card-head.consumer::before { background: #D85A30; }
+.control-card-head.label::before { background: var(--warning); }
+.control-card-head.chord::before { background: #D4537E; }
+.control-card-head.color::before { background: var(--accent); }
 
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field label {
@@ -574,6 +616,19 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .field-hint.ok { color: var(--accent); }
 .field-hint.err { color: var(--danger); }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.field.compact label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.label-limit {
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: none;
+  font-family: var(--sans);
+  letter-spacing: 0;
+}
 /* ── CHORD PRESETS ── */
 .chord-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
 .chord-btn {
@@ -661,7 +716,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   cursor: pointer; background: transparent;
 }
 .color-preview {
-  height: 64px;
+  height: 76px;
   border-radius: 4px;
   border: 1px solid var(--border2);
   display: flex;
@@ -674,6 +729,28 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     inset 0 1px 0 rgba(255,255,255,0.16),
     inset 0 -2px 0 rgba(0,0,0,0.24),
     0 8px 18px rgba(0,0,0,0.16);
+  position: relative;
+  overflow: hidden;
+}
+.color-preview::before {
+  content: '';
+  position: absolute;
+  inset: 9px;
+  border-radius: 3px;
+  border: 1px solid rgba(255,255,255,0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.2),
+    inset 0 -2px 0 rgba(0,0,0,0.24);
+  pointer-events: none;
+}
+.color-preview::after {
+  content: 'LED';
+  position: absolute;
+  top: 14px;
+  right: 15px;
+  font-family: var(--mono);
+  font-size: 9px;
+  opacity: 0.55;
 }
 
 /* ── ENCODER ROW ── */
@@ -1034,23 +1111,27 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
           <div class="ep-tab-bodies">
 
             <div class="tab-body active" id="bodyNote">
-              <div class="field">
-                <label>Type</label>
-                <select id="fType" onchange="onTypeChange(this.value)">
-                  <option value="midi">MIDI</option>
-                  <option value="hid">HID</option>
-                  <option value="consumer">Consumer</option>
-                  <option value="midi+hid">MIDI + HID</option>
-                </select>
+              <div class="control-card is-muted">
+                <div class="control-card-head">Behavior</div>
+                <div class="field">
+                  <label>Type</label>
+                  <select id="fType" onchange="onTypeChange(this.value)">
+                    <option value="midi">MIDI</option>
+                    <option value="hid">HID</option>
+                    <option value="consumer">Consumer</option>
+                    <option value="midi+hid">MIDI + HID</option>
+                  </select>
+                </div>
               </div>
 
-              <div id="midiFields">
-                <div class="field" style="margin-top:10px;">
+              <div id="midiFields" class="control-card">
+                <div class="control-card-head">MIDI voice</div>
+                <div class="field">
                   <label>Note</label>
                   <input type="text" id="fNote" placeholder="C4, F#3, Bb2" autocomplete="off" oninput="onNoteInput(this)">
                   <span class="field-hint" id="noteHint"></span>
                 </div>
-                <div class="field-row" style="margin-top:10px;">
+                <div class="field-row">
                   <div class="field">
                     <label>Channel</label>
                     <input type="number" id="fChannel" min="1" max="16" onchange="saveKeyField('channel', Math.max(1,Math.min(16,+this.value)))">
@@ -1068,17 +1149,19 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
                 </div>
               </div>
 
-              <div id="hidFields" style="display:none;margin-top:10px;">
+              <div id="hidFields" class="control-card" style="display:none;">
+                <div class="control-card-head hid">HID combo</div>
                 <div class="field">
                   <label>Key combo</label>
                   <div class="key-chips" id="keyChips"></div>
-                  <select id="keyAdder" onchange="addHidKey(this.value);this.value='';" style="margin-top:4px;">
+                  <select id="keyAdder" onchange="addHidKey(this.value);this.value='';">
                     <option value="">+ Add key…</option>
                   </select>
                 </div>
               </div>
 
-              <div id="consumerFields" style="display:none;margin-top:10px;">
+              <div id="consumerFields" class="control-card" style="display:none;">
+                <div class="control-card-head consumer">Media control</div>
                 <div class="field">
                   <label>Control</label>
                   <select id="fConsumer" onchange="saveKeyField('code', this.value)">
@@ -1096,33 +1179,48 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
                 </div>
               </div>
 
-              <div class="field" style="margin-top:10px;">
-                <label>Label <span style="font-size:9px;color:var(--muted);text-transform:none;font-family:var(--sans);">(3 chars max)</span></label>
-                <input type="text" id="fLabel" maxlength="3" placeholder="e.g. KCK" oninput="saveKeyField('label',this.value.slice(0,3))">
+              <div class="control-card is-muted">
+                <div class="control-card-head label">Faceplate</div>
+                <div class="field compact">
+                  <label>Label <span class="label-limit">3 chars max</span></label>
+                  <input type="text" id="fLabel" maxlength="3" placeholder="e.g. KCK" oninput="saveKeyField('label',this.value.slice(0,3))">
+                </div>
               </div>
             </div>
 
             <div class="tab-body" id="bodyChord">
-              <div class="field">
-                <label>Preset</label>
-                <div class="chord-presets" id="chordPresets"></div>
+              <div class="control-card">
+                <div class="control-card-head chord">Chord shape</div>
+                <div class="field">
+                  <label>Preset</label>
+                  <div class="chord-presets" id="chordPresets"></div>
+                </div>
               </div>
-              <div class="field">
-                <label>Intervals</label>
-                <div class="interval-grid" id="intervalGrid"></div>
+              <div class="control-card">
+                <div class="control-card-head chord">Intervals</div>
+                <div class="field">
+                  <label>Semitone offsets</label>
+                  <div class="interval-grid" id="intervalGrid"></div>
+                </div>
               </div>
-              <div>
+              <div class="control-card is-muted">
                 <div class="notes-fired-label">Notes fired</div>
                 <div class="notes-fired" id="notesFired">—</div>
               </div>
             </div>
 
             <div class="tab-body" id="bodyColor">
-              <div class="field">
-                <label>Preset</label>
-                <div class="color-swatches" id="swatchRow"></div>
+              <div class="control-card">
+                <div class="control-card-head color">LED color</div>
+                <div class="field">
+                  <label>Preset</label>
+                  <div class="color-swatches" id="swatchRow"></div>
+                </div>
               </div>
-              <div class="color-preview" id="colorPreview"></div>
+              <div class="control-card is-muted">
+                <div class="control-card-head color">Preview</div>
+                <div class="color-preview" id="colorPreview"></div>
+              </div>
             </div>
 
           </div>
