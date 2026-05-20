@@ -140,6 +140,29 @@ button.primary:hover { background: var(--accent2); border-color: var(--accent2);
 button.danger { color: var(--danger); border-color: #3d1a1a; background: #1f1010; }
 button.danger:hover { background: #2a1111; }
 button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.icon {
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  flex-shrink: 0;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.icon-sm { width: 13px; height: 13px; }
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+.icon-only {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+}
 
 /* ── LAYOUT ── */
 .layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
@@ -292,16 +315,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   padding-left: 8px;
   border-left: 1px solid var(--border);
 }
-.toolbar button[data-icon] {
+.toolbar button.icon-btn {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-}
-.toolbar button[data-icon]::before {
-  content: attr(data-icon);
-  font-family: var(--mono);
-  font-size: 12px;
-  opacity: 0.82;
 }
 .toolbar button.dirty {
   color: #151109;
@@ -961,6 +978,168 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .theme-toggle:hover { color: var(--text); background: var(--surface2); transform: none; }
 
+@media (max-width: 860px) {
+  body { min-height: 100vh; }
+  .topbar {
+    height: auto;
+    min-height: 52px;
+    padding: 10px 12px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .brand { min-width: 110px; }
+  .conn-area {
+    margin-left: auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .layout {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 128px;
+    flex-direction: row;
+    align-items: stretch;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 18px rgba(0,0,0,0.22);
+  }
+  .sidebar-section {
+    padding: 12px 10px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  #customModes {
+    display: flex;
+    align-items: stretch;
+    flex-shrink: 0;
+  }
+  .mode-btn {
+    width: auto;
+    min-width: 118px;
+    justify-content: flex-start;
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 12px;
+  }
+  .mode-btn.active { border-left-color: transparent; border-bottom-color: var(--accent); }
+  .mode-btn.readonly.active { border-bottom-color: var(--muted); }
+  .add-layer-btn {
+    width: auto;
+    min-width: 112px;
+    margin: 8px 10px;
+    align-self: center;
+  }
+  .sidebar-divider {
+    width: 1px;
+    height: auto;
+    margin: 10px 4px;
+    flex-shrink: 0;
+  }
+  .toolbar {
+    padding: 10px 12px;
+    align-items: flex-start;
+  }
+  .toolbar-title {
+    flex-basis: 100%;
+    min-width: 0;
+  }
+  .toolbar-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .action-group.danger-zone {
+    margin-left: auto;
+  }
+  .kb-content {
+    flex-direction: column;
+  }
+  .kb-area {
+    padding: 16px 12px;
+  }
+  .editor-panel {
+    width: 100%;
+    height: 0;
+    border-top: 0;
+    transition: height 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .editor-panel.open {
+    width: 100%;
+    height: min(46vh, 370px);
+  }
+  .ep-inner {
+    min-width: 0;
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--border);
+    box-shadow: 0 -6px 24px rgba(0,0,0,0.24);
+  }
+  .tab-body {
+    display: none;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    align-items: start;
+  }
+  .tab-body.active { display: grid; }
+  .ep-footer {
+    padding: 10px 14px;
+  }
+  .enc-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 560px) {
+  .topbar {
+    align-items: flex-start;
+  }
+  .conn-area {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .status-stack {
+    flex: 1;
+    min-width: 0;
+  }
+  .conn-status,
+  .sync-status {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .toolbar button {
+    padding: 6px 10px;
+  }
+  .action-group {
+    gap: 5px;
+  }
+  .kb-area {
+    justify-content: flex-start;
+  }
+  .kb-wrap {
+    padding: 10px;
+    max-width: 100%;
+    overflow: hidden;
+  }
+  .key-note { font-size: 11px; }
+  .key-sub { font-size: 9px; }
+  .editor-panel.open {
+    height: min(52vh, 420px);
+  }
+  .control-card {
+    padding: 10px;
+  }
+  .connect-card {
+    padding: 28px 24px;
+  }
+}
+
 /* ── LIGHT MODE ── */
 [data-theme="light"] {
   --bg:       #EDE8DF;
@@ -990,7 +1169,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     <h1>Voyager</h1>
     <p>Connect your Voyager keyboard via USB, then click Connect to start editing your custom layers.</p>
     <div class="warn-note">⚠ Requires Chrome or Edge — WebSerial is not supported in Firefox or Safari.</div>
-    <button class="primary" id="connectBtn" style="width:100%;padding:10px;" onclick="connectSerial()">Connect keyboard</button>
+    <button class="primary icon-btn" id="connectBtn" style="width:100%;padding:10px;" onclick="connectSerial()">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 2v6"/><path d="M8 6h8"/><path d="M8 12h8"/><path d="M10 18h4"/><path d="M12 22v-4"/><path d="M7 8h10v5a5 5 0 0 1-10 0z"/></svg>
+      Connect keyboard
+    </button>
   </div>
 </div>
 
@@ -1000,12 +1182,17 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     Voyager
   </div>
   <div class="conn-area">
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">◑</button>
+    <button class="theme-toggle icon-only" id="themeToggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-4.97-4.03-9-9-9z"/><path d="M12 3v18a9 9 0 0 0 0-18z"/></svg>
+    </button>
     <div class="status-stack">
       <span class="conn-status" id="connStatus">Not connected</span>
       <span class="sync-status" id="syncStatus">Local draft</span>
     </div>
-    <button id="topConnBtn" onclick="connectSerial()">Connect</button>
+    <button id="topConnBtn" class="icon-btn" onclick="connectSerial()">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2v6"/><path d="M8 6h8"/><path d="M8 12h8"/><path d="M10 18h4"/><path d="M12 22v-4"/><path d="M7 8h10v5a5 5 0 0 1-10 0z"/></svg>
+      Connect
+    </button>
   </div>
 </div>
 
@@ -1014,7 +1201,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   <div class="sidebar">
     <div class="sidebar-section">Layers</div>
     <div id="customModes"></div>
-    <button class="add-layer-btn" onclick="addCustomLayer()">+ Add layer</button>
+    <button class="add-layer-btn icon-btn" onclick="addCustomLayer()">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+      Add layer
+    </button>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">Built-in</div>
     <button class="mode-btn readonly" onclick="setMode('manual',this)">
@@ -1101,7 +1291,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
         <div class="ep-inner">
           <div class="ep-header">
             <span class="ep-title" id="epTitle">Key editor</span>
-            <button class="ep-close" onclick="closeEditor()" title="Close">&#x2715;</button>
+            <button class="ep-close icon-only" onclick="closeEditor()" title="Close" aria-label="Close editor">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
           </div>
           <div class="ep-tabs">
             <button class="ep-tab active" id="tabNote"  onclick="switchTab('note')">Note</button>
@@ -1225,8 +1417,14 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
           </div>
           <div class="ep-footer">
-            <button onclick="clearKey()">Reset</button>
-            <button class="primary" id="pushBtn" data-push-layer onclick="pushCurrentLayer()" disabled>Push to keyboard</button>
+            <button class="icon-btn" onclick="clearKey()">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
+              Reset
+            </button>
+            <button class="primary icon-btn" id="pushBtn" data-push-layer onclick="pushCurrentLayer()" disabled>
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/><path d="M5 19h14"/></svg>
+              Push to keyboard
+            </button>
           </div>
         </div>
       </div>
@@ -1241,7 +1439,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
 <div id="vizOverlay" style="display:none;position:fixed;inset:0;background:#000;z-index:1000;">
   <canvas id="vizCanvas" style="width:100%;height:100%;display:block;"></canvas>
-  <button id="vizExitBtn" onclick="exitVisualizer()" style="position:absolute;top:16px;right:16px;background:#17171a;border:1px solid #2a2a30;color:#e8e8ec;font-family:'DM Mono',monospace;font-size:12px;padding:6px 14px;border-radius:6px;cursor:pointer;">Exit</button>
+  <button id="vizExitBtn" class="icon-btn" onclick="exitVisualizer()" style="position:absolute;top:16px;right:16px;background:#17171a;border:1px solid #2a2a30;color:#e8e8ec;font-family:'DM Mono',monospace;font-size:12px;padding:6px 14px;border-radius:6px;cursor:pointer;">
+    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    Exit
+  </button>
 </div>
 
 <script>
@@ -1275,6 +1476,24 @@ const SWATCHES = ['#534AB7','#1D9E75','#D85A30','#D4537E','#378ADD','#BA7517','#
 const NOTE_MAP   = {C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
 const FLAT_MAP   = {Db:'C#',Eb:'D#',Fb:'E',Gb:'F#',Ab:'G#',Bb:'A#',Cb:'B'};
 const MIDI_NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+const ICONS = {
+  plug: '<path d="M12 2v6"/><path d="M8 6h8"/><path d="M8 12h8"/><path d="M10 18h4"/><path d="M12 22v-4"/><path d="M7 8h10v5a5 5 0 0 1-10 0z"/>',
+  unplug: '<path d="m5 5 14 14"/><path d="M12 2v4"/><path d="M8 6h5"/><path d="M8 12h8"/><path d="M10 18h4"/><path d="M12 22v-4"/><path d="M7 8h10v5a5 5 0 0 1-.8 2.7"/>',
+  upload: '<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/><path d="M5 19h14"/>',
+  visualizer: '<path d="M4 18V8"/><path d="M8 18V4"/><path d="M12 18v-7"/><path d="M16 18V6"/><path d="M20 18v-4"/>',
+  trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/>'
+};
+
+function icon(name, cls = 'icon icon-sm') {
+  return `<svg class="${cls}" viewBox="0 0 24 24">${ICONS[name] || ''}</svg>`;
+}
+
+function setTopConnectButton(label, handler, iconName) {
+  const btn = document.getElementById('topConnBtn');
+  btn.innerHTML = `${icon(iconName)}${label}`;
+  btn.onclick = handler;
+}
 
 function parseNote(str) {
   str = str.trim();
@@ -1340,8 +1559,7 @@ async function connectSerial() {
     document.getElementById('brandDot').classList.remove('disconnected');
     document.getElementById('connStatus').textContent = 'Connected';
     document.getElementById('connStatus').classList.add('connected');
-    document.getElementById('topConnBtn').textContent = 'Disconnect';
-    document.getElementById('topConnBtn').onclick = disconnectSerial;
+    setTopConnectButton('Disconnect', disconnectSerial, 'unplug');
     document.getElementById('pushBtn').disabled = false;
     setSyncState(dirtyLayers.size ? 'dirty' : 'synced');
     log('Connected — syncing state…', 'ok');
@@ -1367,8 +1585,7 @@ async function disconnectSerial() {
   document.getElementById('brandDot').classList.add('disconnected');
   document.getElementById('connStatus').textContent = 'Not connected';
   document.getElementById('connStatus').classList.remove('connected');
-  document.getElementById('topConnBtn').textContent = 'Connect';
-  document.getElementById('topConnBtn').onclick = connectSerial;
+  setTopConnectButton('Connect', connectSerial, 'plug');
   document.getElementById('pushBtn').disabled = true;
   setSyncState(dirtyLayers.size ? 'dirty' : 'local');
   log('Disconnected');
@@ -1590,11 +1807,11 @@ function selectCustomLayer(idx) {
   };
   document.getElementById('toolbarActions').innerHTML = `
     <div class="action-group">
-      <button data-push-layer data-icon="⇧" onclick="pushCurrentLayer()" ${connected?'':'disabled'}>Push to keyboard</button>
-      <button id="vizBtn" data-icon="▦" onclick="enterVisualizer()">Visualizer</button>
+      <button class="icon-btn" data-push-layer onclick="pushCurrentLayer()" ${connected?'':'disabled'}>${icon('upload')}Push to keyboard</button>
+      <button class="icon-btn" id="vizBtn" onclick="enterVisualizer()">${icon('visualizer')}Visualizer</button>
     </div>
     <div class="action-group danger-zone">
-      <button class="danger" data-icon="×" onclick="deleteLayer(${idx})">Delete</button>
+      <button class="danger icon-btn" onclick="deleteLayer(${idx})">${icon('trash')}Delete</button>
     </div>`;
   renderEncoders(idx);
   updateLayerChrome();
