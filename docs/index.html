@@ -401,8 +401,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .key {
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--kc, #888780) 62%, #0a0a0a) 0%,
-    color-mix(in srgb, var(--kc, #888780) 44%, #000) 100%
+    color-mix(in srgb, var(--kc, #00F5FF) 92%, #fff) 0%,
+    color-mix(in srgb, var(--kc, #00F5FF) 78%, #000) 100%
   );
   border: none;
   border-radius: 4px;
@@ -420,7 +420,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     inset 0 1px 0 rgba(255,255,255,0.16),
     inset 0 -1px 0 rgba(0,0,0,0.28),
     0 0 0 1px rgba(0,0,0,0.55),
-    0 3px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
+    0 3px 0 color-mix(in srgb, var(--kc, #00F5FF) 44%, #000),
     0 4px 10px rgba(0,0,0,0.35);
 }
 .key::before {
@@ -438,7 +438,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     inset 0 1px 0 rgba(255,255,255,0.22),
     inset 0 -1px 0 rgba(0,0,0,0.22),
     0 0 0 1px rgba(0,0,0,0.5),
-    0 4px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
+    0 4px 0 color-mix(in srgb, var(--kc, #00F5FF) 44%, #000),
     0 6px 14px rgba(0,0,0,0.4);
 }
 .key:hover:not(.ro)::before { background: rgba(255,255,255,0.22); }
@@ -447,7 +447,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   box-shadow:
     inset 0 2px 4px rgba(0,0,0,0.28),
     0 0 0 1px rgba(0,0,0,0.6),
-    0 1px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
+    0 1px 0 color-mix(in srgb, var(--kc, #00F5FF) 44%, #000),
     0 2px 6px rgba(0,0,0,0.28);
 }
 .key.selected {
@@ -456,7 +456,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     inset 0 -1px 0 rgba(0,0,0,0.28),
     0 0 0 2px var(--accent),
     0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent),
-    0 3px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
+    0 3px 0 color-mix(in srgb, var(--kc, #00F5FF) 44%, #000),
     0 4px 10px rgba(0,0,0,0.35),
     0 0 10px color-mix(in srgb, var(--accent) 25%, transparent);
 }
@@ -465,13 +465,13 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   cursor: default;
   background:
     repeating-linear-gradient(135deg,
-      color-mix(in srgb, var(--kc, #888780) 30%, var(--surface)) 0 6px,
-      color-mix(in srgb, var(--kc, #888780) 22%, var(--surface)) 6px 12px);
-  border: 1px solid color-mix(in srgb, var(--kc, #888780) 42%, var(--border));
+      color-mix(in srgb, var(--kc, #00F5FF) 58%, var(--surface)) 0 6px,
+      color-mix(in srgb, var(--kc, #00F5FF) 42%, var(--surface)) 6px 12px);
+  border: 1px solid color-mix(in srgb, var(--kc, #00F5FF) 70%, var(--border));
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.08),
     0 0 0 1px rgba(0,0,0,0.28);
-  opacity: 0.82;
+  opacity: 0.96;
 }
 .key-ripple {
   position: absolute;
@@ -623,10 +623,10 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   opacity: 0.75;
   box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 42%, transparent);
 }
-.control-card-head.hid::before { background: #378ADD; }
-.control-card-head.consumer::before { background: #D85A30; }
+.control-card-head.hid::before { background: #00A3FF; }
+.control-card-head.consumer::before { background: #FF6A00; }
 .control-card-head.label::before { background: var(--warning); }
-.control-card-head.chord::before { background: #D4537E; }
+.control-card-head.chord::before { background: #FF2D8D; }
 .control-card-head.color::before { background: var(--accent); }
 
 .field { display: flex; flex-direction: column; gap: 5px; }
@@ -1245,17 +1245,17 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">Built-in</div>
     <button class="mode-btn readonly" onclick="setMode('manual',this)">
-      <span class="mode-dot" style="background:#378ADD;"></span>
+      <span class="mode-dot" style="background:#00A3FF;"></span>
       Manual
       <span class="mode-badge ro">RO</span>
     </button>
     <button class="mode-btn readonly" onclick="setMode('smart',this)">
-      <span class="mode-dot" style="background:#1D9E75;"></span>
+      <span class="mode-dot" style="background:#00FF9C;"></span>
       Smart
       <span class="mode-badge ro">RO</span>
     </button>
     <button class="mode-btn readonly" onclick="setMode('drum',this)">
-      <span class="mode-dot" style="background:#D85A30;"></span>
+      <span class="mode-dot" style="background:#FF6A00;"></span>
       Drum
       <span class="mode-badge ro">RO</span>
     </button>
@@ -1516,7 +1516,11 @@ const INTERVALS = [
   {name:'11', semi:17}, {name:'#11', semi:18}, {name:'13',  semi:21},
 ];
 
-const SWATCHES = ['#534AB7','#1D9E75','#D85A30','#D4537E','#378ADD','#BA7517','#E24B4A','#888780'];
+const SWATCHES = [
+  '#FF2B2B', '#FF6A00', '#FFC400', '#F8FF00', '#73FF00', '#00FF45', '#00FF9C',
+  '#00FFD1', '#00F5FF', '#00A3FF', '#3D5AFE', '#7C3CFF', '#B000FF', '#FF00D4',
+  '#FF2D8D', '#FF5EC4', '#FF8A00', '#36FF00', '#00D5FF', '#FFFFFF'
+];
 
 const NOTE_MAP   = {C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
 const FLAT_MAP   = {Db:'C#',Eb:'D#',Fb:'E',Gb:'F#',Ab:'G#',Bb:'A#',Cb:'B'};
@@ -1745,20 +1749,20 @@ function mkKey(overrides = {}) {
     keys: [],
     code: '',
     label: '',
-    color: '#888780',
+    color: '#00F5FF',
     ...overrides
   };
 }
 
-function hidKey(label, keys, color = '#378ADD') {
+function hidKey(label, keys, color = '#00A3FF') {
   return mkKey({type:'hid', keys, label, color});
 }
 
-function consumerKey(label, code, color = '#D85A30') {
+function consumerKey(label, code, color = '#FF6A00') {
   return mkKey({type:'consumer', code, label, color});
 }
 
-function emptyKey(label = '', color = '#888780') {
+function emptyKey(label = '', color = '#00F5FF') {
   return mkKey({label, color});
 }
 
@@ -1766,46 +1770,46 @@ const LAYER_TEMPLATES = {
   daw: {
     name: 'DAW Shortcuts',
     keys: [
-      hidKey('PLY', ['SPACE'], '#1D9E75'), hidKey('REC', ['R'], '#E24B4A'), hidKey('LOP', ['L'], '#534AB7'), hidKey('MET', ['K'], '#534AB7'), hidKey('SAV', ['CMD','S'], '#378ADD'), hidKey('UND', ['CMD','Z'], '#378ADD'), hidKey('RED', ['CMD','SHIFT','Z'], '#378ADD'),
-      hidKey('CUT', ['CMD','X'], '#BA7517'), hidKey('CPY', ['CMD','C'], '#BA7517'), hidKey('PST', ['CMD','V'], '#BA7517'), hidKey('ALL', ['CMD','A'], '#BA7517'), hidKey('DUP', ['CMD','D'], '#BA7517'), hidKey('DEL', ['DELETE'], '#E24B4A'), hidKey('QNT', ['Q'], '#D4537E'),
-      hidKey('LFT', ['LEFT'], '#378ADD'), hidKey('RGT', ['RIGHT'], '#378ADD'), hidKey('UP', ['UP'], '#378ADD'), hidKey('DWN', ['DOWN'], '#378ADD'), hidKey('HOM', ['HOME'], '#378ADD'), hidKey('END', ['END'], '#378ADD'), hidKey('FND', ['CMD','F'], '#378ADD'),
-      hidKey('MUT', ['M'], '#D85A30'), hidKey('SOL', ['S'], '#D85A30'), hidKey('ARM', ['A'], '#E24B4A'), hidKey('GRD', ['G'], '#534AB7'), hidKey('PG-', ['PAGE_DOWN'], '#1D9E75'), hidKey('PG+', ['PAGE_UP'], '#1D9E75'), hidKey('ESC', ['ESCAPE'], '#888780'),
+      hidKey('PLY', ['SPACE'], '#00FF9C'), hidKey('REC', ['R'], '#FF2B2B'), hidKey('LOP', ['L'], '#7C3CFF'), hidKey('MET', ['K'], '#7C3CFF'), hidKey('SAV', ['CMD','S'], '#00A3FF'), hidKey('UND', ['CMD','Z'], '#00A3FF'), hidKey('RED', ['CMD','SHIFT','Z'], '#00A3FF'),
+      hidKey('CUT', ['CMD','X'], '#FFC400'), hidKey('CPY', ['CMD','C'], '#FFC400'), hidKey('PST', ['CMD','V'], '#FFC400'), hidKey('ALL', ['CMD','A'], '#FFC400'), hidKey('DUP', ['CMD','D'], '#FFC400'), hidKey('DEL', ['DELETE'], '#FF2B2B'), hidKey('QNT', ['Q'], '#FF2D8D'),
+      hidKey('LFT', ['LEFT'], '#00A3FF'), hidKey('RGT', ['RIGHT'], '#00A3FF'), hidKey('UP', ['UP'], '#00A3FF'), hidKey('DWN', ['DOWN'], '#00A3FF'), hidKey('HOM', ['HOME'], '#00A3FF'), hidKey('END', ['END'], '#00A3FF'), hidKey('FND', ['CMD','F'], '#00A3FF'),
+      hidKey('MUT', ['M'], '#FF6A00'), hidKey('SOL', ['S'], '#FF6A00'), hidKey('ARM', ['A'], '#FF2B2B'), hidKey('GRD', ['G'], '#7C3CFF'), hidKey('PG-', ['PAGE_DOWN'], '#00FF9C'), hidKey('PG+', ['PAGE_UP'], '#00FF9C'), hidKey('ESC', ['ESCAPE'], '#00F5FF'),
     ]
   },
   browser: {
     name: 'Browser / System',
     keys: [
-      hidKey('URL', ['CMD','L'], '#378ADD'), hidKey('NEW', ['CMD','T'], '#378ADD'), hidKey('CLS', ['CMD','W'], '#E24B4A'), hidKey('REO', ['CMD','SHIFT','T'], '#1D9E75'), hidKey('RLD', ['CMD','R'], '#1D9E75'), hidKey('FND', ['CMD','F'], '#534AB7'), hidKey('FUL', ['CMD','CTRL','F'], '#534AB7'),
-      hidKey('BCK', ['CMD','LEFT'], '#BA7517'), hidKey('FWD', ['CMD','RIGHT'], '#BA7517'), hidKey('TAB', ['CTRL','TAB'], '#378ADD'), hidKey('TB-', ['CTRL','SHIFT','TAB'], '#378ADD'), hidKey('TOP', ['HOME'], '#888780'), hidKey('BOT', ['END'], '#888780'), hidKey('ESC', ['ESCAPE'], '#888780'),
-      hidKey('CPY', ['CMD','C'], '#D85A30'), hidKey('PST', ['CMD','V'], '#D85A30'), hidKey('CUT', ['CMD','X'], '#D85A30'), hidKey('ALL', ['CMD','A'], '#D85A30'), hidKey('SAV', ['CMD','S'], '#1D9E75'), hidKey('PRT', ['CMD','P'], '#1D9E75'), hidKey('SHR', ['CMD','SHIFT','S'], '#1D9E75'),
-      hidKey('SPT', ['CMD','SPACE'], '#534AB7'), hidKey('APP', ['CMD','TAB'], '#534AB7'), hidKey('QIT', ['CMD','Q'], '#E24B4A'), consumerKey('PLY', 'PLAY_PAUSE', '#1D9E75'), consumerKey('PRV', 'SCAN_PREVIOUS_TRACK', '#1D9E75'), consumerKey('NXT', 'SCAN_NEXT_TRACK', '#1D9E75'), consumerKey('MUT', 'MUTE', '#E24B4A'),
+      hidKey('URL', ['CMD','L'], '#00A3FF'), hidKey('NEW', ['CMD','T'], '#00A3FF'), hidKey('CLS', ['CMD','W'], '#FF2B2B'), hidKey('REO', ['CMD','SHIFT','T'], '#00FF9C'), hidKey('RLD', ['CMD','R'], '#00FF9C'), hidKey('FND', ['CMD','F'], '#7C3CFF'), hidKey('FUL', ['CMD','CTRL','F'], '#7C3CFF'),
+      hidKey('BCK', ['CMD','LEFT'], '#FFC400'), hidKey('FWD', ['CMD','RIGHT'], '#FFC400'), hidKey('TAB', ['CTRL','TAB'], '#00A3FF'), hidKey('TB-', ['CTRL','SHIFT','TAB'], '#00A3FF'), hidKey('TOP', ['HOME'], '#00F5FF'), hidKey('BOT', ['END'], '#00F5FF'), hidKey('ESC', ['ESCAPE'], '#00F5FF'),
+      hidKey('CPY', ['CMD','C'], '#FF6A00'), hidKey('PST', ['CMD','V'], '#FF6A00'), hidKey('CUT', ['CMD','X'], '#FF6A00'), hidKey('ALL', ['CMD','A'], '#FF6A00'), hidKey('SAV', ['CMD','S'], '#00FF9C'), hidKey('PRT', ['CMD','P'], '#00FF9C'), hidKey('SHR', ['CMD','SHIFT','S'], '#00FF9C'),
+      hidKey('SPT', ['CMD','SPACE'], '#7C3CFF'), hidKey('APP', ['CMD','TAB'], '#7C3CFF'), hidKey('QIT', ['CMD','Q'], '#FF2B2B'), consumerKey('PLY', 'PLAY_PAUSE', '#00FF9C'), consumerKey('PRV', 'SCAN_PREVIOUS_TRACK', '#00FF9C'), consumerKey('NXT', 'SCAN_NEXT_TRACK', '#00FF9C'), consumerKey('MUT', 'MUTE', '#FF2B2B'),
     ]
   },
   media: {
     name: 'Media Controls',
     keys: [
-      consumerKey('PLY', 'PLAY_PAUSE', '#1D9E75'), consumerKey('STP', 'STOP', '#E24B4A'), consumerKey('PRV', 'SCAN_PREVIOUS_TRACK', '#378ADD'), consumerKey('NXT', 'SCAN_NEXT_TRACK', '#378ADD'), consumerKey('RWD', 'REWIND', '#534AB7'), consumerKey('FWD', 'FAST_FORWARD', '#534AB7'), consumerKey('EJT', 'EJECT', '#888780'),
-      consumerKey('V+', 'VOLUME_INCREMENT', '#1D9E75'), consumerKey('V-', 'VOLUME_DECREMENT', '#BA7517'), consumerKey('MUT', 'MUTE', '#E24B4A'), hidKey('SPC', ['SPACE'], '#378ADD'), hidKey('ENT', ['ENTER'], '#378ADD'), hidKey('ESC', ['ESCAPE'], '#888780'), hidKey('TAB', ['TAB'], '#888780'),
-      hidKey('LFT', ['LEFT'], '#378ADD'), hidKey('RGT', ['RIGHT'], '#378ADD'), hidKey('UP', ['UP'], '#378ADD'), hidKey('DWN', ['DOWN'], '#378ADD'), hidKey('HOM', ['HOME'], '#888780'), hidKey('END', ['END'], '#888780'), hidKey('FUL', ['F'], '#534AB7'),
-      hidKey('1', ['1'], '#888780'), hidKey('2', ['2'], '#888780'), hidKey('3', ['3'], '#888780'), hidKey('4', ['4'], '#888780'), hidKey('5', ['5'], '#888780'), hidKey('6', ['6'], '#888780'), hidKey('7', ['7'], '#888780'),
+      consumerKey('PLY', 'PLAY_PAUSE', '#00FF9C'), consumerKey('STP', 'STOP', '#FF2B2B'), consumerKey('PRV', 'SCAN_PREVIOUS_TRACK', '#00A3FF'), consumerKey('NXT', 'SCAN_NEXT_TRACK', '#00A3FF'), consumerKey('RWD', 'REWIND', '#7C3CFF'), consumerKey('FWD', 'FAST_FORWARD', '#7C3CFF'), consumerKey('EJT', 'EJECT', '#00F5FF'),
+      consumerKey('V+', 'VOLUME_INCREMENT', '#00FF9C'), consumerKey('V-', 'VOLUME_DECREMENT', '#FFC400'), consumerKey('MUT', 'MUTE', '#FF2B2B'), hidKey('SPC', ['SPACE'], '#00A3FF'), hidKey('ENT', ['ENTER'], '#00A3FF'), hidKey('ESC', ['ESCAPE'], '#00F5FF'), hidKey('TAB', ['TAB'], '#00F5FF'),
+      hidKey('LFT', ['LEFT'], '#00A3FF'), hidKey('RGT', ['RIGHT'], '#00A3FF'), hidKey('UP', ['UP'], '#00A3FF'), hidKey('DWN', ['DOWN'], '#00A3FF'), hidKey('HOM', ['HOME'], '#00F5FF'), hidKey('END', ['END'], '#00F5FF'), hidKey('FUL', ['F'], '#7C3CFF'),
+      hidKey('1', ['1'], '#00F5FF'), hidKey('2', ['2'], '#00F5FF'), hidKey('3', ['3'], '#00F5FF'), hidKey('4', ['4'], '#00F5FF'), hidKey('5', ['5'], '#00F5FF'), hidKey('6', ['6'], '#00F5FF'), hidKey('7', ['7'], '#00F5FF'),
     ]
   },
   stream: {
     name: 'OBS / Streaming',
     keys: [
-      hidKey('SC1', ['F1'], '#534AB7'), hidKey('SC2', ['F2'], '#534AB7'), hidKey('SC3', ['F3'], '#534AB7'), hidKey('SC4', ['F4'], '#534AB7'), hidKey('SC5', ['F5'], '#534AB7'), hidKey('SC6', ['F6'], '#534AB7'), hidKey('SC7', ['F7'], '#534AB7'),
-      hidKey('REC', ['F8'], '#E24B4A'), hidKey('STR', ['F9'], '#E24B4A'), hidKey('PAU', ['F10'], '#BA7517'), hidKey('MRK', ['F11'], '#1D9E75'), hidKey('MIC', ['F12'], '#D85A30'), consumerKey('MUT', 'MUTE', '#E24B4A'), consumerKey('PLY', 'PLAY_PAUSE', '#1D9E75'),
-      hidKey('CAM', ['CMD','F1'], '#378ADD'), hidKey('SCR', ['CMD','F2'], '#378ADD'), hidKey('BRB', ['CMD','F3'], '#378ADD'), hidKey('END', ['CMD','F4'], '#378ADD'), hidKey('AUD', ['CMD','F5'], '#D85A30'), hidKey('CHT', ['CMD','F6'], '#1D9E75'), hidKey('ALT', ['CMD','F7'], '#888780'),
-      hidKey('V+', ['CMD','UP'], '#1D9E75'), hidKey('V-', ['CMD','DOWN'], '#BA7517'), hidKey('MXR', ['CMD','M'], '#D85A30'), hidKey('SNP', ['CMD','SHIFT','S'], '#378ADD'), hidKey('FUL', ['CMD','CTRL','F'], '#534AB7'), hidKey('ESC', ['ESCAPE'], '#888780'), hidKey('TAB', ['TAB'], '#888780'),
+      hidKey('SC1', ['F1'], '#7C3CFF'), hidKey('SC2', ['F2'], '#7C3CFF'), hidKey('SC3', ['F3'], '#7C3CFF'), hidKey('SC4', ['F4'], '#7C3CFF'), hidKey('SC5', ['F5'], '#7C3CFF'), hidKey('SC6', ['F6'], '#7C3CFF'), hidKey('SC7', ['F7'], '#7C3CFF'),
+      hidKey('REC', ['F8'], '#FF2B2B'), hidKey('STR', ['F9'], '#FF2B2B'), hidKey('PAU', ['F10'], '#FFC400'), hidKey('MRK', ['F11'], '#00FF9C'), hidKey('MIC', ['F12'], '#FF6A00'), consumerKey('MUT', 'MUTE', '#FF2B2B'), consumerKey('PLY', 'PLAY_PAUSE', '#00FF9C'),
+      hidKey('CAM', ['CMD','F1'], '#00A3FF'), hidKey('SCR', ['CMD','F2'], '#00A3FF'), hidKey('BRB', ['CMD','F3'], '#00A3FF'), hidKey('END', ['CMD','F4'], '#00A3FF'), hidKey('AUD', ['CMD','F5'], '#FF6A00'), hidKey('CHT', ['CMD','F6'], '#00FF9C'), hidKey('ALT', ['CMD','F7'], '#00F5FF'),
+      hidKey('V+', ['CMD','UP'], '#00FF9C'), hidKey('V-', ['CMD','DOWN'], '#FFC400'), hidKey('MXR', ['CMD','M'], '#FF6A00'), hidKey('SNP', ['CMD','SHIFT','S'], '#00A3FF'), hidKey('FUL', ['CMD','CTRL','F'], '#7C3CFF'), hidKey('ESC', ['ESCAPE'], '#00F5FF'), hidKey('TAB', ['TAB'], '#00F5FF'),
     ]
   },
   slides: {
     name: 'Presentation',
     keys: [
-      hidKey('NXT', ['RIGHT'], '#1D9E75'), hidKey('PRV', ['LEFT'], '#BA7517'), hidKey('UP', ['UP'], '#378ADD'), hidKey('DWN', ['DOWN'], '#378ADD'), hidKey('BLK', ['B'], '#888780'), hidKey('WHT', ['W'], '#888780'), hidKey('ESC', ['ESCAPE'], '#E24B4A'),
-      hidKey('F5', ['F5'], '#534AB7'), hidKey('SFT', ['SHIFT','F5'], '#534AB7'), hidKey('1', ['1'], '#378ADD'), hidKey('2', ['2'], '#378ADD'), hidKey('3', ['3'], '#378ADD'), hidKey('4', ['4'], '#378ADD'), hidKey('5', ['5'], '#378ADD'),
-      hidKey('URL', ['CMD','L'], '#1D9E75'), hidKey('PG+', ['PAGE_UP'], '#1D9E75'), hidKey('PG-', ['PAGE_DOWN'], '#BA7517'), hidKey('FND', ['CMD','F'], '#378ADD'), hidKey('SAV', ['CMD','S'], '#1D9E75'), hidKey('PRT', ['CMD','P'], '#888780'), hidKey('FUL', ['CMD','CTRL','F'], '#534AB7'),
-      consumerKey('V+', 'VOLUME_INCREMENT', '#1D9E75'), consumerKey('V-', 'VOLUME_DECREMENT', '#BA7517'), consumerKey('MUT', 'MUTE', '#E24B4A'), consumerKey('PLY', 'PLAY_PAUSE', '#1D9E75'), hidKey('TAB', ['TAB'], '#888780'), hidKey('ENT', ['ENTER'], '#378ADD'), hidKey('SPC', ['SPACE'], '#378ADD'),
+      hidKey('NXT', ['RIGHT'], '#00FF9C'), hidKey('PRV', ['LEFT'], '#FFC400'), hidKey('UP', ['UP'], '#00A3FF'), hidKey('DWN', ['DOWN'], '#00A3FF'), hidKey('BLK', ['B'], '#00F5FF'), hidKey('WHT', ['W'], '#00F5FF'), hidKey('ESC', ['ESCAPE'], '#FF2B2B'),
+      hidKey('F5', ['F5'], '#7C3CFF'), hidKey('SFT', ['SHIFT','F5'], '#7C3CFF'), hidKey('1', ['1'], '#00A3FF'), hidKey('2', ['2'], '#00A3FF'), hidKey('3', ['3'], '#00A3FF'), hidKey('4', ['4'], '#00A3FF'), hidKey('5', ['5'], '#00A3FF'),
+      hidKey('URL', ['CMD','L'], '#00FF9C'), hidKey('PG+', ['PAGE_UP'], '#00FF9C'), hidKey('PG-', ['PAGE_DOWN'], '#FFC400'), hidKey('FND', ['CMD','F'], '#00A3FF'), hidKey('SAV', ['CMD','S'], '#00FF9C'), hidKey('PRT', ['CMD','P'], '#00F5FF'), hidKey('FUL', ['CMD','CTRL','F'], '#7C3CFF'),
+      consumerKey('V+', 'VOLUME_INCREMENT', '#00FF9C'), consumerKey('V-', 'VOLUME_DECREMENT', '#FFC400'), consumerKey('MUT', 'MUTE', '#FF2B2B'), consumerKey('PLY', 'PLAY_PAUSE', '#00FF9C'), hidKey('TAB', ['TAB'], '#00F5FF'), hidKey('ENT', ['ENTER'], '#00A3FF'), hidKey('SPC', ['SPACE'], '#00A3FF'),
     ]
   },
 };
@@ -2029,10 +2033,10 @@ const READONLY_DATA = {
       ['C3','D3','E3','F3','G3','A3','B3'],
       ['Maj','Min','7th','Add9','Sus4','Int2','Int3'],
     ],
-    colors: ['#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
-             '#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11',
-             '#854F0B','#854F0B','#854F0B','#854F0B','#854F0B','#854F0B','#854F0B',
-             '#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7'],
+    colors: ['#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF',
+             '#36FF00','#36FF00','#36FF00','#36FF00','#36FF00','#36FF00','#36FF00',
+             '#FF8A00','#FF8A00','#FF8A00','#FF8A00','#FF8A00','#FF8A00','#FF8A00',
+             '#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF'],
     subs: ['','','','','','','','','','','','','','','','','','','','','','Mod','Mod','Mod','Mod','Mod','Mod','Mod'],
   },
   smart: {
@@ -2042,10 +2046,10 @@ const READONLY_DATA = {
       ['C Maj','D Min','E Min','F Maj','G Maj','A Min','B Dim'],
       ['+7th','+9th','Sus4','Sus2','1Inv','2Inv','Sub'],
     ],
-    colors: ['#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
-             '#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
-             '#0F6E56','#993C1D','#993C1D','#0F6E56','#0F6E56','#993C1D','#5F5E5A',
-             '#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7'],
+    colors: ['#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF',
+             '#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF',
+             '#00FF9C','#FF3D00','#FF3D00','#00FF9C','#00FF9C','#FF3D00','#F8FF00',
+             '#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF'],
     subs: [],
   },
   drum: {
@@ -2055,10 +2059,10 @@ const READONLY_DATA = {
       ['SNR','SN2','RIM','CLP','HHC','HHP','HHO'],
       ['KK1','KK2','KK3','KKS','KKM','KKL','KKX'],
     ],
-    colors: ['#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#888780',
-             '#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11',
-             '#854F0B','#854F0B','#854F0B','#854F0B','#185FA5','#185FA5','#185FA5',
-             '#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D'],
+    colors: ['#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#00F5FF',
+             '#36FF00','#36FF00','#36FF00','#36FF00','#36FF00','#36FF00','#36FF00',
+             '#FF8A00','#FF8A00','#FF8A00','#FF8A00','#006BFF','#006BFF','#006BFF',
+             '#FF2B2B','#FF2B2B','#FF2B2B','#FF2B2B','#FF2B2B','#FF2B2B','#FF2B2B'],
     subs: [],
   }
 };
@@ -2365,7 +2369,7 @@ function clearKey() {
   if (selectedKey === null || typeof currentMode !== 'number') return;
   customLayers[currentMode].keys[selectedKey] = {
     type:'midi', note:'C4', intervals:[], channel:1, velocity:'global',
-    keys:[], code:'', label:'', color:'#888780'
+    keys:[], code:'', label:'', color:'#00F5FF'
   };
   markLayerDirty(currentMode);
   populateEditor(selectedKey);
