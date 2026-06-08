@@ -1401,35 +1401,59 @@ async function startReader() {
   }
 }
 
+// Buffer for streaming layer sync
+let _syncLayers = null;
+let _syncExpected = 0;
+
 function handleIncoming(line) {
   let msg;
   try { msg = JSON.parse(line); } catch { return; }
+
   if (msg.type === 'state') {
-    const layers = msg.custom_layers || [];
-    if (layers.length > 0) {
-      // Full sync — rebuild customLayers from board data
-      const defKey = mkDefaultLayer('_').keys[0];
-      customLayers = layers.map((l, i) => {
-        const def = mkDefaultLayer(l.name || `Layer ${i + 1}`);
-        return {
-          name:  l.name || def.name,
-          keys:  l.keys?.length
-            ? l.keys.map(k => ({ ...defKey, ...k }))
-            : def.keys,
-          enc1:  l.enc1 || def.enc1,
-          enc2:  l.enc2 || def.enc2,
-        };
-      });
-    } else {
-      // Fallback — names only (old firmware)
-      const names = msg.custom_layer_names || [];
-      while (customLayers.length < names.length)
-        customLayers.push(mkDefaultLayer(`Layer ${customLayers.length + 1}`));
-      names.forEach((n, i) => { customLayers[i].name = n; });
+    // Header arrived — initialize buffer for the streaming layer payloads to follow
+    _syncExpected = msg.custom_layer_count ?? (msg.custom_layer_names || []).length;
+    _syncLayers = new Array(_syncExpected);
+    const names = msg.custom_layer_names || [];
+    // Seed with name-only defaults so sidebar isnt empty during streaming
+    customLayers = names.map((n, i) => mkDefaultLayer(n || `Layer ${i + 1}`));
+    renderSidebar();
+    log(`Receiving ${_syncExpected} layer(s)…`);
+    dirtyLayers.clear();
+    updateSyncPill();
+
+  } else if (msg.type === 'layer') {
+    // One layer payload — merge with default key shape
+    if (!_syncLayers) {
+      console.warn('Got layer msg but no buffer initialized');
+      return;
     }
+    const defKey = mkDefaultLayer('_').keys[0];
+    const def    = mkDefaultLayer(msg.name || `Layer ${msg.idx + 1}`);
+    const incomingKeys = Array.isArray(msg.keys) ? msg.keys : [];
+    console.log(`Layer ${msg.idx} received — ${incomingKeys.length} keys, first key:`, incomingKeys[0]);
+    _syncLayers[msg.idx] = {
+      name: msg.name || def.name,
+      keys: incomingKeys.length ? incomingKeys.map(k => ({ ...defKey, ...k })) : def.keys,
+      enc1: msg.enc1 && Object.keys(msg.enc1).length ? msg.enc1 : def.enc1,
+      enc2: msg.enc2 && Object.keys(msg.enc2).length ? msg.enc2 : def.enc2,
+    };
+    // Commit incrementally so each layer becomes visible as it arrives — no need to wait for state_done
+    customLayers = _syncLayers.map((l, i) => l || customLayers[i] || mkDefaultLayer(`Layer ${i+1}`));
+    renderSidebar();
+
+  } else if (msg.type === 'state_done') {
+    // Final commit — all layers arrived
+    if (_syncLayers) {
+      customLayers = _syncLayers.map((l, i) => l || mkDefaultLayer(`Layer ${i+1}`));
+      _syncLayers = null;
+    }
+    dirtyLayers.clear();
     renderSidebar();
     if (customLayers.length > 0 && currentMode === null) selectCustomLayer(0);
+    updateSyncPill();
     log(`Synced — ${customLayers.length} custom layer(s)`, 'ok');
+    console.log('Sync complete. customLayers:', customLayers);
+
   } else if (msg.type === 'ack') {
     if      (msg.cmd === 'push_layer')    { log(`Layer ${msg.idx} pushed ${msg.saved ? '& saved' : '(not saved)'}`, 'ok'); markClean(msg.idx); }
     else if (msg.cmd === 'set_mode')      log(`Keyboard switched to mode ${msg.mode}`, 'ok');
