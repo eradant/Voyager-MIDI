@@ -265,8 +265,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .key {
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--kc, #888780) 62%, #0a0a0a) 0%,
-    color-mix(in srgb, var(--kc, #888780) 44%, #000) 100%
+    color-mix(in srgb, var(--kc, #888780) 78%, #0a0a0a) 0%,
+    color-mix(in srgb, var(--kc, #888780) 55%, #000) 100%
   );
   border: none;
   border-radius: 4px;
@@ -1226,7 +1226,7 @@ const INTERVALS = [
   {name:'11', semi:17}, {name:'#11', semi:18}, {name:'13',  semi:21},
 ];
 
-const SWATCHES = ['#534AB7','#1D9E75','#D85A30','#D4537E','#378ADD','#BA7517','#E24B4A','#888780'];
+const SWATCHES = ['#7B5CF0','#00D68F','#D85A30','#FF4D8D','#2288FF','#FF8C00','#FF3B3B','#9090A0'];
 
 const NOTE_MAP   = {C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
 const FLAT_MAP   = {Db:'C#',Eb:'D#',Fb:'E',Gb:'F#',Ab:'G#',Bb:'A#',Cb:'B'};
@@ -1477,33 +1477,98 @@ const LAYER_TEMPLATES = {
   midi: (name) => mkDefaultLayer(name),
 
   media: (name) => {
+    // 28 unique consumer/media controls — grouped by function
     const MEDIA_KEYS = [
-      {code:'VOLUME_INCREMENT',  label:'VOL+', color:'#1D9E75'},
-      {code:'VOLUME_DECREMENT',  label:'VOL-', color:'#1D9E75'},
-      {code:'MUTE',              label:'MUT',  color:'#E24B4A'},
-      {code:'PLAY_PAUSE',        label:'PLY',  color:'#378ADD'},
-      {code:'SCAN_NEXT_TRACK',   label:'NXT',  color:'#534AB7'},
-      {code:'SCAN_PREVIOUS_TRACK',label:'PRV', color:'#534AB7'},
-      {code:'FAST_FORWARD',      label:'FFW',  color:'#BA7517'},
-      {code:'REWIND',            label:'REW',  color:'#BA7517'},
-      {code:'STOP',              label:'STP',  color:'#D4537E'},
-      {code:'EJECT',             label:'EJT',  color:'#888780'},
+      // Playback (row 0)
+      {code:'PLAY_PAUSE',          label:'PLY', color:'#2288FF'},
+      {code:'STOP',                label:'STP', color:'#2288FF'},
+      {code:'SCAN_NEXT_TRACK',     label:'NXT', color:'#2288FF'},
+      {code:'SCAN_PREVIOUS_TRACK', label:'PRV', color:'#2288FF'},
+      {code:'FAST_FORWARD',        label:'FFW', color:'#7B5CF0'},
+      {code:'REWIND',              label:'REW', color:'#7B5CF0'},
+      {code:'EJECT',               label:'EJT', color:'#9090A0'},
+      // Volume (row 1)
+      {code:'VOLUME_INCREMENT',    label:'VO+', color:'#00D68F'},
+      {code:'VOLUME_DECREMENT',    label:'VO-', color:'#00D68F'},
+      {code:'MUTE',                label:'MUT', color:'#FF3B3B'},
+      // these use HID type for keys not in consumer spec
+      {type:'hid', keys:['CTRL','ALT','SHIFT'], label:'MX1', color:'#FF8C00'},  // placeholder custom
+      {type:'hid', keys:['CTRL','ALT','SHIFT'], label:'MX2', color:'#FF8C00'},
+      {type:'hid', keys:['CTRL','ALT','SHIFT'], label:'MX3', color:'#FF8C00'},
+      {type:'hid', keys:['CTRL','ALT','SHIFT'], label:'MX4', color:'#FF8C00'},
+      // App launch shortcuts (row 2) — HID
+      {type:'hid', keys:['CMD','SPACE'],        label:'SPC', color:'#FF4D8D'},
+      {type:'hid', keys:['CMD','TAB'],          label:'TAB', color:'#FF4D8D'},
+      {type:'hid', keys:['CMD','W'],            label:'CLO', color:'#FF4D8D'},
+      {type:'hid', keys:['CMD','T'],            label:'TAB', color:'#FF4D8D'},
+      {type:'hid', keys:['CMD','Q'],            label:'QUT', color:'#FF4D8D'},
+      {type:'hid', keys:['CMD','H'],            label:'HID', color:'#FF4D8D'},
+      {type:'hid', keys:['CMD','M'],            label:'MIN', color:'#FF4D8D'},
+      // Screen/system (row 3)
+      {type:'hid', keys:['CMD','SHIFT','FIVE'], label:'SCR', color:'#9090A0'},
+      {type:'hid', keys:['CMD','SHIFT','3'],    label:'SS3', color:'#9090A0'},
+      {type:'hid', keys:['CMD','SHIFT','4'],    label:'SS4', color:'#9090A0'},
+      {type:'hid', keys:['CTRL','UP'],          label:'MCC', color:'#9090A0'},
+      {type:'hid', keys:['CTRL','DOWN'],        label:'MCD', color:'#9090A0'},
+      {type:'hid', keys:['CTRL','LEFT'],        label:'DSL', color:'#9090A0'},
+      {type:'hid', keys:['CTRL','RIGHT'],       label:'DSR', color:'#9090A0'},
     ];
     const def = mkDefaultLayer(name);
-    def.keys = Array.from({length:28}, (_,i) => {
-      const c = MEDIA_KEYS[i % MEDIA_KEYS.length];
-      return {type:'consumer', note:'C4', intervals:[], channel:1,
-              velocity:'global', keys:[], code:c.code, label:c.label, color:c.color};
-    });
+    def.keys = MEDIA_KEYS.map(k => ({
+      type: k.type || 'consumer',
+      note: 'C4', intervals: [], channel: 1, velocity: 'global',
+      keys:  k.keys  || [],
+      code:  k.code  || '',
+      label: k.label || '',
+      color: k.color || '#9090A0',
+    }));
     return def;
   },
 
   hid: (name) => {
+    // 28 pre-filled HID shortcuts — common app/OS shortcuts
+    const HID_KEYS = [
+      // Editing (row 0)
+      {keys:['CMD','Z'],           label:'UND', color:'#7B5CF0'},
+      {keys:['CMD','SHIFT','Z'],   label:'RDO', color:'#7B5CF0'},
+      {keys:['CMD','X'],           label:'CUT', color:'#7B5CF0'},
+      {keys:['CMD','C'],           label:'CPY', color:'#7B5CF0'},
+      {keys:['CMD','V'],           label:'PST', color:'#7B5CF0'},
+      {keys:['CMD','A'],           label:'ALL', color:'#7B5CF0'},
+      {keys:['CMD','F'],           label:'FND', color:'#7B5CF0'},
+      // File ops (row 1)
+      {keys:['CMD','S'],           label:'SAV', color:'#00D68F'},
+      {keys:['CMD','SHIFT','S'],   label:'SAS', color:'#00D68F'},
+      {keys:['CMD','N'],           label:'NEW', color:'#00D68F'},
+      {keys:['CMD','O'],           label:'OPN', color:'#00D68F'},
+      {keys:['CMD','W'],           label:'CLO', color:'#00D68F'},
+      {keys:['CMD','P'],           label:'PRT', color:'#00D68F'},
+      {keys:['CMD','Q'],           label:'QUT', color:'#FF3B3B'},
+      // Navigation (row 2)
+      {keys:['CMD','TAB'],         label:'SWT', color:'#2288FF'},
+      {keys:['CMD','SHIFT','TAB'], label:'SWB', color:'#2288FF'},
+      {keys:['CMD','CTRL','LEFT'], label:'SP<', color:'#2288FF'},
+      {keys:['CMD','CTRL','RIGHT'],label:'SP>', color:'#2288FF'},
+      {keys:['CTRL','UP'],         label:'MCC', color:'#2288FF'},
+      {keys:['CTRL','DOWN'],       label:'MCD', color:'#2288FF'},
+      {keys:['CMD','SPACE'],       label:'SPT', color:'#2288FF'},
+      // System / media (row 3)
+      {keys:['CMD','SHIFT','3'],   label:'SS3', color:'#FF8C00'},
+      {keys:['CMD','SHIFT','4'],   label:'SS4', color:'#FF8C00'},
+      {keys:['CMD','SHIFT','5'],   label:'SCR', color:'#FF8C00'},
+      {keys:['CMD','SHIFT','CTRL','4'], label:'SSC', color:'#FF8C00'},
+      {keys:['CMD','CTRL','Q'],    label:'LCK', color:'#FF8C00'},
+      {keys:['CMD','SHIFT','Q'],   label:'LGO', color:'#FF8C00'},
+      {keys:['CTRL','CMD','SPACE'],label:'EMJ', color:'#FF8C00'},
+    ];
     const def = mkDefaultLayer(name);
-    def.keys = Array.from({length:28}, (_,i) => ({
-      type:'hid', note:'C4', intervals:[], channel:1,
-      velocity:'global', keys:[], code:'', label:'',
-      color: SWATCHES[i % SWATCHES.length]
+    def.keys = HID_KEYS.map(k => ({
+      type: 'hid',
+      note: 'C4', intervals: [], channel: 1, velocity: 'global',
+      keys:  k.keys,
+      code:  '',
+      label: k.label,
+      color: k.color,
     }));
     return def;
   },
@@ -1549,6 +1614,7 @@ function confirmTmpl() {
   const factory = LAYER_TEMPLATES[_tmplSelected] || LAYER_TEMPLATES.midi;
   const idx = customLayers.length;
   customLayers.push(factory(name));
+  dirtyLayers.add(idx);  // new layer not yet on keyboard
   renderSidebar();
   selectCustomLayer(idx);
   closeTmplModal();
@@ -1676,7 +1742,7 @@ const READONLY_DATA = {
     colors: ['#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
              '#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11',
              '#854F0B','#854F0B','#854F0B','#854F0B','#854F0B','#854F0B','#854F0B',
-             '#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7'],
+             '#7B5CF0','#7B5CF0','#7B5CF0','#7B5CF0','#7B5CF0','#7B5CF0','#7B5CF0'],
     subs: ['','','','','','','','','','','','','','','','','','','','','','Mod','Mod','Mod','Mod','Mod','Mod','Mod'],
   },
   smart: {
@@ -1689,7 +1755,7 @@ const READONLY_DATA = {
     colors: ['#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
              '#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
              '#0F6E56','#993C1D','#993C1D','#0F6E56','#0F6E56','#993C1D','#5F5E5A',
-             '#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7'],
+             '#7B5CF0','#7B5CF0','#7B5CF0','#7B5CF0','#7B5CF0','#7B5CF0','#7B5CF0'],
     subs: [],
   },
   drum: {
@@ -1699,7 +1765,7 @@ const READONLY_DATA = {
       ['SNR','SN2','RIM','CLP','HHC','HHP','HHO'],
       ['KK1','KK2','KK3','KKS','KKM','KKL','KKX'],
     ],
-    colors: ['#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#888780',
+    colors: ['#7B5CF0','#7B5CF0','#7B5CF0','#7B5CF0','#7B5CF0','#7B5CF0','#9090A0',
              '#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11',
              '#854F0B','#854F0B','#854F0B','#854F0B','#185FA5','#185FA5','#185FA5',
              '#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D'],
@@ -1992,7 +2058,7 @@ function clearKey() {
   if (selectedKey === null || typeof currentMode !== 'number') return;
   customLayers[currentMode].keys[selectedKey] = {
     type:'midi', note:'C4', intervals:[], channel:1, velocity:'global',
-    keys:[], code:'', label:'', color:'#888780'
+    keys:[], code:'', label:'', color:'#9090A0'
   };
   populateEditor(selectedKey);
   renderGrid();
