@@ -753,99 +753,103 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .theme-toggle:hover { color: var(--text); background: var(--surface2); transform: none; }
 
+/* ── SYNC PILLS ── */
+.sync-pill {
+  display: flex; align-items: center; gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  border: 1px solid var(--border2);
+  background: var(--surface2);
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.sync-pill.draft   { color: var(--muted); }
+.sync-pill.dirty   { color: var(--warn,#f0a500); border-color: var(--warn,#f0a500); background: #1a1500; }
+.sync-pill.pushing { color: #378ADD; border-color: #378ADD; background: #0a1020; }
+.sync-pill.synced  { color: var(--accent); border-color: var(--accent2); background: #0a2018; }
+.sync-dot { width:6px; height:6px; border-radius:50%; background:currentColor; flex-shrink:0; }
+
+/* ── DIRTY STATE ── */
+.mode-btn .edit-badge {
+  font-family: var(--mono); font-size: 9px; color: var(--warn,#f0a500);
+  margin-left: 4px; opacity: 0.85;
+}
+button.push-dirty {
+  background: color-mix(in srgb, var(--accent) 15%, var(--surface2));
+  border-color: var(--accent2);
+  color: var(--accent);
+}
+button.push-dirty:hover { background: color-mix(in srgb, var(--accent) 25%, var(--surface2)); }
+
+/* ── READ-ONLY KEY STYLE ── */
+.key.ro {
+  opacity: 0.7;
+  filter: saturate(0.6);
+  cursor: default;
+}
+.key.ro:hover { transform: none !important; }
+
+/* ── TOOLBAR SEPARATOR ── */
+.toolbar-sep {
+  width: 1px; height: 20px;
+  background: var(--border);
+  flex-shrink: 0;
+  margin: 0 2px;
+}
+
 /* ── TEMPLATE MODAL ── */
 .tmpl-overlay {
-  position: fixed;
-  inset: 0;
+  position: fixed; inset: 0;
   background: rgba(0,0,0,0.65);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 200;
-  backdrop-filter: blur(3px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; backdrop-filter: blur(3px);
 }
 .tmpl-overlay.hidden { display: none; }
 .tmpl-card {
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius-lg);
-  padding: 24px 28px 20px;
-  width: 380px;
-  max-width: 92vw;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius-lg); padding: 24px 28px 20px;
+  width: 380px; max-width: 92vw;
+  display: flex; flex-direction: column; gap: 16px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
-.tmpl-card h2 {
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text);
-}
-.tmpl-name-row {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
+.tmpl-card h2 { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--text); }
+.tmpl-name-row { display: flex; flex-direction: column; gap: 5px; }
 .tmpl-name-row label {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--mono); font-size: 10px; color: var(--muted);
+  letter-spacing: 0.08em; text-transform: uppercase;
 }
 .tmpl-name-row input {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 13px;
-  padding: 7px 10px;
-  outline: none;
-  width: 100%;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius); color: var(--text);
+  font-family: var(--mono); font-size: 13px; padding: 7px 10px; outline: none; width: 100%;
 }
 .tmpl-name-row input:focus { border-color: var(--accent); }
-.tmpl-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
+.tmpl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .tmpl-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  padding: 12px 14px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: all 0.1s;
-  text-align: left;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  padding: 12px 14px; background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); cursor: pointer; transition: all 0.1s; text-align: left;
 }
 .tmpl-btn:hover { border-color: var(--accent); background: var(--border); transform: none; }
 .tmpl-btn.selected { border-color: var(--accent); background: #0a2a1e; }
 .tmpl-icon { font-size: 20px; line-height: 1; }
-.tmpl-label {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text);
-}
-.tmpl-desc {
-  font-family: var(--sans);
-  font-size: 11px;
-  color: var(--muted);
-  line-height: 1.4;
-}
-.tmpl-footer {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
+.tmpl-label { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); }
+.tmpl-desc { font-family: var(--sans); font-size: 11px; color: var(--muted); line-height: 1.4; }
+.tmpl-footer { display: flex; gap: 8px; justify-content: flex-end; }
 .tmpl-footer button { padding: 7px 18px; }
+
+/* ── KEY CHIPS ── */
+.key-chips { display: flex; flex-wrap: wrap; gap: 4px; min-height: 28px; padding: 4px 0; }
+.key-chip {
+  display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px;
+  background: var(--surface2); border: 1px solid var(--border2); border-radius: 4px;
+  font-family: var(--mono); font-size: 11px; color: var(--text);
+}
+.key-chip-x { cursor: pointer; color: var(--muted); font-size: 13px; line-height: 1; transition: color 0.1s; }
+.key-chip-x:hover { color: var(--danger); }
+.hid-na { font-family: var(--mono); font-size: 11px; color: var(--muted); font-style: italic; padding: 8px 0; text-align: center; }
 
 /* ── LIGHT MODE ── */
 [data-theme="light"] {
@@ -1110,17 +1114,17 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
       <button class="tmpl-btn selected" data-tmpl="midi" onclick="selectTmpl(this)">
         <span class="tmpl-icon">🎹</span>
         <span class="tmpl-label">Default MIDI</span>
-        <span class="tmpl-desc">Chromatic note layout, C2–B5</span>
+        <span class="tmpl-desc">Chromatic layout, C2–B5</span>
       </button>
       <button class="tmpl-btn" data-tmpl="media" onclick="selectTmpl(this)">
         <span class="tmpl-icon">▶</span>
         <span class="tmpl-label">Media Controls</span>
-        <span class="tmpl-desc">Volume, playback, transport keys</span>
+        <span class="tmpl-desc">Volume, playback, transport</span>
       </button>
       <button class="tmpl-btn" data-tmpl="hid" onclick="selectTmpl(this)">
         <span class="tmpl-icon">⌨</span>
         <span class="tmpl-label">HID Shortcuts</span>
-        <span class="tmpl-desc">28 blank HID keys to assign</span>
+        <span class="tmpl-desc">28 blank HID keys</span>
       </button>
       <button class="tmpl-btn" data-tmpl="empty" onclick="selectTmpl(this)">
         <span class="tmpl-icon">□</span>
@@ -1219,6 +1223,45 @@ let currentMode = null;
 let customLayers = [];
 let selectedKey = null;
 let activeModeBtn = null;
+let dirtyLayers = new Set(); // indices of layers with unpushed changes
+
+function markDirty(idx) {
+  if (typeof idx !== 'number') return;
+  dirtyLayers.add(idx);
+  updateSyncPill();
+  renderSidebar();
+  updatePushBtn();
+}
+
+function markClean(idx) {
+  dirtyLayers.delete(idx);
+  updateSyncPill();
+  renderSidebar();
+  updatePushBtn();
+}
+
+function updateSyncPill() {
+  const pill  = document.getElementById('syncPill');
+  const label = document.getElementById('syncLabel');
+  if (!pill) return;
+  if (!connected) {
+    pill.className = 'sync-pill draft';
+    label.textContent = 'Local draft';
+  } else if (dirtyLayers.size > 0) {
+    pill.className = 'sync-pill dirty';
+    label.textContent = `${dirtyLayers.size} unsaved`;
+  } else {
+    pill.className = 'sync-pill synced';
+    label.textContent = 'Synced';
+  }
+}
+
+function updatePushBtn() {
+  const btn = document.querySelector('#toolbarActions button:first-child');
+  if (!btn || btn.textContent.trim() !== 'Push to keyboard') return;
+  const dirty = typeof currentMode === 'number' && dirtyLayers.has(currentMode);
+  btn.classList.toggle('push-dirty', dirty);
+}
 
 // ── SERIAL ──
 async function connectSerial() {
@@ -1238,6 +1281,7 @@ async function connectSerial() {
     document.getElementById('topConnBtn').onclick = disconnectSerial;
     document.getElementById('pushBtn').disabled = false;
     log('Connected — syncing state…', 'ok');
+    updateSyncPill();
     startReader();
     await serialSend({cmd: 'ping'});
   } catch (e) {
@@ -1264,6 +1308,7 @@ async function disconnectSerial() {
   document.getElementById('topConnBtn').onclick = connectSerial;
   document.getElementById('pushBtn').disabled = true;
   log('Disconnected');
+  updateSyncPill();
 }
 
 async function serialSend(obj) {
@@ -1330,7 +1375,7 @@ function handleIncoming(line) {
     if (customLayers.length > 0 && currentMode === null) selectCustomLayer(0);
     log(`Synced — ${customLayers.length} custom layer(s)`, 'ok');
   } else if (msg.type === 'ack') {
-    if      (msg.cmd === 'push_layer')    log(`Layer ${msg.idx} pushed ${msg.saved ? '& saved' : '(not saved)'}`, 'ok');
+    if      (msg.cmd === 'push_layer')    { log(`Layer ${msg.idx} pushed ${msg.saved ? '& saved' : '(not saved)'}`, 'ok'); markClean(msg.idx); }
     else if (msg.cmd === 'set_mode')      log(`Keyboard switched to mode ${msg.mode}`, 'ok');
     else if (msg.cmd === 'delete_layer')  log(`Layer ${msg.idx} deleted`, 'ok');
   } else if (msg.type === 'note_on') {
@@ -1376,24 +1421,23 @@ const LAYER_TEMPLATES = {
   midi: (name) => mkDefaultLayer(name),
 
   media: (name) => {
-    const controls = [
+    const MEDIA_KEYS = [
       {code:'VOLUME_INCREMENT',  label:'VOL+', color:'#1D9E75'},
       {code:'VOLUME_DECREMENT',  label:'VOL-', color:'#1D9E75'},
-      {code:'MUTE',              label:'MUTE', color:'#E24B4A'},
-      {code:'PLAY_PAUSE',        label:'PLAY', color:'#378ADD'},
+      {code:'MUTE',              label:'MUT',  color:'#E24B4A'},
+      {code:'PLAY_PAUSE',        label:'PLY',  color:'#378ADD'},
       {code:'SCAN_NEXT_TRACK',   label:'NXT',  color:'#534AB7'},
       {code:'SCAN_PREVIOUS_TRACK',label:'PRV', color:'#534AB7'},
-      {code:'FAST_FORWARD',      label:'FF',   color:'#BA7517'},
+      {code:'FAST_FORWARD',      label:'FFW',  color:'#BA7517'},
       {code:'REWIND',            label:'REW',  color:'#BA7517'},
       {code:'STOP',              label:'STP',  color:'#D4537E'},
       {code:'EJECT',             label:'EJT',  color:'#888780'},
     ];
     const def = mkDefaultLayer(name);
     def.keys = Array.from({length:28}, (_,i) => {
-      const c = controls[i % controls.length];
-      return { type:'consumer', note:'C4', intervals:[], channel:1,
-               velocity:'global', keys:[], code:c.code,
-               label:c.label, color:c.color };
+      const c = MEDIA_KEYS[i % MEDIA_KEYS.length];
+      return {type:'consumer', note:'C4', intervals:[], channel:1,
+              velocity:'global', keys:[], code:c.code, label:c.label, color:c.color};
     });
     return def;
   },
@@ -1410,10 +1454,9 @@ const LAYER_TEMPLATES = {
 
   empty: (name) => {
     const def = mkDefaultLayer(name);
-    def.keys = Array.from({length:28}, (_,i) => ({
+    def.keys = Array.from({length:28}, () => ({
       type:'midi', note:'C4', intervals:[], channel:1,
-      velocity:'global', keys:[], code:'', label:'',
-      color:'#2a2a30'
+      velocity:'global', keys:[], code:'', label:'', color:'#2a2a30'
     }));
     return def;
   },
@@ -1423,8 +1466,7 @@ let _tmplSelected = 'midi';
 
 function openTmplModal() {
   _tmplSelected = 'midi';
-  const n = customLayers.length + 1;
-  document.getElementById('tmplName').value = `Layer ${n}`;
+  document.getElementById('tmplName').value = `Layer ${customLayers.length + 1}`;
   document.querySelectorAll('.tmpl-btn').forEach(b =>
     b.classList.toggle('selected', b.dataset.tmpl === 'midi'));
   document.getElementById('tmplOverlay').classList.remove('hidden');
@@ -1439,12 +1481,11 @@ function selectTmpl(btn) {
   document.querySelectorAll('.tmpl-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
   _tmplSelected = btn.dataset.tmpl;
-  // Auto-fill name if still default
   const nameEl = document.getElementById('tmplName');
-  const defaultNames = {'midi':'MIDI Layer','media':'Media Controls','hid':'HID Shortcuts','empty':'Empty Layer'};
+  const autoNames = {midi:`Layer ${customLayers.length+1}`, media:'Media Controls', hid:'HID Shortcuts', empty:'Empty Layer'};
   const currentVal = nameEl.value.trim();
-  const isDefault = /^Layer \d+$/.test(currentVal) || Object.values(defaultNames).includes(currentVal);
-  if (isDefault) nameEl.value = defaultNames[_tmplSelected];
+  const isAuto = /^Layer \d+$/.test(currentVal) || Object.values(autoNames).includes(currentVal);
+  if (isAuto) nameEl.value = autoNames[_tmplSelected];
 }
 
 function confirmTmpl() {
@@ -1457,19 +1498,7 @@ function confirmTmpl() {
   closeTmplModal();
 }
 
-function addCustomLayer() {
-  openTmplModal();
-}
-
-// Close on backdrop click
-document.getElementById('tmplOverlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('tmplOverlay')) closeTmplModal();
-});
-// Close on Enter key in name field
-document.getElementById('tmplName').addEventListener('keydown', e => {
-  if (e.key === 'Enter') confirmTmpl();
-  if (e.key === 'Escape') closeTmplModal();
-});
+function addCustomLayer() { openTmplModal(); }
 
 async function deleteLayer(idx) {
   if (!confirm(`Delete "${customLayers[idx].name}"? This cannot be undone.`)) return;
@@ -1486,6 +1515,9 @@ async function deleteLayer(idx) {
 async function pushCurrentLayer() {
   if (typeof currentMode !== 'number') { log('Select a custom layer first', 'err'); return; }
   if (!connected) { log('Not connected', 'err'); return; }
+  const pill = document.getElementById('syncPill');
+  const label = document.getElementById('syncLabel');
+  if (pill) { pill.className = 'sync-pill pushing'; label.textContent = 'Pushing…'; }
   const layer = customLayers[currentMode];
   await serialSend({cmd: 'push_layer', idx: currentMode, layer: {name: layer.name, keys: layer.keys, enc1: layer.enc1, enc2: layer.enc2}});
   log(`Pushing layer ${currentMode} to keyboard…`);
@@ -1498,8 +1530,11 @@ function renderSidebar() {
   customLayers.forEach((layer, idx) => {
     const btn = document.createElement('button');
     btn.className = 'mode-btn' + (currentMode === idx ? ' active' : '');
+    const isDirty = dirtyLayers.has(idx);
     btn.innerHTML = `<span class="mode-dot" style="background:${layer.keys[0]?.color||'#888'};"></span>
-      ${escHtml(layer.name)}<span class="mode-badge">${idx+1}</span>`;
+      ${escHtml(layer.name)}
+      ${isDirty ? '<span class="edit-badge">●</span>' : ''}
+      <span class="mode-badge">${idx+1}</span>`;
     btn.onclick = () => { activeModeBtn = btn; selectCustomLayer(idx); };
     container.appendChild(btn);
   });
@@ -1544,12 +1579,15 @@ function selectCustomLayer(idx) {
   nameInput.readOnly = false;
   nameInput.oninput = () => {
     customLayers[idx].name = nameInput.value;
+    markDirty(idx);
     renderSidebar();
     document.querySelectorAll('#customModes .mode-btn')[idx]?.classList.add('active');
   };
+  const pushCls = dirtyLayers.has(idx) ? ' push-dirty' : '';
   document.getElementById('toolbarActions').innerHTML = `
-    <button onclick="pushCurrentLayer()" ${connected?'':'disabled'}>Push to keyboard</button>
+    <button class="${pushCls}" onclick="pushCurrentLayer()" ${connected?'':'disabled'}>Push to keyboard</button>
     <button id="vizBtn" onclick="enterVisualizer()">Visualizer</button>
+    <span class="toolbar-sep"></span>
     <button class="danger" onclick="deleteLayer(${idx})">Delete</button>`;
   renderEncoders(idx);
 }
@@ -1738,7 +1776,8 @@ function closeEditor() {
 
 function populateEditor(idx) {
   const k = customLayers[currentMode].keys[idx];
-  document.getElementById('epTitle').textContent = `Key ${idx + 1}`;
+  const layerName = typeof currentMode === 'number' ? customLayers[currentMode]?.name : '';
+  document.getElementById('epTitle').textContent = layerName ? `${layerName} — Key ${idx + 1}` : `Key ${idx + 1}`;
 
   const ktype = k.type || 'midi';
   document.getElementById('fType').value = ktype;
@@ -1888,6 +1927,7 @@ function onNoteInput(el) {
 function saveKeyField(field, value) {
   if (selectedKey === null || typeof currentMode !== 'number') return;
   customLayers[currentMode].keys[selectedKey][field] = value;
+  markDirty(currentMode);
   renderGrid();
   document.querySelectorAll('.key')[selectedKey]?.classList.add('selected');
 }
@@ -2352,7 +2392,17 @@ function exitVisualizer() {
   pAlive.fill(0);
 }
 
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && vizActive) exitVisualizer(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && vizActive) exitVisualizer();
+  if (e.key === 'Escape' && !document.getElementById('tmplOverlay').classList.contains('hidden')) closeTmplModal();
+  if (e.key === 'Enter'  && !document.getElementById('tmplOverlay').classList.contains('hidden') && document.activeElement.id !== 'tmplName') confirmTmpl();
+});
+document.getElementById('tmplOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('tmplOverlay')) closeTmplModal();
+});
+document.getElementById('tmplName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmTmpl();
+});
 
 // ── INIT ──
 if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light';
