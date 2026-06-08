@@ -753,6 +753,100 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .theme-toggle:hover { color: var(--text); background: var(--surface2); transform: none; }
 
+/* ── TEMPLATE MODAL ── */
+.tmpl-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(3px);
+}
+.tmpl-overlay.hidden { display: none; }
+.tmpl-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  padding: 24px 28px 20px;
+  width: 380px;
+  max-width: 92vw;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.tmpl-card h2 {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+.tmpl-name-row {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.tmpl-name-row label {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.tmpl-name-row input {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  padding: 7px 10px;
+  outline: none;
+  width: 100%;
+}
+.tmpl-name-row input:focus { border-color: var(--accent); }
+.tmpl-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.tmpl-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 12px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.1s;
+  text-align: left;
+}
+.tmpl-btn:hover { border-color: var(--accent); background: var(--border); transform: none; }
+.tmpl-btn.selected { border-color: var(--accent); background: #0a2a1e; }
+.tmpl-icon { font-size: 20px; line-height: 1; }
+.tmpl-label {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text);
+}
+.tmpl-desc {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.tmpl-footer {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.tmpl-footer button { padding: 7px 18px; }
+
 /* ── LIGHT MODE ── */
 [data-theme="light"] {
   --bg:       #EDE8DF;
@@ -802,7 +896,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   <div class="sidebar">
     <div class="sidebar-section">Layers</div>
     <div id="customModes"></div>
-    <button class="add-layer-btn" onclick="addCustomLayer()">+ Add layer</button>
+    <button class="add-layer-btn" onclick="openTmplModal()">+ Add layer</button>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">Built-in</div>
     <button class="mode-btn readonly" onclick="setMode('manual',this)">
@@ -1003,6 +1097,42 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
 <div class="log-strip">
   <span id="logMsg">Ready — connect your keyboard to begin</span>
+</div>
+
+<div class="tmpl-overlay hidden" id="tmplOverlay">
+  <div class="tmpl-card">
+    <h2>New layer</h2>
+    <div class="tmpl-name-row">
+      <label>Layer name</label>
+      <input type="text" id="tmplName" placeholder="e.g. Media Controls" maxlength="24">
+    </div>
+    <div class="tmpl-grid">
+      <button class="tmpl-btn selected" data-tmpl="midi" onclick="selectTmpl(this)">
+        <span class="tmpl-icon">🎹</span>
+        <span class="tmpl-label">Default MIDI</span>
+        <span class="tmpl-desc">Chromatic note layout, C2–B5</span>
+      </button>
+      <button class="tmpl-btn" data-tmpl="media" onclick="selectTmpl(this)">
+        <span class="tmpl-icon">▶</span>
+        <span class="tmpl-label">Media Controls</span>
+        <span class="tmpl-desc">Volume, playback, transport keys</span>
+      </button>
+      <button class="tmpl-btn" data-tmpl="hid" onclick="selectTmpl(this)">
+        <span class="tmpl-icon">⌨</span>
+        <span class="tmpl-label">HID Shortcuts</span>
+        <span class="tmpl-desc">28 blank HID keys to assign</span>
+      </button>
+      <button class="tmpl-btn" data-tmpl="empty" onclick="selectTmpl(this)">
+        <span class="tmpl-icon">□</span>
+        <span class="tmpl-label">Empty</span>
+        <span class="tmpl-desc">All keys unassigned</span>
+      </button>
+    </div>
+    <div class="tmpl-footer">
+      <button onclick="closeTmplModal()">Cancel</button>
+      <button class="primary" onclick="confirmTmpl()">Create layer</button>
+    </div>
+  </div>
 </div>
 
 <div id="vizOverlay" style="display:none;position:fixed;inset:0;background:#000;z-index:1000;">
@@ -1241,12 +1371,105 @@ function mkDefaultLayer(name) {
   };
 }
 
-function addCustomLayer() {
+// ── LAYER TEMPLATES ──
+const LAYER_TEMPLATES = {
+  midi: (name) => mkDefaultLayer(name),
+
+  media: (name) => {
+    const controls = [
+      {code:'VOLUME_INCREMENT',  label:'VOL+', color:'#1D9E75'},
+      {code:'VOLUME_DECREMENT',  label:'VOL-', color:'#1D9E75'},
+      {code:'MUTE',              label:'MUTE', color:'#E24B4A'},
+      {code:'PLAY_PAUSE',        label:'PLAY', color:'#378ADD'},
+      {code:'SCAN_NEXT_TRACK',   label:'NXT',  color:'#534AB7'},
+      {code:'SCAN_PREVIOUS_TRACK',label:'PRV', color:'#534AB7'},
+      {code:'FAST_FORWARD',      label:'FF',   color:'#BA7517'},
+      {code:'REWIND',            label:'REW',  color:'#BA7517'},
+      {code:'STOP',              label:'STP',  color:'#D4537E'},
+      {code:'EJECT',             label:'EJT',  color:'#888780'},
+    ];
+    const def = mkDefaultLayer(name);
+    def.keys = Array.from({length:28}, (_,i) => {
+      const c = controls[i % controls.length];
+      return { type:'consumer', note:'C4', intervals:[], channel:1,
+               velocity:'global', keys:[], code:c.code,
+               label:c.label, color:c.color };
+    });
+    return def;
+  },
+
+  hid: (name) => {
+    const def = mkDefaultLayer(name);
+    def.keys = Array.from({length:28}, (_,i) => ({
+      type:'hid', note:'C4', intervals:[], channel:1,
+      velocity:'global', keys:[], code:'', label:'',
+      color: SWATCHES[i % SWATCHES.length]
+    }));
+    return def;
+  },
+
+  empty: (name) => {
+    const def = mkDefaultLayer(name);
+    def.keys = Array.from({length:28}, (_,i) => ({
+      type:'midi', note:'C4', intervals:[], channel:1,
+      velocity:'global', keys:[], code:'', label:'',
+      color:'#2a2a30'
+    }));
+    return def;
+  },
+};
+
+let _tmplSelected = 'midi';
+
+function openTmplModal() {
+  _tmplSelected = 'midi';
+  const n = customLayers.length + 1;
+  document.getElementById('tmplName').value = `Layer ${n}`;
+  document.querySelectorAll('.tmpl-btn').forEach(b =>
+    b.classList.toggle('selected', b.dataset.tmpl === 'midi'));
+  document.getElementById('tmplOverlay').classList.remove('hidden');
+  setTimeout(() => document.getElementById('tmplName').focus(), 80);
+}
+
+function closeTmplModal() {
+  document.getElementById('tmplOverlay').classList.add('hidden');
+}
+
+function selectTmpl(btn) {
+  document.querySelectorAll('.tmpl-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  _tmplSelected = btn.dataset.tmpl;
+  // Auto-fill name if still default
+  const nameEl = document.getElementById('tmplName');
+  const defaultNames = {'midi':'MIDI Layer','media':'Media Controls','hid':'HID Shortcuts','empty':'Empty Layer'};
+  const currentVal = nameEl.value.trim();
+  const isDefault = /^Layer \d+$/.test(currentVal) || Object.values(defaultNames).includes(currentVal);
+  if (isDefault) nameEl.value = defaultNames[_tmplSelected];
+}
+
+function confirmTmpl() {
+  const name = document.getElementById('tmplName').value.trim() || `Layer ${customLayers.length + 1}`;
+  const factory = LAYER_TEMPLATES[_tmplSelected] || LAYER_TEMPLATES.midi;
   const idx = customLayers.length;
-  customLayers.push(mkDefaultLayer(`Layer ${idx + 1}`));
+  customLayers.push(factory(name));
   renderSidebar();
   selectCustomLayer(idx);
+  closeTmplModal();
 }
+
+function addCustomLayer() {
+  openTmplModal();
+}
+
+// Close on backdrop click
+document.getElementById('tmplOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('tmplOverlay')) closeTmplModal();
+});
+// Close on Enter key in name field
+document.getElementById('tmplName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmTmpl();
+  if (e.key === 'Escape') closeTmplModal();
+});
 
 async function deleteLayer(idx) {
   if (!confirm(`Delete "${customLayers[idx].name}"? This cannot be undone.`)) return;
