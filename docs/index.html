@@ -20,7 +20,6 @@
   --muted:    #6b6b78;
   --accent:   #00e5a0;
   --accent2:  #00b57d;
-  --warning:  #f6b44b;
   --danger:   #ff5a5a;
   --mono:     'DM Mono', monospace;
   --sans:     'DM Sans', sans-serif;
@@ -88,37 +87,8 @@ body::after {
 }
 .brand-dot.disconnected { background: var(--muted); box-shadow: none; }
 .conn-area { display: flex; align-items: center; gap: 10px; }
-.status-stack {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-}
-.conn-status,
-.sync-status {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--muted);
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--surface2) 72%, transparent);
-  border-radius: 999px;
-  padding: 4px 8px;
-  line-height: 1;
-}
-.conn-status.connected {
-  color: var(--accent);
-  border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
-  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
-}
-.sync-status.dirty {
-  color: var(--warning);
-  border-color: color-mix(in srgb, var(--warning) 42%, var(--border));
-  background: color-mix(in srgb, var(--warning) 12%, var(--surface));
-}
-.sync-status.syncing {
-  color: var(--accent);
-  border-color: color-mix(in srgb, var(--accent) 34%, var(--border));
-}
+.conn-status { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.conn-status.connected { color: var(--accent); }
 
 button {
   font-family: var(--sans);
@@ -140,29 +110,6 @@ button.primary:hover { background: var(--accent2); border-color: var(--accent2);
 button.danger { color: var(--danger); border-color: #3d1a1a; background: #1f1010; }
 button.danger:hover { background: #2a1111; }
 button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-.icon {
-  width: 14px;
-  height: 14px;
-  display: inline-block;
-  flex-shrink: 0;
-  stroke: currentColor;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  fill: none;
-}
-.icon-sm { width: 13px; height: 13px; }
-.icon-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-}
-.icon-only {
-  width: 28px;
-  height: 28px;
-  padding: 0;
-}
 
 /* ── LAYOUT ── */
 .layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
@@ -207,23 +154,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .mode-btn:hover { background: var(--surface2); color: var(--text); border-radius: 0; }
 .mode-btn.active { color: var(--text); background: var(--surface2); border-left-color: var(--accent); }
-.mode-btn.active::after {
-  content: '';
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 70%, transparent);
-}
 .mode-btn.readonly.active { border-left-color: var(--muted); }
-.mode-btn.readonly.active::after {
-  background: var(--muted);
-  box-shadow: none;
-}
-.mode-btn.dirty .mode-badge {
-  color: var(--warning);
-  border-color: color-mix(in srgb, var(--warning) 44%, var(--border));
-}
 .mode-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 .mode-badge {
   margin-left: auto;
@@ -246,19 +177,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   padding: 7px;
 }
 .add-layer-btn:hover { color: var(--text); border-color: var(--accent); background: transparent; }
-.template-picker {
-  margin: 0 14px 10px;
-  width: calc(100% - 28px);
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius);
-  color: var(--text);
-  font-family: var(--mono);
-  font-size: 11px;
-  padding: 7px 8px;
-  outline: none;
-}
-.template-picker:focus { border-color: var(--accent); }
 
 /* ── MAIN ── */
 .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
@@ -277,16 +195,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   position: relative;
   z-index: 1;
 }
-.toolbar-title {
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 500;
-  flex: 1;
-  min-width: 160px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.toolbar-title { font-family: var(--mono); font-size: 13px; font-weight: 500; flex: 1; min-width: 120px; }
 .toolbar-title input {
   background: transparent;
   border: none;
@@ -302,51 +211,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .toolbar-title input:focus { border-bottom-color: var(--accent); }
 .toolbar-title input[readonly] { cursor: default; }
-.dirty-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--warning);
-  box-shadow: 0 0 8px color-mix(in srgb, var(--warning) 70%, transparent);
-  display: none;
-  flex-shrink: 0;
-}
-.toolbar-title.dirty .dirty-dot { display: block; }
-.toolbar-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-.action-group {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.action-group.transpose-group {
-  padding-left: 8px;
-  border-left: 1px solid var(--border);
-}
-.action-group.danger-zone {
-  margin-left: 2px;
-  padding-left: 8px;
-  border-left: 1px solid var(--border);
-}
-.toolbar button.icon-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-}
-.toolbar button.dirty {
-  color: #151109;
-  background: var(--warning);
-  border-color: var(--warning);
-}
-.mini-btn {
-  padding: 6px 9px;
-  font-family: var(--mono);
-  font-size: 11px;
-}
 .ro-banner {
   display: flex;
   align-items: center;
@@ -401,8 +265,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .key {
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--kc, #00F5FF) 92%, #fff) 0%,
-    color-mix(in srgb, var(--kc, #00F5FF) 78%, #000) 100%
+    color-mix(in srgb, var(--kc, #888780) 62%, #0a0a0a) 0%,
+    color-mix(in srgb, var(--kc, #888780) 44%, #000) 100%
   );
   border: none;
   border-radius: 4px;
@@ -420,7 +284,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     inset 0 1px 0 rgba(255,255,255,0.16),
     inset 0 -1px 0 rgba(0,0,0,0.28),
     0 0 0 1px rgba(0,0,0,0.55),
-    0 3px 0 color-mix(in srgb, var(--kc, #00F5FF) 44%, #000),
+    0 3px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
     0 4px 10px rgba(0,0,0,0.35);
 }
 .key::before {
@@ -438,7 +302,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     inset 0 1px 0 rgba(255,255,255,0.22),
     inset 0 -1px 0 rgba(0,0,0,0.22),
     0 0 0 1px rgba(0,0,0,0.5),
-    0 4px 0 color-mix(in srgb, var(--kc, #00F5FF) 44%, #000),
+    0 4px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
     0 6px 14px rgba(0,0,0,0.4);
 }
 .key:hover:not(.ro)::before { background: rgba(255,255,255,0.22); }
@@ -447,32 +311,20 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   box-shadow:
     inset 0 2px 4px rgba(0,0,0,0.28),
     0 0 0 1px rgba(0,0,0,0.6),
-    0 1px 0 color-mix(in srgb, var(--kc, #00F5FF) 44%, #000),
+    0 1px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
     0 2px 6px rgba(0,0,0,0.28);
 }
 .key.selected {
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,0.16),
     inset 0 -1px 0 rgba(0,0,0,0.28),
-    0 0 0 2px var(--accent),
-    0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent),
-    0 3px 0 color-mix(in srgb, var(--kc, #00F5FF) 44%, #000),
+    0 0 0 1.5px var(--accent),
+    0 3px 0 color-mix(in srgb, var(--kc, #888780) 22%, #000),
     0 4px 10px rgba(0,0,0,0.35),
     0 0 10px color-mix(in srgb, var(--accent) 25%, transparent);
 }
 .key.selected::before { background: var(--accent) !important; }
-.key.ro {
-  cursor: default;
-  background:
-    repeating-linear-gradient(135deg,
-      color-mix(in srgb, var(--kc, #00F5FF) 58%, var(--surface)) 0 6px,
-      color-mix(in srgb, var(--kc, #00F5FF) 42%, var(--surface)) 6px 12px);
-  border: 1px solid color-mix(in srgb, var(--kc, #00F5FF) 70%, var(--border));
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.08),
-    0 0 0 1px rgba(0,0,0,0.28);
-  opacity: 0.96;
-}
+.key.ro { cursor: default; }
 .key-ripple {
   position: absolute;
   inset: 0;
@@ -510,35 +362,19 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .ep-header {
   display: flex;
   align-items: center;
-  padding: 10px 10px 10px 16px;
-  min-height: 52px;
+  padding: 0 10px 0 16px;
+  height: 40px;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
   gap: 8px;
 }
 .ep-title {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-  flex: 1;
-}
-.ep-title-main {
   font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.ep-title-sub {
-  font-family: var(--mono);
-  font-size: 9px;
+  font-size: 10px;
   color: var(--muted);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  flex: 1;
 }
 .ep-close {
   background: transparent;
@@ -584,50 +420,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
 /* ── TAB BODIES ── */
 .ep-tab-bodies { flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; }
-.tab-body { display: none; padding: 14px; flex-direction: column; gap: 12px; }
+.tab-body { display: none; padding: 14px 16px; flex-direction: column; gap: 14px; }
 .tab-body.active { display: flex; }
-
-.control-card {
-  border: 1px solid var(--border);
-  background:
-    linear-gradient(180deg,
-      color-mix(in srgb, var(--surface2) 42%, transparent),
-      color-mix(in srgb, var(--surface) 92%, transparent));
-  border-radius: var(--radius);
-  padding: 11px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.035);
-}
-.control-card.is-muted {
-  background: color-mix(in srgb, var(--surface2) 28%, transparent);
-}
-.control-card-head {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 14px;
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--muted);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-.control-card-head::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
-  opacity: 0.75;
-  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 42%, transparent);
-}
-.control-card-head.hid::before { background: #00A3FF; }
-.control-card-head.consumer::before { background: #FF6A00; }
-.control-card-head.label::before { background: var(--warning); }
-.control-card-head.chord::before { background: #FF2D8D; }
-.control-card-head.color::before { background: var(--accent); }
 
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field label {
@@ -655,19 +449,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .field-hint.ok { color: var(--accent); }
 .field-hint.err { color: var(--danger); }
 .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.field.compact label {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-}
-.label-limit {
-  font-size: 9px;
-  color: var(--muted);
-  text-transform: none;
-  font-family: var(--sans);
-  letter-spacing: 0;
-}
+
 /* ── CHORD PRESETS ── */
 .chord-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
 .chord-btn {
@@ -755,8 +537,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   cursor: pointer; background: transparent;
 }
 .color-preview {
-  height: 76px;
-  border-radius: 4px;
+  height: 64px;
+  border-radius: var(--radius);
   border: 1px solid var(--border2);
   display: flex;
   align-items: flex-end;
@@ -764,32 +546,6 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   font-family: var(--mono);
   font-size: 11px;
   transition: background 0.15s;
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.16),
-    inset 0 -2px 0 rgba(0,0,0,0.24),
-    0 8px 18px rgba(0,0,0,0.16);
-  position: relative;
-  overflow: hidden;
-}
-.color-preview::before {
-  content: '';
-  position: absolute;
-  inset: 9px;
-  border-radius: 3px;
-  border: 1px solid rgba(255,255,255,0.16);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.2),
-    inset 0 -2px 0 rgba(0,0,0,0.24);
-  pointer-events: none;
-}
-.color-preview::after {
-  content: 'LED';
-  position: absolute;
-  top: 14px;
-  right: 15px;
-  font-family: var(--mono);
-  font-size: 9px;
-  opacity: 0.55;
 }
 
 /* ── ENCODER ROW ── */
@@ -804,7 +560,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   flex: 1;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-lg);
   padding: 12px 16px;
   display: flex;
   gap: 14px;
@@ -822,16 +578,13 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   text-transform: uppercase;
   margin-bottom: 1px;
 }
-.enc-action {
-  display: grid;
-  grid-template-columns: 48px minmax(0, 1fr);
-  align-items: center;
-  gap: 8px;
-}
+.enc-action { display: flex; align-items: center; gap: 8px; }
 .enc-action-lbl {
   font-family: var(--mono);
   font-size: 10px;
   color: var(--muted);
+  width: 48px;
+  flex-shrink: 0;
   line-height: 1;
 }
 .enc-action select {
@@ -906,12 +659,11 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 .ep-footer {
   padding: 12px 16px;
   border-top: 1px solid var(--border);
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
   gap: 8px;
   flex-shrink: 0;
 }
-.ep-footer button { font-size: 12px; padding: 6px; min-width: 0; }
+.ep-footer button { flex: 1; font-size: 12px; padding: 6px; }
 
 /* ── CONNECT OVERLAY ── */
 .overlay {
@@ -1001,301 +753,18 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 }
 .theme-toggle:hover { color: var(--text); background: var(--surface2); transform: none; }
 
-@media (max-width: 860px) {
-  body { min-height: 100vh; }
-  .topbar {
-    height: auto;
-    min-height: 52px;
-    padding: 10px 12px;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .brand { min-width: 110px; }
-  .conn-area {
-    margin-left: auto;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-  .layout {
-    flex-direction: column;
-  }
-  .sidebar {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    max-height: 128px;
-    flex-direction: row;
-    align-items: stretch;
-    overflow-x: auto;
-    overflow-y: hidden;
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    box-shadow: 0 2px 18px rgba(0,0,0,0.22);
-  }
-  .sidebar-section {
-    padding: 12px 10px;
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-  }
-  #customModes {
-    display: flex;
-    align-items: stretch;
-    flex-shrink: 0;
-  }
-  .mode-btn {
-    width: auto;
-    min-width: 118px;
-    justify-content: flex-start;
-    border-left: none;
-    border-bottom: 2px solid transparent;
-    padding: 10px 12px;
-  }
-  .mode-btn.active { border-left-color: transparent; border-bottom-color: var(--accent); }
-  .mode-btn.readonly.active { border-bottom-color: var(--muted); }
-  .add-layer-btn {
-    width: auto;
-    min-width: 112px;
-    margin: 8px 10px;
-    align-self: center;
-  }
-  .template-picker {
-    width: 150px;
-    min-width: 150px;
-    margin: 8px 10px 8px 0;
-    align-self: center;
-  }
-  .sidebar-divider {
-    width: 1px;
-    height: auto;
-    margin: 10px 4px;
-    flex-shrink: 0;
-  }
-  .toolbar {
-    padding: 10px 12px;
-    align-items: flex-start;
-  }
-  .toolbar-title {
-    flex-basis: 100%;
-    min-width: 0;
-  }
-  .toolbar-actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .action-group.danger-zone {
-    margin-left: auto;
-  }
-  .kb-content {
-    flex-direction: column;
-  }
-  .kb-area {
-    padding: 16px 12px;
-  }
-  .editor-panel {
-    width: 100%;
-    height: 0;
-    border-top: 0;
-    transition: height 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  .editor-panel.open {
-    width: 100%;
-    height: min(46vh, 370px);
-  }
-  .ep-inner {
-    min-width: 0;
-    width: 100%;
-    border-left: none;
-    border-top: 1px solid var(--border);
-    box-shadow: 0 -6px 24px rgba(0,0,0,0.24);
-  }
-  .tab-body {
-    display: none;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    align-items: start;
-  }
-  .tab-body.active { display: grid; }
-  .ep-footer {
-    padding: 10px 14px;
-  }
-  .enc-row {
-    flex-direction: column;
-    gap: 10px;
-  }
-}
-
-@media (max-width: 560px) {
-  .topbar {
-    align-items: flex-start;
-  }
-  .conn-area {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .status-stack {
-    flex: 1;
-    min-width: 0;
-  }
-  .conn-status,
-  .sync-status {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .toolbar button {
-    padding: 6px 10px;
-  }
-  .action-group {
-    gap: 5px;
-  }
-  .kb-area {
-    justify-content: flex-start;
-  }
-  .kb-wrap {
-    padding: 10px;
-    max-width: 100%;
-    overflow: hidden;
-  }
-  .key-note { font-size: 11px; }
-  .key-sub { font-size: 9px; }
-  .editor-panel.open {
-    height: min(52vh, 420px);
-  }
-  .control-card {
-    padding: 10px;
-  }
-  .connect-card {
-    padding: 28px 24px;
-  }
-}
-
 /* ── LIGHT MODE ── */
 [data-theme="light"] {
-  --bg:       #dfe5e9;
-  --surface:  #f7f9fa;
-  --surface2: #e9eef1;
-  --border:   #c8d0d6;
-  --border2:  #aeb8c0;
-  --text:     #121820;
-  --muted:    #66727d;
-  --accent:   #006bff;
-  --accent2:  #0051c8;
-  --warning:  #b55f00;
-  --danger:   #d31335;
-}
-[data-theme="light"] body {
-  background:
-    radial-gradient(ellipse at 50% 28%, #ffffff 0%, #eef3f6 40%, var(--bg) 100%);
-}
-[data-theme="light"] .topbar,
-[data-theme="light"] .toolbar,
-[data-theme="light"] .sidebar,
-[data-theme="light"] .ep-inner,
-[data-theme="light"] .log-strip {
-  box-shadow: 0 1px 0 rgba(255,255,255,0.75), 0 8px 24px rgba(47,65,80,0.09);
-}
-[data-theme="light"] button {
-  background: linear-gradient(#ffffff, var(--surface2));
-  border-color: var(--border2);
-  color: var(--text);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.82), 0 1px 2px rgba(38,51,62,0.08);
-}
-[data-theme="light"] button:hover {
-  background: #ffffff;
-  border-color: color-mix(in srgb, var(--accent) 38%, var(--border2));
-}
-[data-theme="light"] button.primary {
-  background: linear-gradient(#2284ff, var(--accent));
-  color: #fff;
-  border-color: var(--accent);
-  box-shadow: 0 6px 16px rgba(0,107,255,0.22), inset 0 1px 0 rgba(255,255,255,0.24);
-}
-[data-theme="light"] button.primary:hover { background: linear-gradient(#3790ff, var(--accent2)); }
-[data-theme="light"] button.danger {
-  color: #fff;
-  border-color: #b80f2c;
-  background: linear-gradient(#ef2446, var(--danger));
-}
-[data-theme="light"] .conn-status,
-[data-theme="light"] .sync-status,
-[data-theme="light"] .mode-badge,
-[data-theme="light"] .ro-banner {
-  background: rgba(255,255,255,0.58);
-}
-[data-theme="light"] .mode-btn:hover,
-[data-theme="light"] .mode-btn.active,
-[data-theme="light"] .ep-tab:hover {
-  background: rgba(255,255,255,0.62);
-}
-[data-theme="light"] .kb-wrap {
-  background:
-    linear-gradient(var(--border2), var(--border2)) 0 0 / 14px 1px no-repeat,
-    linear-gradient(var(--border2), var(--border2)) 0 0 / 1px 14px no-repeat,
-    linear-gradient(var(--border2), var(--border2)) 100% 0 / 14px 1px no-repeat,
-    linear-gradient(var(--border2), var(--border2)) 100% 0 / 1px 14px no-repeat,
-    linear-gradient(var(--border2), var(--border2)) 0 100% / 14px 1px no-repeat,
-    linear-gradient(var(--border2), var(--border2)) 0 100% / 1px 14px no-repeat,
-    linear-gradient(var(--border2), var(--border2)) 100% 100% / 14px 1px no-repeat,
-    linear-gradient(var(--border2), var(--border2)) 100% 100% / 1px 14px no-repeat,
-    #f4f7f9;
-  box-shadow: 0 16px 34px rgba(38,51,62,0.18), 0 2px 7px rgba(38,51,62,0.12);
-}
-[data-theme="light"] .key {
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.46),
-    inset 0 -1px 0 rgba(0,0,0,0.22),
-    0 0 0 1px rgba(38,51,62,0.34),
-    0 3px 0 color-mix(in srgb, var(--kc, #00F5FF) 48%, #26333e),
-    0 7px 13px rgba(38,51,62,0.22);
-}
-[data-theme="light"] .key:hover:not(.ro) {
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.58),
-    inset 0 -1px 0 rgba(0,0,0,0.18),
-    0 0 0 1px rgba(38,51,62,0.28),
-    0 4px 0 color-mix(in srgb, var(--kc, #00F5FF) 48%, #26333e),
-    0 9px 16px rgba(38,51,62,0.24);
-}
-[data-theme="light"] .key.selected {
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.5),
-    inset 0 -1px 0 rgba(0,0,0,0.2),
-    0 0 0 2px var(--accent),
-    0 0 0 5px color-mix(in srgb, var(--accent) 20%, transparent),
-    0 3px 0 color-mix(in srgb, var(--kc, #00F5FF) 48%, #26333e),
-    0 9px 17px rgba(38,51,62,0.22);
-}
-[data-theme="light"] .key.ro {
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.5), 0 0 0 1px rgba(38,51,62,0.16);
-}
-[data-theme="light"] .control-card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(233,238,241,0.76));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.75), 0 1px 2px rgba(38,51,62,0.05);
-}
-[data-theme="light"] .control-card.is-muted {
-  background: rgba(255,255,255,0.48);
-}
-[data-theme="light"] .field input,
-[data-theme="light"] .field select,
-[data-theme="light"] .enc-action select,
-[data-theme="light"] .enc-cc input,
-[data-theme="light"] .notes-fired,
-[data-theme="light"] .template-picker {
-  background: #ffffff;
-  border-color: var(--border2);
-  color: var(--text);
-}
-[data-theme="light"] .chord-btn,
-[data-theme="light"] .iv-btn,
-[data-theme="light"] .key-chip {
-  background: #ffffff;
-}
-[data-theme="light"] .connect-card {
-  background: var(--surface);
-  box-shadow: 0 24px 70px rgba(31,45,58,0.28), 0 3px 10px rgba(31,45,58,0.12);
-}
-[data-theme="light"] .overlay {
-  background: rgba(226,232,236,0.74);
+  --bg:       #EDE8DF;
+  --surface:  #F5F1EA;
+  --surface2: #E8E2D7;
+  --border:   #CCC5B7;
+  --border2:  #B8B0A2;
+  --text:     #1E1B17;
+  --muted:    #8A8070;
+  --accent:   #E85D00;
+  --accent2:  #C04A00;
+  --danger:   #CC2020;
 }
 </style>
 </head>
@@ -1312,10 +781,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     <h1>Voyager</h1>
     <p>Connect your Voyager keyboard via USB, then click Connect to start editing your custom layers.</p>
     <div class="warn-note">⚠ Requires Chrome or Edge — WebSerial is not supported in Firefox or Safari.</div>
-    <button class="primary icon-btn" id="connectBtn" style="width:100%;padding:10px;" onclick="connectSerial()">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M12 2v6"/><path d="M8 6h8"/><path d="M8 12h8"/><path d="M10 18h4"/><path d="M12 22v-4"/><path d="M7 8h10v5a5 5 0 0 1-10 0z"/></svg>
-      Connect keyboard
-    </button>
+    <button class="primary" id="connectBtn" style="width:100%;padding:10px;" onclick="connectSerial()">Connect keyboard</button>
   </div>
 </div>
 
@@ -1325,17 +791,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
     Voyager
   </div>
   <div class="conn-area">
-    <button class="theme-toggle icon-only" id="themeToggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">
-      <svg class="icon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-4.97-4.03-9-9-9z"/><path d="M12 3v18a9 9 0 0 0 0-18z"/></svg>
-    </button>
-    <div class="status-stack">
-      <span class="conn-status" id="connStatus">Not connected</span>
-      <span class="sync-status" id="syncStatus">Local draft</span>
-    </div>
-    <button id="topConnBtn" class="icon-btn" onclick="connectSerial()">
-      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 2v6"/><path d="M8 6h8"/><path d="M8 12h8"/><path d="M10 18h4"/><path d="M12 22v-4"/><path d="M7 8h10v5a5 5 0 0 1-10 0z"/></svg>
-      Connect
-    </button>
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">◑</button>
+    <span class="conn-status" id="connStatus">Not connected</span>
+    <button id="topConnBtn" onclick="connectSerial()">Connect</button>
   </div>
 </div>
 
@@ -1344,32 +802,21 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   <div class="sidebar">
     <div class="sidebar-section">Layers</div>
     <div id="customModes"></div>
-    <button class="add-layer-btn icon-btn" onclick="addCustomLayer()">
-      <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
-      Add layer
-    </button>
-    <select class="template-picker" id="templatePicker" onchange="createLayerFromTemplate(this.value);this.value='';">
-      <option value="">Template...</option>
-      <option value="daw">DAW shortcuts</option>
-      <option value="browser">Browser / system</option>
-      <option value="media">Media controls</option>
-      <option value="stream">OBS / streaming</option>
-      <option value="slides">Presentation</option>
-    </select>
+    <button class="add-layer-btn" onclick="addCustomLayer()">+ Add layer</button>
     <div class="sidebar-divider"></div>
     <div class="sidebar-section">Built-in</div>
     <button class="mode-btn readonly" onclick="setMode('manual',this)">
-      <span class="mode-dot" style="background:#00A3FF;"></span>
+      <span class="mode-dot" style="background:#378ADD;"></span>
       Manual
       <span class="mode-badge ro">RO</span>
     </button>
     <button class="mode-btn readonly" onclick="setMode('smart',this)">
-      <span class="mode-dot" style="background:#00FF9C;"></span>
+      <span class="mode-dot" style="background:#1D9E75;"></span>
       Smart
       <span class="mode-badge ro">RO</span>
     </button>
     <button class="mode-btn readonly" onclick="setMode('drum',this)">
-      <span class="mode-dot" style="background:#FF6A00;"></span>
+      <span class="mode-dot" style="background:#D85A30;"></span>
       Drum
       <span class="mode-badge ro">RO</span>
     </button>
@@ -1378,10 +825,9 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
   <div class="main">
     <div class="toolbar">
       <div class="toolbar-title">
-        <span class="dirty-dot" id="dirtyDot" title="Layer has local edits"></span>
         <input type="text" id="layerNameInput" value="Select a layer" readonly>
       </div>
-      <div id="toolbarActions" class="toolbar-actions"></div>
+      <div id="toolbarActions"></div>
     </div>
 
     <div class="kb-content">
@@ -1442,9 +888,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
         <div class="ep-inner">
           <div class="ep-header">
             <span class="ep-title" id="epTitle">Key editor</span>
-            <button class="ep-close icon-only" onclick="closeEditor()" title="Close" aria-label="Close editor">
-              <svg class="icon" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
+            <button class="ep-close" onclick="closeEditor()" title="Close">&#x2715;</button>
           </div>
           <div class="ep-tabs">
             <button class="ep-tab active" id="tabNote"  onclick="switchTab('note')">Note</button>
@@ -1454,27 +898,23 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
           <div class="ep-tab-bodies">
 
             <div class="tab-body active" id="bodyNote">
-              <div class="control-card is-muted">
-                <div class="control-card-head">Behavior</div>
-                <div class="field">
-                  <label>Type</label>
-                  <select id="fType" onchange="onTypeChange(this.value)">
-                    <option value="midi">MIDI</option>
-                    <option value="hid">HID</option>
-                    <option value="consumer">Consumer</option>
-                    <option value="midi+hid">MIDI + HID</option>
-                  </select>
-                </div>
+              <div class="field">
+                <label>Type</label>
+                <select id="fType" onchange="onTypeChange(this.value)">
+                  <option value="midi">MIDI</option>
+                  <option value="hid">HID</option>
+                  <option value="consumer">Consumer</option>
+                  <option value="midi+hid">MIDI + HID</option>
+                </select>
               </div>
 
-              <div id="midiFields" class="control-card">
-                <div class="control-card-head">MIDI voice</div>
-                <div class="field">
+              <div id="midiFields">
+                <div class="field" style="margin-top:10px;">
                   <label>Note</label>
                   <input type="text" id="fNote" placeholder="C4, F#3, Bb2" autocomplete="off" oninput="onNoteInput(this)">
                   <span class="field-hint" id="noteHint"></span>
                 </div>
-                <div class="field-row">
+                <div class="field-row" style="margin-top:10px;">
                   <div class="field">
                     <label>Channel</label>
                     <input type="number" id="fChannel" min="1" max="16" onchange="saveKeyField('channel', Math.max(1,Math.min(16,+this.value)))">
@@ -1492,19 +932,17 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
                 </div>
               </div>
 
-              <div id="hidFields" class="control-card" style="display:none;">
-                <div class="control-card-head hid">HID combo</div>
+              <div id="hidFields" style="display:none;margin-top:10px;">
                 <div class="field">
                   <label>Key combo</label>
                   <div class="key-chips" id="keyChips"></div>
-                  <select id="keyAdder" onchange="addHidKey(this.value);this.value='';">
+                  <select id="keyAdder" onchange="addHidKey(this.value);this.value='';" style="margin-top:4px;">
                     <option value="">+ Add key…</option>
                   </select>
                 </div>
               </div>
 
-              <div id="consumerFields" class="control-card" style="display:none;">
-                <div class="control-card-head consumer">Media control</div>
+              <div id="consumerFields" style="display:none;margin-top:10px;">
                 <div class="field">
                   <label>Control</label>
                   <select id="fConsumer" onchange="saveKeyField('code', this.value)">
@@ -1522,68 +960,39 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
                 </div>
               </div>
 
-              <div class="control-card is-muted">
-                <div class="control-card-head label">Faceplate</div>
-                <div class="field compact">
-                  <label>Label <span class="label-limit">3 chars max</span></label>
-                  <input type="text" id="fLabel" maxlength="3" placeholder="e.g. KCK" oninput="saveKeyField('label',this.value.slice(0,3))">
-                </div>
+              <div class="field" style="margin-top:10px;">
+                <label>Label <span style="font-size:9px;color:var(--muted);text-transform:none;font-family:var(--sans);">(3 chars max)</span></label>
+                <input type="text" id="fLabel" maxlength="3" placeholder="e.g. KCK" oninput="saveKeyField('label',this.value.slice(0,3))">
               </div>
             </div>
 
             <div class="tab-body" id="bodyChord">
-              <div class="control-card">
-                <div class="control-card-head chord">Chord shape</div>
-                <div class="field">
-                  <label>Preset</label>
-                  <div class="chord-presets" id="chordPresets"></div>
-                </div>
+              <div class="field">
+                <label>Preset</label>
+                <div class="chord-presets" id="chordPresets"></div>
               </div>
-              <div class="control-card">
-                <div class="control-card-head chord">Intervals</div>
-                <div class="field">
-                  <label>Semitone offsets</label>
-                  <div class="interval-grid" id="intervalGrid"></div>
-                </div>
+              <div class="field">
+                <label>Intervals</label>
+                <div class="interval-grid" id="intervalGrid"></div>
               </div>
-              <div class="control-card is-muted">
+              <div>
                 <div class="notes-fired-label">Notes fired</div>
                 <div class="notes-fired" id="notesFired">—</div>
               </div>
             </div>
 
             <div class="tab-body" id="bodyColor">
-              <div class="control-card">
-                <div class="control-card-head color">LED color</div>
-                <div class="field">
-                  <label>Preset</label>
-                  <div class="color-swatches" id="swatchRow"></div>
-                </div>
+              <div class="field">
+                <label>Preset</label>
+                <div class="color-swatches" id="swatchRow"></div>
               </div>
-              <div class="control-card is-muted">
-                <div class="control-card-head color">Preview</div>
-                <div class="color-preview" id="colorPreview"></div>
-              </div>
+              <div class="color-preview" id="colorPreview"></div>
             </div>
 
           </div>
           <div class="ep-footer">
-            <button class="icon-btn" onclick="copyKey()">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Copy
-            </button>
-            <button class="icon-btn" onclick="pasteKey()">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M8 4h8"/><path d="M9 2h6v4H9z"/><rect x="5" y="5" width="14" height="17" rx="2"/><path d="M9 12h6"/><path d="M9 16h4"/></svg>
-              Paste
-            </button>
-            <button class="icon-btn" onclick="clearKey()">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v6h6"/></svg>
-              Reset
-            </button>
-            <button class="primary icon-btn" id="pushBtn" data-push-layer onclick="pushCurrentLayer()" disabled>
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/><path d="M5 19h14"/></svg>
-              Push to keyboard
-            </button>
+            <button onclick="clearKey()">Reset</button>
+            <button class="primary" id="pushBtn" onclick="pushCurrentLayer()" disabled>Push to keyboard</button>
           </div>
         </div>
       </div>
@@ -1598,10 +1007,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
 <div id="vizOverlay" style="display:none;position:fixed;inset:0;background:#000;z-index:1000;">
   <canvas id="vizCanvas" style="width:100%;height:100%;display:block;"></canvas>
-  <button id="vizExitBtn" class="icon-btn" onclick="exitVisualizer()" style="position:absolute;top:16px;right:16px;background:#17171a;border:1px solid #2a2a30;color:#e8e8ec;font-family:'DM Mono',monospace;font-size:12px;padding:6px 14px;border-radius:6px;cursor:pointer;">
-    <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-    Exit
-  </button>
+  <button id="vizExitBtn" onclick="exitVisualizer()" style="position:absolute;top:16px;right:16px;background:#17171a;border:1px solid #2a2a30;color:#e8e8ec;font-family:'DM Mono',monospace;font-size:12px;padding:6px 14px;border-radius:6px;cursor:pointer;">Exit</button>
 </div>
 
 <script>
@@ -1630,33 +1036,11 @@ const INTERVALS = [
   {name:'11', semi:17}, {name:'#11', semi:18}, {name:'13',  semi:21},
 ];
 
-const SWATCHES = [
-  '#FF2B2B', '#FF6A00', '#FFC400', '#F8FF00', '#73FF00', '#00FF45', '#00FF9C',
-  '#00FFD1', '#00F5FF', '#00A3FF', '#3D5AFE', '#7C3CFF', '#B000FF', '#FF00D4',
-  '#FF2D8D', '#FF5EC4', '#FF8A00', '#36FF00', '#00D5FF', '#FFFFFF'
-];
+const SWATCHES = ['#534AB7','#1D9E75','#D85A30','#D4537E','#378ADD','#BA7517','#E24B4A','#888780'];
 
 const NOTE_MAP   = {C:0,'C#':1,D:2,'D#':3,E:4,F:5,'F#':6,G:7,'G#':8,A:9,'A#':10,B:11};
 const FLAT_MAP   = {Db:'C#',Eb:'D#',Fb:'E',Gb:'F#',Ab:'G#',Bb:'A#',Cb:'B'};
 const MIDI_NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
-
-const ICONS = {
-  plug: '<path d="M12 2v6"/><path d="M8 6h8"/><path d="M8 12h8"/><path d="M10 18h4"/><path d="M12 22v-4"/><path d="M7 8h10v5a5 5 0 0 1-10 0z"/>',
-  unplug: '<path d="m5 5 14 14"/><path d="M12 2v4"/><path d="M8 6h5"/><path d="M8 12h8"/><path d="M10 18h4"/><path d="M12 22v-4"/><path d="M7 8h10v5a5 5 0 0 1-.8 2.7"/>',
-  upload: '<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/><path d="M5 19h14"/>',
-  visualizer: '<path d="M4 18V8"/><path d="M8 18V4"/><path d="M12 18v-7"/><path d="M16 18V6"/><path d="M20 18v-4"/>',
-  trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/>'
-};
-
-function icon(name, cls = 'icon icon-sm') {
-  return `<svg class="${cls}" viewBox="0 0 24 24">${ICONS[name] || ''}</svg>`;
-}
-
-function setTopConnectButton(label, handler, iconName) {
-  const btn = document.getElementById('topConnBtn');
-  btn.innerHTML = `${icon(iconName)}${label}`;
-  btn.onclick = handler;
-}
 
 function parseNote(str) {
   str = str.trim();
@@ -1693,13 +1077,6 @@ function intervalsToNoteNames(rootNote, intervals) {
   return result;
 }
 
-function midiToNote(midi) {
-  midi = Math.max(0, Math.min(127, midi));
-  const name = MIDI_NOTES[((midi % 12) + 12) % 12];
-  const oct = Math.floor(midi / 12) - 1;
-  return name + oct;
-}
-
 function detectPreset(intervals) {
   const key = [...intervals].sort((a,b)=>a-b).join(',');
   return CHORD_PRESETS.find(p => [...p.intervals].sort((a,b)=>a-b).join(',') === key) || null;
@@ -1712,9 +1089,6 @@ let currentMode = null;
 let customLayers = [];
 let selectedKey = null;
 let activeModeBtn = null;
-let dirtyLayers = new Set();
-let syncState = 'local';
-let keyClipboard = null;
 
 // ── SERIAL ──
 async function connectSerial() {
@@ -1730,9 +1104,9 @@ async function connectSerial() {
     document.getElementById('brandDot').classList.remove('disconnected');
     document.getElementById('connStatus').textContent = 'Connected';
     document.getElementById('connStatus').classList.add('connected');
-    setTopConnectButton('Disconnect', disconnectSerial, 'unplug');
+    document.getElementById('topConnBtn').textContent = 'Disconnect';
+    document.getElementById('topConnBtn').onclick = disconnectSerial;
     document.getElementById('pushBtn').disabled = false;
-    setSyncState(dirtyLayers.size ? 'dirty' : 'synced');
     log('Connected — syncing state…', 'ok');
     startReader();
     await serialSend({cmd: 'ping'});
@@ -1756,9 +1130,9 @@ async function disconnectSerial() {
   document.getElementById('brandDot').classList.add('disconnected');
   document.getElementById('connStatus').textContent = 'Not connected';
   document.getElementById('connStatus').classList.remove('connected');
-  setTopConnectButton('Connect', connectSerial, 'plug');
+  document.getElementById('topConnBtn').textContent = 'Connect';
+  document.getElementById('topConnBtn').onclick = connectSerial;
   document.getElementById('pushBtn').disabled = true;
-  setSyncState(dirtyLayers.size ? 'dirty' : 'local');
   log('Disconnected');
 }
 
@@ -1800,19 +1174,33 @@ function handleIncoming(line) {
   let msg;
   try { msg = JSON.parse(line); } catch { return; }
   if (msg.type === 'state') {
-    const names = msg.custom_layer_names || [];
-    while (customLayers.length < names.length) customLayers.push(mkDefaultLayer(`Layer ${customLayers.length + 1}`));
-    names.forEach((n, i) => { customLayers[i].name = n; });
-    renderSidebar();
-    log(`Synced — ${names.length} custom layer(s), mode ${msg.mode}`, 'ok');
-  } else if (msg.type === 'ack') {
-    if      (msg.cmd === 'push_layer')    {
-      dirtyLayers.delete(msg.idx);
-      setSyncState(dirtyLayers.size ? 'dirty' : 'synced');
-      renderSidebar();
-      updateLayerChrome();
-      log(`Layer ${msg.idx} pushed ${msg.saved ? '& saved' : '(not saved)'}`, 'ok');
+    const layers = msg.custom_layers || [];
+    if (layers.length > 0) {
+      // Full sync — rebuild customLayers from board data
+      const defKey = mkDefaultLayer('_').keys[0];
+      customLayers = layers.map((l, i) => {
+        const def = mkDefaultLayer(l.name || `Layer ${i + 1}`);
+        return {
+          name:  l.name || def.name,
+          keys:  l.keys?.length
+            ? l.keys.map(k => ({ ...defKey, ...k }))
+            : def.keys,
+          enc1:  l.enc1 || def.enc1,
+          enc2:  l.enc2 || def.enc2,
+        };
+      });
+    } else {
+      // Fallback — names only (old firmware)
+      const names = msg.custom_layer_names || [];
+      while (customLayers.length < names.length)
+        customLayers.push(mkDefaultLayer(`Layer ${customLayers.length + 1}`));
+      names.forEach((n, i) => { customLayers[i].name = n; });
     }
+    renderSidebar();
+    if (customLayers.length > 0 && currentMode === null) selectCustomLayer(0);
+    log(`Synced — ${customLayers.length} custom layer(s)`, 'ok');
+  } else if (msg.type === 'ack') {
+    if      (msg.cmd === 'push_layer')    log(`Layer ${msg.idx} pushed ${msg.saved ? '& saved' : '(not saved)'}`, 'ok');
     else if (msg.cmd === 'set_mode')      log(`Keyboard switched to mode ${msg.mode}`, 'ok');
     else if (msg.cmd === 'delete_layer')  log(`Layer ${msg.idx} deleted`, 'ok');
   } else if (msg.type === 'note_on') {
@@ -1853,146 +1241,16 @@ function mkDefaultLayer(name) {
   };
 }
 
-function mkKey(overrides = {}) {
-  return {
-    type: 'midi',
-    note: 'C4',
-    intervals: [],
-    channel: 1,
-    velocity: 'global',
-    keys: [],
-    code: '',
-    label: '',
-    color: '#00F5FF',
-    ...overrides
-  };
-}
-
-function hidKey(label, keys, color = '#00A3FF') {
-  return mkKey({type:'hid', keys, label, color});
-}
-
-function consumerKey(label, code, color = '#FF6A00') {
-  return mkKey({type:'consumer', code, label, color});
-}
-
-function emptyKey(label = '', color = '#00F5FF') {
-  return mkKey({label, color});
-}
-
-const LAYER_TEMPLATES = {
-  daw: {
-    name: 'DAW Shortcuts',
-    keys: [
-      hidKey('PLY', ['SPACE'], '#00FF9C'), hidKey('REC', ['R'], '#FF2B2B'), hidKey('LOP', ['L'], '#7C3CFF'), hidKey('MET', ['K'], '#7C3CFF'), hidKey('SAV', ['CMD','S'], '#00A3FF'), hidKey('UND', ['CMD','Z'], '#00A3FF'), hidKey('RED', ['CMD','SHIFT','Z'], '#00A3FF'),
-      hidKey('CUT', ['CMD','X'], '#FFC400'), hidKey('CPY', ['CMD','C'], '#FFC400'), hidKey('PST', ['CMD','V'], '#FFC400'), hidKey('ALL', ['CMD','A'], '#FFC400'), hidKey('DUP', ['CMD','D'], '#FFC400'), hidKey('DEL', ['DELETE'], '#FF2B2B'), hidKey('QNT', ['Q'], '#FF2D8D'),
-      hidKey('LFT', ['LEFT'], '#00A3FF'), hidKey('RGT', ['RIGHT'], '#00A3FF'), hidKey('UP', ['UP'], '#00A3FF'), hidKey('DWN', ['DOWN'], '#00A3FF'), hidKey('HOM', ['HOME'], '#00A3FF'), hidKey('END', ['END'], '#00A3FF'), hidKey('FND', ['CMD','F'], '#00A3FF'),
-      hidKey('MUT', ['M'], '#FF6A00'), hidKey('SOL', ['S'], '#FF6A00'), hidKey('ARM', ['A'], '#FF2B2B'), hidKey('GRD', ['G'], '#7C3CFF'), hidKey('PG-', ['PAGE_DOWN'], '#00FF9C'), hidKey('PG+', ['PAGE_UP'], '#00FF9C'), hidKey('ESC', ['ESCAPE'], '#00F5FF'),
-    ]
-  },
-  browser: {
-    name: 'Browser / System',
-    keys: [
-      hidKey('URL', ['CMD','L'], '#00A3FF'), hidKey('NEW', ['CMD','T'], '#00A3FF'), hidKey('CLS', ['CMD','W'], '#FF2B2B'), hidKey('REO', ['CMD','SHIFT','T'], '#00FF9C'), hidKey('RLD', ['CMD','R'], '#00FF9C'), hidKey('FND', ['CMD','F'], '#7C3CFF'), hidKey('FUL', ['CMD','CTRL','F'], '#7C3CFF'),
-      hidKey('BCK', ['CMD','LEFT'], '#FFC400'), hidKey('FWD', ['CMD','RIGHT'], '#FFC400'), hidKey('TAB', ['CTRL','TAB'], '#00A3FF'), hidKey('TB-', ['CTRL','SHIFT','TAB'], '#00A3FF'), hidKey('TOP', ['HOME'], '#00F5FF'), hidKey('BOT', ['END'], '#00F5FF'), hidKey('ESC', ['ESCAPE'], '#00F5FF'),
-      hidKey('CPY', ['CMD','C'], '#FF6A00'), hidKey('PST', ['CMD','V'], '#FF6A00'), hidKey('CUT', ['CMD','X'], '#FF6A00'), hidKey('ALL', ['CMD','A'], '#FF6A00'), hidKey('SAV', ['CMD','S'], '#00FF9C'), hidKey('PRT', ['CMD','P'], '#00FF9C'), hidKey('SHR', ['CMD','SHIFT','S'], '#00FF9C'),
-      hidKey('SPT', ['CMD','SPACE'], '#7C3CFF'), hidKey('APP', ['CMD','TAB'], '#7C3CFF'), hidKey('QIT', ['CMD','Q'], '#FF2B2B'), consumerKey('PLY', 'PLAY_PAUSE', '#00FF9C'), consumerKey('PRV', 'SCAN_PREVIOUS_TRACK', '#00FF9C'), consumerKey('NXT', 'SCAN_NEXT_TRACK', '#00FF9C'), consumerKey('MUT', 'MUTE', '#FF2B2B'),
-    ]
-  },
-  media: {
-    name: 'Media Controls',
-    keys: [
-      consumerKey('PLY', 'PLAY_PAUSE', '#00FF9C'), consumerKey('STP', 'STOP', '#FF2B2B'), consumerKey('PRV', 'SCAN_PREVIOUS_TRACK', '#00A3FF'), consumerKey('NXT', 'SCAN_NEXT_TRACK', '#00A3FF'), consumerKey('RWD', 'REWIND', '#7C3CFF'), consumerKey('FWD', 'FAST_FORWARD', '#7C3CFF'), consumerKey('EJT', 'EJECT', '#00F5FF'),
-      consumerKey('V+', 'VOLUME_INCREMENT', '#00FF9C'), consumerKey('V-', 'VOLUME_DECREMENT', '#FFC400'), consumerKey('MUT', 'MUTE', '#FF2B2B'), hidKey('SPC', ['SPACE'], '#00A3FF'), hidKey('ENT', ['ENTER'], '#00A3FF'), hidKey('ESC', ['ESCAPE'], '#00F5FF'), hidKey('TAB', ['TAB'], '#00F5FF'),
-      hidKey('LFT', ['LEFT'], '#00A3FF'), hidKey('RGT', ['RIGHT'], '#00A3FF'), hidKey('UP', ['UP'], '#00A3FF'), hidKey('DWN', ['DOWN'], '#00A3FF'), hidKey('HOM', ['HOME'], '#00F5FF'), hidKey('END', ['END'], '#00F5FF'), hidKey('FUL', ['F'], '#7C3CFF'),
-      hidKey('1', ['1'], '#00F5FF'), hidKey('2', ['2'], '#00F5FF'), hidKey('3', ['3'], '#00F5FF'), hidKey('4', ['4'], '#00F5FF'), hidKey('5', ['5'], '#00F5FF'), hidKey('6', ['6'], '#00F5FF'), hidKey('7', ['7'], '#00F5FF'),
-    ]
-  },
-  stream: {
-    name: 'OBS / Streaming',
-    keys: [
-      hidKey('SC1', ['F1'], '#7C3CFF'), hidKey('SC2', ['F2'], '#7C3CFF'), hidKey('SC3', ['F3'], '#7C3CFF'), hidKey('SC4', ['F4'], '#7C3CFF'), hidKey('SC5', ['F5'], '#7C3CFF'), hidKey('SC6', ['F6'], '#7C3CFF'), hidKey('SC7', ['F7'], '#7C3CFF'),
-      hidKey('REC', ['F8'], '#FF2B2B'), hidKey('STR', ['F9'], '#FF2B2B'), hidKey('PAU', ['F10'], '#FFC400'), hidKey('MRK', ['F11'], '#00FF9C'), hidKey('MIC', ['F12'], '#FF6A00'), consumerKey('MUT', 'MUTE', '#FF2B2B'), consumerKey('PLY', 'PLAY_PAUSE', '#00FF9C'),
-      hidKey('CAM', ['CMD','F1'], '#00A3FF'), hidKey('SCR', ['CMD','F2'], '#00A3FF'), hidKey('BRB', ['CMD','F3'], '#00A3FF'), hidKey('END', ['CMD','F4'], '#00A3FF'), hidKey('AUD', ['CMD','F5'], '#FF6A00'), hidKey('CHT', ['CMD','F6'], '#00FF9C'), hidKey('ALT', ['CMD','F7'], '#00F5FF'),
-      hidKey('V+', ['CMD','UP'], '#00FF9C'), hidKey('V-', ['CMD','DOWN'], '#FFC400'), hidKey('MXR', ['CMD','M'], '#FF6A00'), hidKey('SNP', ['CMD','SHIFT','S'], '#00A3FF'), hidKey('FUL', ['CMD','CTRL','F'], '#7C3CFF'), hidKey('ESC', ['ESCAPE'], '#00F5FF'), hidKey('TAB', ['TAB'], '#00F5FF'),
-    ]
-  },
-  slides: {
-    name: 'Presentation',
-    keys: [
-      hidKey('NXT', ['RIGHT'], '#00FF9C'), hidKey('PRV', ['LEFT'], '#FFC400'), hidKey('UP', ['UP'], '#00A3FF'), hidKey('DWN', ['DOWN'], '#00A3FF'), hidKey('BLK', ['B'], '#00F5FF'), hidKey('WHT', ['W'], '#00F5FF'), hidKey('ESC', ['ESCAPE'], '#FF2B2B'),
-      hidKey('F5', ['F5'], '#7C3CFF'), hidKey('SFT', ['SHIFT','F5'], '#7C3CFF'), hidKey('1', ['1'], '#00A3FF'), hidKey('2', ['2'], '#00A3FF'), hidKey('3', ['3'], '#00A3FF'), hidKey('4', ['4'], '#00A3FF'), hidKey('5', ['5'], '#00A3FF'),
-      hidKey('URL', ['CMD','L'], '#00FF9C'), hidKey('PG+', ['PAGE_UP'], '#00FF9C'), hidKey('PG-', ['PAGE_DOWN'], '#FFC400'), hidKey('FND', ['CMD','F'], '#00A3FF'), hidKey('SAV', ['CMD','S'], '#00FF9C'), hidKey('PRT', ['CMD','P'], '#00F5FF'), hidKey('FUL', ['CMD','CTRL','F'], '#7C3CFF'),
-      consumerKey('V+', 'VOLUME_INCREMENT', '#00FF9C'), consumerKey('V-', 'VOLUME_DECREMENT', '#FFC400'), consumerKey('MUT', 'MUTE', '#FF2B2B'), consumerKey('PLY', 'PLAY_PAUSE', '#00FF9C'), hidKey('TAB', ['TAB'], '#00F5FF'), hidKey('ENT', ['ENTER'], '#00A3FF'), hidKey('SPC', ['SPACE'], '#00A3FF'),
-    ]
-  },
-};
-
-function createLayerFromTemplate(id) {
-  if (!id) return;
-  const tpl = LAYER_TEMPLATES[id];
-  if (!tpl) return;
-  const layer = mkDefaultLayer(tpl.name);
-  layer.keys = tpl.keys.map(k => JSON.parse(JSON.stringify(k)));
-  while (layer.keys.length < 28) layer.keys.push(emptyKey());
-  layer.keys = layer.keys.slice(0, 28);
-  const idx = customLayers.length;
-  customLayers.push(layer);
-  dirtyLayers.add(idx);
-  setSyncState('dirty');
-  renderSidebar();
-  selectCustomLayer(idx);
-  log(`Created "${tpl.name}" template`, 'ok');
-}
-
 function addCustomLayer() {
   const idx = customLayers.length;
   customLayers.push(mkDefaultLayer(`Layer ${idx + 1}`));
-  dirtyLayers.add(idx);
-  setSyncState('dirty');
   renderSidebar();
   selectCustomLayer(idx);
-}
-
-function duplicateCurrentLayer() {
-  if (typeof currentMode !== 'number') { log('Select a custom layer first', 'err'); return; }
-  const src = customLayers[currentMode];
-  const copy = JSON.parse(JSON.stringify(src));
-  copy.name = `${src.name || 'Layer'} Copy`;
-  const idx = customLayers.length;
-  customLayers.push(copy);
-  dirtyLayers.add(idx);
-  setSyncState('dirty');
-  renderSidebar();
-  selectCustomLayer(idx);
-  log(`Duplicated "${src.name}"`, 'ok');
-}
-
-function transposeCurrentLayer(semitones) {
-  if (typeof currentMode !== 'number') { log('Select a custom layer first', 'err'); return; }
-  const layer = customLayers[currentMode];
-  let changed = 0;
-  layer.keys.forEach(k => {
-    const type = k.type || 'midi';
-    if (type !== 'midi' && type !== 'midi+hid') return;
-    const parsed = parseNote(k.note || '');
-    if (!parsed) return;
-    const next = noteToMidi(parsed) + semitones;
-    if (next < 0 || next > 127) return;
-    k.note = midiToNote(next);
-    changed++;
-  });
-  if (!changed) { log('No MIDI notes transposed'); return; }
-  markLayerDirty(currentMode);
-  renderGrid();
-  if (selectedKey !== null) populateEditor(selectedKey);
-  log(`Transposed ${changed} key${changed === 1 ? '' : 's'} ${semitones > 0 ? '+' : ''}${semitones}`, 'ok');
 }
 
 async function deleteLayer(idx) {
   if (!confirm(`Delete "${customLayers[idx].name}"? This cannot be undone.`)) return;
   customLayers.splice(idx, 1);
-  dirtyLayers = new Set([...dirtyLayers].filter(i => i !== idx).map(i => i > idx ? i - 1 : i));
   if (connected) await serialSend({cmd: 'delete_layer', idx});
   renderSidebar();
   currentMode = null;
@@ -2000,49 +1258,14 @@ async function deleteLayer(idx) {
   closeEditor();
   document.getElementById('encRow').style.display = 'none';
   renderGrid();
-  updateLayerChrome();
-  setSyncState(dirtyLayers.size ? 'dirty' : (connected ? 'synced' : 'local'));
 }
 
 async function pushCurrentLayer() {
   if (typeof currentMode !== 'number') { log('Select a custom layer first', 'err'); return; }
   if (!connected) { log('Not connected', 'err'); return; }
   const layer = customLayers[currentMode];
-  setSyncState('syncing');
   await serialSend({cmd: 'push_layer', idx: currentMode, layer: {name: layer.name, keys: layer.keys, enc1: layer.enc1, enc2: layer.enc2}});
   log(`Pushing layer ${currentMode} to keyboard…`);
-}
-
-function setSyncState(state) {
-  syncState = state;
-  const el = document.getElementById('syncStatus');
-  if (!el) return;
-  el.classList.toggle('dirty', state === 'dirty');
-  el.classList.toggle('syncing', state === 'syncing');
-  el.textContent =
-    state === 'dirty'   ? 'Unsynced edits' :
-    state === 'syncing' ? 'Pushing...' :
-    state === 'synced'  ? 'Synced' :
-    'Local draft';
-}
-
-function markLayerDirty(idx) {
-  if (typeof idx !== 'number') return;
-  const wasClean = !dirtyLayers.has(idx);
-  dirtyLayers.add(idx);
-  setSyncState('dirty');
-  if (wasClean) renderSidebar();
-  updateLayerChrome();
-}
-
-function updateLayerChrome() {
-  const title = document.querySelector('.toolbar-title');
-  const pushBtns = document.querySelectorAll('[data-push-layer]');
-  const isCustom = typeof currentMode === 'number';
-  const isDirty = isCustom && dirtyLayers.has(currentMode);
-  title?.classList.toggle('dirty', isDirty);
-  pushBtns.forEach(btn => btn.classList.toggle('dirty', isDirty));
-  if (!isDirty && syncState === 'dirty' && !dirtyLayers.size) setSyncState(connected ? 'synced' : 'local');
 }
 
 // ── SIDEBAR ──
@@ -2051,9 +1274,9 @@ function renderSidebar() {
   container.innerHTML = '';
   customLayers.forEach((layer, idx) => {
     const btn = document.createElement('button');
-    btn.className = 'mode-btn' + (currentMode === idx ? ' active' : '') + (dirtyLayers.has(idx) ? ' dirty' : '');
+    btn.className = 'mode-btn' + (currentMode === idx ? ' active' : '');
     btn.innerHTML = `<span class="mode-dot" style="background:${layer.keys[0]?.color||'#888'};"></span>
-      ${escHtml(layer.name)}<span class="mode-badge">${dirtyLayers.has(idx) ? 'EDIT' : idx+1}</span>`;
+      ${escHtml(layer.name)}<span class="mode-badge">${idx+1}</span>`;
     btn.onclick = () => { activeModeBtn = btn; selectCustomLayer(idx); };
     container.appendChild(btn);
   });
@@ -2081,7 +1304,6 @@ function setMode(mode, btn) {
       <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
       Read-only mode
     </div>`;
-  updateLayerChrome();
   if (connected) serialSend({cmd:'set_mode', mode: customLayers.length + (['manual','smart','drum'].indexOf(mode))});
 }
 
@@ -2099,27 +1321,14 @@ function selectCustomLayer(idx) {
   nameInput.readOnly = false;
   nameInput.oninput = () => {
     customLayers[idx].name = nameInput.value;
-    markLayerDirty(idx);
     renderSidebar();
     document.querySelectorAll('#customModes .mode-btn')[idx]?.classList.add('active');
   };
   document.getElementById('toolbarActions').innerHTML = `
-    <div class="action-group">
-      <button class="icon-btn" data-push-layer onclick="pushCurrentLayer()" ${connected?'':'disabled'}>${icon('upload')}Push to keyboard</button>
-      <button class="icon-btn" id="vizBtn" onclick="enterVisualizer()">${icon('visualizer')}Visualizer</button>
-      <button class="icon-btn" onclick="duplicateCurrentLayer()"><svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Duplicate</button>
-    </div>
-    <div class="action-group transpose-group" title="Transpose all MIDI notes in this layer">
-      <button class="mini-btn" onclick="transposeCurrentLayer(-12)" title="Transpose down one octave">-12</button>
-      <button class="mini-btn" onclick="transposeCurrentLayer(-1)" title="Transpose down one semitone">-1</button>
-      <button class="mini-btn" onclick="transposeCurrentLayer(1)" title="Transpose up one semitone">+1</button>
-      <button class="mini-btn" onclick="transposeCurrentLayer(12)" title="Transpose up one octave">+12</button>
-    </div>
-    <div class="action-group danger-zone">
-      <button class="danger icon-btn" onclick="deleteLayer(${idx})">${icon('trash')}Delete</button>
-    </div>`;
+    <button onclick="pushCurrentLayer()" ${connected?'':'disabled'}>Push to keyboard</button>
+    <button id="vizBtn" onclick="enterVisualizer()">Visualizer</button>
+    <button class="danger" onclick="deleteLayer(${idx})">Delete</button>`;
   renderEncoders(idx);
-  updateLayerChrome();
 }
 
 // ── GRID ──
@@ -2147,10 +1356,10 @@ const READONLY_DATA = {
       ['C3','D3','E3','F3','G3','A3','B3'],
       ['Maj','Min','7th','Add9','Sus4','Int2','Int3'],
     ],
-    colors: ['#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF',
-             '#36FF00','#36FF00','#36FF00','#36FF00','#36FF00','#36FF00','#36FF00',
-             '#FF8A00','#FF8A00','#FF8A00','#FF8A00','#FF8A00','#FF8A00','#FF8A00',
-             '#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF'],
+    colors: ['#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
+             '#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11',
+             '#854F0B','#854F0B','#854F0B','#854F0B','#854F0B','#854F0B','#854F0B',
+             '#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7'],
     subs: ['','','','','','','','','','','','','','','','','','','','','','Mod','Mod','Mod','Mod','Mod','Mod','Mod'],
   },
   smart: {
@@ -2160,10 +1369,10 @@ const READONLY_DATA = {
       ['C Maj','D Min','E Min','F Maj','G Maj','A Min','B Dim'],
       ['+7th','+9th','Sus4','Sus2','1Inv','2Inv','Sub'],
     ],
-    colors: ['#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF',
-             '#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF','#006BFF',
-             '#00FF9C','#FF3D00','#FF3D00','#00FF9C','#00FF9C','#FF3D00','#F8FF00',
-             '#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF'],
+    colors: ['#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
+             '#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5','#185FA5',
+             '#0F6E56','#993C1D','#993C1D','#0F6E56','#0F6E56','#993C1D','#5F5E5A',
+             '#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7'],
     subs: [],
   },
   drum: {
@@ -2173,10 +1382,10 @@ const READONLY_DATA = {
       ['SNR','SN2','RIM','CLP','HHC','HHP','HHO'],
       ['KK1','KK2','KK3','KKS','KKM','KKL','KKX'],
     ],
-    colors: ['#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#7C3CFF','#00F5FF',
-             '#36FF00','#36FF00','#36FF00','#36FF00','#36FF00','#36FF00','#36FF00',
-             '#FF8A00','#FF8A00','#FF8A00','#FF8A00','#006BFF','#006BFF','#006BFF',
-             '#FF2B2B','#FF2B2B','#FF2B2B','#FF2B2B','#FF2B2B','#FF2B2B','#FF2B2B'],
+    colors: ['#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#534AB7','#888780',
+             '#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11','#3B6D11',
+             '#854F0B','#854F0B','#854F0B','#854F0B','#185FA5','#185FA5','#185FA5',
+             '#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D','#A32D2D'],
     subs: [],
   }
 };
@@ -2306,8 +1515,7 @@ function closeEditor() {
 
 function populateEditor(idx) {
   const k = customLayers[currentMode].keys[idx];
-  document.getElementById('epTitle').innerHTML =
-    `<span class="ep-title-main">${escHtml(customLayers[currentMode].name)}</span><span class="ep-title-sub">Key ${idx + 1}</span>`;
+  document.getElementById('epTitle').textContent = `Key ${idx + 1}`;
 
   const ktype = k.type || 'midi';
   document.getElementById('fType').value = ktype;
@@ -2457,35 +1665,16 @@ function onNoteInput(el) {
 function saveKeyField(field, value) {
   if (selectedKey === null || typeof currentMode !== 'number') return;
   customLayers[currentMode].keys[selectedKey][field] = value;
-  markLayerDirty(currentMode);
   renderGrid();
   document.querySelectorAll('.key')[selectedKey]?.classList.add('selected');
-}
-
-function copyKey() {
-  if (selectedKey === null || typeof currentMode !== 'number') { log('Select a key first', 'err'); return; }
-  keyClipboard = JSON.parse(JSON.stringify(customLayers[currentMode].keys[selectedKey]));
-  log(`Copied key ${selectedKey + 1}`, 'ok');
-}
-
-function pasteKey() {
-  if (selectedKey === null || typeof currentMode !== 'number') { log('Select a key first', 'err'); return; }
-  if (!keyClipboard) { log('No copied key', 'err'); return; }
-  customLayers[currentMode].keys[selectedKey] = JSON.parse(JSON.stringify(keyClipboard));
-  markLayerDirty(currentMode);
-  populateEditor(selectedKey);
-  renderGrid();
-  document.querySelectorAll('.key')[selectedKey]?.classList.add('selected');
-  log(`Pasted to key ${selectedKey + 1}`, 'ok');
 }
 
 function clearKey() {
   if (selectedKey === null || typeof currentMode !== 'number') return;
   customLayers[currentMode].keys[selectedKey] = {
     type:'midi', note:'C4', intervals:[], channel:1, velocity:'global',
-    keys:[], code:'', label:'', color:'#00F5FF'
+    keys:[], code:'', label:'', color:'#888780'
   };
-  markLayerDirty(currentMode);
   populateEditor(selectedKey);
   renderGrid();
   document.querySelectorAll('.key')[selectedKey]?.classList.add('selected');
@@ -2608,7 +1797,6 @@ function makeEncActionRow(label, action, opts, layerIdx, encKey, actionKey) {
     else if (ENC_HAS_CH.has(t)) act = {type:t, ch};
     else                        act = {type:t};
     customLayers[layerIdx][encKey][actionKey] = act;
-    markLayerDirty(layerIdx);
   }
 
   sel.onchange = () => { applyVis(); commit(); };
@@ -2947,8 +2135,6 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && vizActive)
 if (localStorage.getItem('theme') === 'light') document.documentElement.dataset.theme = 'light';
 renderGrid();
 scaleKeyboard();
-setSyncState('local');
-updateLayerChrome();
 
 if (!navigator.serial) {
   document.getElementById('connectBtn').disabled = true;
